@@ -96,8 +96,8 @@ export const PlacementAnalytics: React.FC = () => {
 
   return (
     <>
-      {/* Compact Dashboard Card (40-50% shorter height) */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 h-full flex flex-col justify-between">
+      {/* Compact Dashboard Card (approximately 220-240px chart height) */}
+      <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 flex flex-col">
         
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -124,8 +124,8 @@ export const PlacementAnalytics: React.FC = () => {
           </button>
         </div>
 
-        {/* Compact Chart Canvas (155px height - down from 280px) */}
-        <div className="h-[155px] w-full pt-2">
+        {/* Compact Chart Canvas (220-240px height as per requirement 4) */}
+        <div className="h-[220px] sm:h-[240px] w-full pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={compactTradeList}
@@ -162,7 +162,7 @@ export const PlacementAnalytics: React.FC = () => {
                 dataKey="absorptionRate"
                 name="Absorption Rate"
                 radius={[0, 4, 4, 0]}
-                barSize={14}
+                barSize={18}
                 onClick={(entry) => setTrade(entry.trade)}
                 className="cursor-pointer"
               >

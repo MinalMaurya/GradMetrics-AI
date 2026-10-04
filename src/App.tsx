@@ -72,74 +72,80 @@ const DashboardContent: React.FC = () => {
           <KPICards />
         </section>
 
-        {/* 1. Macro Labour Intelligence: Demand vs Supply + Gap Matrix (Left 7 cols) | Early Warnings, AI Planner, Priorities (Right 5 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        {/* 6. Main Analytics Area: Two-Column Independent Vertical Flow (Zero Blank Gap, Natural Heights) */}
+        <section aria-label="Main Analytics Area" className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           
-          {/* Left Column (7 cols): Macro Supply vs Demand & Gap Matrix */}
+          {/* Left Column (7 cols): Macro Supply vs Demand, Gap Matrix, Forecasts, Regional Overview, Trade Absorption */}
           <div className="lg:col-span-7 flex flex-col gap-5 min-w-0">
+            
+            {/* Labour Demand vs Training Capacity */}
             <div id="demand-supply">
               <SupplyDemandChart />
             </div>
             
+            {/* Demand-Supply Gap Matrix */}
             <div id="gap-matrix">
               <SkillGapMatrix />
             </div>
+
+            {/* 2027 Demand-Supply Forecast */}
+            <div id="forecast">
+              <ForecastChart />
+            </div>
+
+            {/* District & State Demand-Supply Overview */}
+            <div id="districts">
+              <RegionalOverview />
+            </div>
+
+            {/* Trade Absorption & Market Uptake (Prompt Item 3 & 4) */}
+            <div id="absorption">
+              <PlacementAnalytics />
+            </div>
+
           </div>
 
-          {/* Right Column (5 cols): Early Warnings, AI Planner Recommendations, Training Priority Index */}
+          {/* Right Column (5 cols): Early Warnings, AI Planner, Training Priorities, Accelerators, Data Sources & Market Signal Snapshot */}
           <div className="lg:col-span-5 flex flex-col gap-5 min-w-0">
+            
+            {/* Early Warning Signals */}
             <div id="alerts">
               <EarlyWarningSystem />
             </div>
 
+            {/* AI Planner Recommendations */}
             <div id="recommendations">
               <AIInsights />
             </div>
 
+            {/* Training Priority Index */}
             <div id="priorities">
               <TrainingPriority />
             </div>
+
+            {/* Fastest Accelerating Trades */}
+            <div id="accelerators">
+              <EmergingSkills />
+            </div>
+
+            {/* Data Sources & Unified Labour Demand Index */}
+            <div id="sources">
+              <DataSourcesAndIndex />
+            </div>
+
+            {/* Market Signal Telemetry Snapshot (Prompt Item 3 & 5: Sits directly beside Trade Absorption) */}
+            <div id="signals">
+              <MarketSignalSnapshot />
+            </div>
+
           </div>
 
-        </div>
-
-        {/* 2. Regional Labour Overview (Left 7 cols) & Data Ingestion Pipeline (Right 5 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          <div id="districts" className="lg:col-span-7 min-w-0">
-            <RegionalOverview />
-          </div>
-
-          <div id="sources" className="lg:col-span-5 min-w-0">
-            <DataSourcesAndIndex />
-          </div>
-        </div>
-
-        {/* 3. Trade Absorption & Market Uptake (Left 7 cols) & Market Signal Telemetry Snapshot (Right 5 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-          <div id="absorption" className="lg:col-span-7 min-w-0 flex flex-col">
-            <PlacementAnalytics />
-          </div>
-
-          <div id="signals" className="lg:col-span-5 min-w-0 flex flex-col">
-            <MarketSignalSnapshot />
-          </div>
-        </div>
-
-        {/* 4. Occupation & Skill Taxonomy Mapping (NCO / NSQF) - Full Width */}
-        <section id="taxonomy" aria-label="Occupation and Skill Mapping">
-          <NcoNsqfMapping />
         </section>
 
-        {/* 5. Forecast to 2027 (Left 7 cols) & Fastest Accelerating Trades (Right 5 cols) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          <div id="forecast" className="lg:col-span-7 min-w-0">
-            <ForecastChart />
-          </div>
-
-          <div id="accelerators" className="lg:col-span-5 min-w-0">
-            <EmergingSkills />
-          </div>
-        </div>
+        {/* 7. Occupation & Skill Taxonomy Mapping (NCO / NSQF) - Full Width Below Analytics Area (Prompt Item 11) */}
+        <section id="taxonomy" aria-label="Occupation and Skill Mapping" className="w-full">
+          <NcoNsqfMapping />
+        </section>
 
         {/* Policy Action Callout & Decision Support Banner (Prompt Item 25) */}
         <section className="rounded-xl p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white shadow-lg border border-indigo-800/80 relative overflow-hidden">
@@ -191,8 +197,8 @@ const DashboardContent: React.FC = () => {
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-10 py-6 text-xs transition-colors duration-200">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded-md bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
-              G
+            <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-0.5 flex items-center justify-center shrink-0">
+              <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-slate-800 dark:text-slate-200">GradMetrics AI</span>
             <span>&bull;</span>

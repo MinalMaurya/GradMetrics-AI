@@ -16,7 +16,7 @@ export const MarketSignalSnapshot: React.FC = () => {
   const { setTrade, setSector, setGeography, setIsPolicySimulatorOpen } = useAnalytics();
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 h-full flex flex-col justify-between">
+    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 flex flex-col justify-between">
       
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">

@@ -66,13 +66,13 @@ export const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16 sm:h-20 gap-3 sm:gap-4">
           
           {/* Left: Brand & Problem Statement 26246 Title (Requirement 1 & 5: ALWAYS FULLY VISIBLE) */}
-          <div className="flex items-center space-x-3 shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-indigo-700 via-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 shrink-0">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 flex items-center justify-center shadow-md shadow-indigo-500/10 shrink-0 overflow-hidden p-0.5">
+              <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
             </div>
             
             <div className="flex flex-col justify-center">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 dark:text-white whitespace-nowrap">
                   GradMetrics <span className="text-indigo-600 dark:text-indigo-400 font-extrabold">AI</span>
                 </h1>
@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
           </div>
 
           {/* Right: Telemetry Indicators, Multilingual Selector & Responsive Controls (Requirement 6) */}
-          <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
             
             {/* Realistic Data Freshness Badge (visible on 2xl) */}
             <div className="hidden 2xl:flex flex-col text-right justify-center px-3 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-[11px]">
@@ -142,14 +142,14 @@ export const Header: React.FC = () => {
               )}
             </div>
 
-            {/* Direct Policy Simulator Trigger (visible on xl+) */}
+            {/* Direct Policy Simulator Trigger */}
             <button
               onClick={() => setIsPolicySimulatorOpen(true)}
-              className="hidden xl:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer whitespace-nowrap"
+              className="hidden lg:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer whitespace-nowrap"
               title="Simulate Training Capacity & Policy Interventions"
             >
               <Sliders className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-              <span>Simulate Policy</span>
+              <span>Simulate<span className="hidden xl:inline"> Policy</span></span>
             </button>
 
             {/* Export Brief Trigger */}
@@ -159,7 +159,7 @@ export const Header: React.FC = () => {
               title="Export Labour Market Intelligence Report"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Export Brief</span>
+              <span>Export<span className="hidden sm:inline"> Brief</span></span>
             </button>
 
             {/* Direct API button on 2xl */}
