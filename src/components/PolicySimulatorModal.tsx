@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Sliders,
   X,
@@ -11,11 +11,39 @@ import {
   RotateCcw,
   Building2,
   Shuffle,
-  Target
+  Target,
+  Save,
+  Trash2
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 
+interface SavedPolicyScenario {
+  id: string;
+  name: string;
+  geography: string;
+  district: string;
+  trade: string;
+  seatIncrease: number;
+  newCentres: number;
+  courseReallocation: number;
+  projectedShortage: number;
+  gapReductionPercent: number;
+  savedAt: string;
+}
+
 export const PolicySimulatorModal: React.FC = () => {
+  const [scenarioName, setScenarioName] = useState('');
+  const [storageError, setStorageError] = useState(false);
+  const [savedScenarios, setSavedScenarios] = useState<SavedPolicyScenario[]>(() => {
+    try {
+      const storedScenarios = localStorage.getItem('gradmetrics-policy-scenarios');
+      const parsedScenarios: unknown = storedScenarios ? JSON.parse(storedScenarios) : [];
+      return Array.isArray(parsedScenarios) ? parsedScenarios : [];
+    } catch {
+      return [];
+    }
+  });
+
   const {
     isPolicySimulatorOpen,
     setIsPolicySimulatorOpen,
@@ -47,6 +75,39 @@ export const PolicySimulatorModal: React.FC = () => {
   const totalCapacityAdded = seatDirectAddition + newCentreCapacity + reallocatedCapacity;
   const projectedShortage = Math.max(2000, currentShortage - totalCapacityAdded);
   const gapReductionPercent = Math.min(95, Math.round(((currentShortage - projectedShortage) / currentShortage) * 100));
+
+  const updateSavedScenarios = (scenarios: SavedPolicyScenario[]) => {
+    setSavedScenarios(scenarios);
+    try {
+      localStorage.setItem('gradmetrics-policy-scenarios', JSON.stringify(scenarios));
+      setStorageError(false);
+    } catch {
+      setStorageError(true);
+    }
+  };
+
+  const saveScenario = () => {
+    const name = scenarioName.trim();
+    if (!name) return;
+
+    updateSavedScenarios([
+      {
+        id: `${Date.now()}`,
+        name,
+        geography: filters.geography,
+        district: filters.district,
+        trade: filters.trade,
+        seatIncrease: simulatedSeatIncrease,
+        newCentres: simulatedNewCentres,
+        courseReallocation: simulatedCourseReallocation,
+        projectedShortage,
+        gapReductionPercent,
+        savedAt: new Date().toISOString()
+      },
+      ...savedScenarios
+    ]);
+    setScenarioName('');
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
@@ -223,6 +284,91 @@ export const PolicySimulatorModal: React.FC = () => {
 
             </div>
           </div>
+
+          <section className="border-t border-slate-200 dark:border-slate-800 pt-5" aria-labelledby="saved-scenarios-title">
+            <div className="flex items-center justify-between mb-3">
+              <h4 id="saved-scenarios-title" className="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+                Saved Scenarios
+              </h4>
+              <span className="text-[10px] text-slate-400">Stored on this device</span>
+            </div>
+
+            <form
+              className="flex gap-2 mb-3"
+              onSubmit={(event) => {
+                event.preventDefault();
+                saveScenario();
+              }}
+            >
+              <input
+                value={scenarioName}
+                onChange={(event) => setScenarioName(event.target.value)}
+                aria-label="Scenario name"
+                placeholder="Name this policy scenario"
+                maxLength={48}
+                className="min-w-0 flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="submit"
+                disabled={!scenarioName.trim()}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" />
+                Save
+              </button>
+            </form>
+
+            {storageError && (
+              <p role="status" className="mb-3 text-[11px] text-rose-600 dark:text-rose-400">
+                Scenarios are available until this page closes, but browser storage is unavailable.
+              </p>
+            )}
+
+            {savedScenarios.length === 0 ? (
+              <p className="rounded-lg border border-dashed border-slate-200 dark:border-slate-700 px-3 py-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                Save a simulation to compare policy options here.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {savedScenarios.map((scenario) => (
+                  <div key={scenario.id} className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 px-3 py-2.5">
+                    <div className="min-w-0">
+                      <div className="truncate text-xs font-semibold text-slate-800 dark:text-slate-100">{scenario.name}</div>
+                      <div className="mt-0.5 truncate text-[10px] text-slate-500 dark:text-slate-400">
+                        {[scenario.district !== 'All Districts' ? scenario.district : '', scenario.geography, scenario.trade].filter(Boolean).join(' · ')}
+                      </div>
+                      <div className="mt-1 text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
+                        {scenario.gapReductionPercent}% gap reduction · {Math.round(scenario.projectedShortage / 1000)}K projected shortage
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSimulatedSeatIncrease(scenario.seatIncrease);
+                          setSimulatedNewCentres(scenario.newCentres);
+                          setSimulatedCourseReallocation(scenario.courseReallocation);
+                        }}
+                        className="rounded-md px-2.5 py-1.5 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100 dark:text-indigo-300 dark:hover:bg-indigo-950/60"
+                        title="Load these settings into the current simulation"
+                      >
+                        Load
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateSavedScenarios(savedScenarios.filter((item) => item.id !== scenario.id))}
+                        className="rounded-md p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
+                        aria-label={`Delete ${scenario.name}`}
+                        title="Delete scenario"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
 
         </div>
 
