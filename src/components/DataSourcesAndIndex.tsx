@@ -39,7 +39,7 @@ export const DataSourcesAndIndex: React.FC = () => {
           {/* Top/Left: UNIFIED LABOUR DEMAND INDEX (Prompt Item 16) */}
           <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 text-white relative overflow-hidden shadow-md">
             <div className="relative z-10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-300 flex items-center gap-1.5">
                   <Scale className="w-3.5 h-3.5 text-indigo-400" />
                   UNIFIED LABOUR DEMAND INDEX
@@ -53,11 +53,11 @@ export const DataSourcesAndIndex: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex items-baseline space-x-3 mt-3">
-                <span className="text-4xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
+              <div className="flex flex-wrap items-baseline gap-2 sm:gap-3 mt-3">
+                <span className="text-3xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
                   78
                 </span>
-                <span className="text-xl font-bold text-indigo-200">/ 100</span>
+                <span className="text-lg sm:text-xl font-bold text-indigo-200">/ 100</span>
                 
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
                   <TrendingUp className="w-3.5 h-3.5 mr-1" />
@@ -70,7 +70,7 @@ export const DataSourcesAndIndex: React.FC = () => {
               </p>
 
               {/* Mini Source breakdown indicators */}
-              <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-indigo-800/80 text-[11px] text-indigo-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-indigo-800/80 text-[11px] text-indigo-300">
                 <div>NCS &amp; Portals: <strong>50% Weight</strong></div>
                 <div>Surveys &amp; PLFS: <strong>30% Weight</strong></div>
                 <div>Industry Signals: <strong>20% Weight</strong></div>
@@ -127,20 +127,20 @@ export const DataSourcesAndIndex: React.FC = () => {
 
       {/* 2. "How is this calculated?" Methodology Modal (Item 16) */}
       {isMethodologyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <Scale className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                     Unified Labour Demand Index: Methodology
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
                     Formula and statistical normalization framework
                   </p>
                 </div>
@@ -148,17 +148,17 @@ export const DataSourcesAndIndex: React.FC = () => {
 
               <button
                 onClick={() => setIsMethodologyOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4 text-xs">
+            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 text-xs overflow-y-auto">
               <div className="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-200">
                 <div className="font-bold text-[11px] uppercase tracking-wider mb-1">Mathematical Formula:</div>
-                <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-indigo-200 dark:border-indigo-900">
+                <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-indigo-200 dark:border-indigo-900 break-words">
                   Demand Index = &Sigma; (Normalized Source Score &times; Empirical Weight)
                 </div>
               </div>
@@ -194,7 +194,7 @@ export const DataSourcesAndIndex: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
+            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
               <button
                 onClick={() => setIsMethodologyOpen(false)}
                 className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700"

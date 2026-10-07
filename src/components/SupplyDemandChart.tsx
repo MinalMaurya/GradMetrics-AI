@@ -123,19 +123,19 @@ export const SupplyDemandChart: React.FC = () => {
   const isCurrentOversupply = kpis.demandSupplyGap < 0;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200">
+    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
       
       {/* Header & View Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+          <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+            <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               Labour Demand vs Training Capacity
             </h2>
             
             {/* Status Pill on Chart Header */}
             <span
-              className={`text-[10px] px-2.5 py-0.5 font-bold uppercase rounded-full border ${
+              className={`text-[9px] sm:text-[10px] px-2 sm:px-2.5 py-0.5 font-bold uppercase rounded-full border whitespace-nowrap ${
                 isCurrentShortage
                   ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-900'
                   : isCurrentOversupply
@@ -143,68 +143,72 @@ export const SupplyDemandChart: React.FC = () => {
                   : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
               }`}
             >
-              {isCurrentShortage ? '🔴 SHORTAGE ENVIRONMENT' : isCurrentOversupply ? '🟣 OVERSUPPLY DETECTED' : '🟢 BALANCED MARKET'}
+              {isCurrentShortage ? '🔴 SHORTAGE' : isCurrentOversupply ? '🟣 OVERSUPPLY' : '🟢 BALANCED'}
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Macroeconomic comparison: Active Labour Demand vs Certified Training Capacity
           </p>
         </div>
 
         {/* Toggle Filters & Chart Style */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           
           {/* Metric Selector Buttons */}
-          <div className="inline-flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 text-xs font-medium">
+          <div className="inline-flex p-0.5 sm:p-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 text-[11px] sm:text-xs font-medium max-w-full overflow-x-auto no-scrollbar">
             <button
               onClick={() => setMetricFilter('all')}
-              className={`px-2.5 py-1 rounded-md transition ${
+              className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'all'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              All Metrics
+              <span className="hidden sm:inline">All Metrics</span>
+              <span className="sm:hidden">All</span>
             </button>
             <button
               onClick={() => setMetricFilter('demand')}
-              className={`px-2.5 py-1 rounded-md transition ${
+              className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'demand'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Labour Demand
+              <span className="hidden sm:inline">Labour Demand</span>
+              <span className="sm:hidden">Demand</span>
             </button>
             <button
               onClick={() => setMetricFilter('supply')}
-              className={`px-2.5 py-1 rounded-md transition ${
+              className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'supply'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Training Capacity
+              <span className="hidden sm:inline">Training Capacity</span>
+              <span className="sm:hidden">Supply</span>
             </button>
             <button
               onClick={() => setMetricFilter('gap')}
-              className={`px-2.5 py-1 rounded-md transition ${
+              className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'gap'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Demand-Supply Gap
+              <span className="hidden sm:inline">Demand-Supply Gap</span>
+              <span className="sm:hidden">Gap</span>
             </button>
           </div>
 
           {/* Chart Type Toggle */}
-          <div className="inline-flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80">
+          <div className="inline-flex p-0.5 sm:p-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80">
             <button
               onClick={() => setChartStyle('composed')}
-              className={`p-1 rounded ${
+              className={`p-1 rounded cursor-pointer ${
                 chartStyle === 'composed'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
               }`}
               title="Composed Line & Area Chart"
@@ -213,9 +217,9 @@ export const SupplyDemandChart: React.FC = () => {
             </button>
             <button
               onClick={() => setChartStyle('bar')}
-              className={`p-1 rounded ${
+              className={`p-1 rounded cursor-pointer ${
                 chartStyle === 'bar'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
               }`}
               title="Grouped Bar Chart"
@@ -228,11 +232,11 @@ export const SupplyDemandChart: React.FC = () => {
       </div>
 
       {/* Main Chart Canvas */}
-      <div className="h-[330px] w-full pt-4">
+      <div className="h-[260px] sm:h-[320px] w-full pt-2 sm:pt-4">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={supplyDemandTrends}
-            margin={{ top: 10, right: 15, left: -10, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
           >
             <defs>
               <linearGradient id="demandAreaGradient" x1="0" y1="0" x2="0" y2="1">

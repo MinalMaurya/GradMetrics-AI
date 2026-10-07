@@ -157,13 +157,13 @@ export const AIInsights: React.FC = () => {
         <div className="mt-3 space-y-2">
           
           {/* Trade • Location & Confidence */}
-          <div className="flex items-center justify-between">
-            <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center justify-between gap-1">
+            <div className="text-xs font-bold text-slate-900 dark:text-white flex flex-wrap items-center gap-1 sm:gap-1.5">
               <span>{activeInsight.trade || 'Data Engineering'}</span>
               <span className="text-slate-400">&bull;</span>
               <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{activeInsight.location || 'Pune, MH'}</span>
             </div>
-            <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800">
+            <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-200 dark:border-emerald-800 shrink-0">
               {activeInsight.confidenceScore}% Conf.
             </span>
           </div>
@@ -183,7 +183,7 @@ export const AIInsights: React.FC = () => {
           </div>
 
           {/* Action Trigger Button */}
-          <div className="pt-1.5 flex items-center justify-between">
+          <div className="pt-1.5 flex flex-wrap items-center justify-between gap-2">
             <button
               onClick={() => setIsPolicySimulatorOpen(true)}
               className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium flex items-center gap-1 cursor-pointer"
@@ -207,20 +207,20 @@ export const AIInsights: React.FC = () => {
 
       {/* Comprehensive Evidence & Action Modal (Prompt Section 4 Requirement) */}
       {selectedInsightModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <BrainCircuit className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                     AI RECOMMENDATION
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
                     Labour Market Intelligence &amp; Seat Allocation Advisory
                   </p>
                 </div>
@@ -228,14 +228,14 @@ export const AIInsights: React.FC = () => {
 
               <button
                 onClick={() => setSelectedInsightModal(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
+            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
               
               {/* Context Summary Box */}
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
@@ -334,7 +334,7 @@ export const AIInsights: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
+            <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2">
               <button
                 onClick={() => {
                   setSelectedInsightModal(null);

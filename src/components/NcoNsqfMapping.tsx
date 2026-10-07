@@ -20,11 +20,11 @@ export const NcoNsqfMapping: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center shadow-xs">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center shadow-xs shrink-0">
               <Tag className="w-4 h-4" />
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               OCCUPATION &amp; SKILL TAXONOMY MAPPING
             </h2>
             <span className="text-[10px] px-2 py-0.5 font-bold uppercase rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
@@ -52,7 +52,7 @@ export const NcoNsqfMapping: React.FC = () => {
 
       {/* Interactive Taxonomy Table */}
       <div className="overflow-x-auto mt-3">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="w-full min-w-[700px] text-left text-xs border-collapse whitespace-nowrap">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider">
               <th className="py-2.5 px-3">NCO Code</th>
@@ -111,12 +111,12 @@ export const NcoNsqfMapping: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500">
+      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[11px] text-slate-500">
         <div className="flex items-center space-x-2">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
           <span>Automated semantic cross-walking maps 40,000+ job title variants to standardized NCO/NSQF codes.</span>
         </div>
-        <div className="font-semibold text-slate-700 dark:text-slate-300">
+        <div className="font-semibold text-slate-700 dark:text-slate-300 shrink-0">
           Source: NCVET &amp; DGT Master Registry
         </div>
       </div>

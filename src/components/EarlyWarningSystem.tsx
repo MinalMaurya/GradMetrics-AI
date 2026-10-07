@@ -177,7 +177,7 @@ export const EarlyWarningSystem: React.FC = () => {
         </div>
 
         {/* Tab Selector between Shortage & Oversupply Alert Highlights */}
-        <div className="flex items-center justify-between pt-1 pb-2">
+        <div className="flex flex-wrap items-center justify-between gap-1.5 pt-1 pb-2">
           <div className="inline-flex p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">
             <button
               onClick={() => setActiveTab('shortage')}
@@ -201,7 +201,7 @@ export const EarlyWarningSystem: React.FC = () => {
             </button>
           </div>
 
-          <span className="text-[10px] text-slate-400 font-mono">
+          <span className="text-[10px] text-slate-400 font-mono hidden min-[360px]:inline">
             {activeTab === 'shortage' ? 'DEMAND > SUPPLY' : 'SUPPLY > DEMAND'}
           </span>
         </div>
@@ -291,38 +291,38 @@ export const EarlyWarningSystem: React.FC = () => {
 
       {/* Comprehensive Radar Modal (All Signals & Category Filter) */}
       {isFullRadarModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-3xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <AlertOctagon className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                     Early Warning Labour Radar: Full Registry
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Automated anomaly detection flagging severe qualification deficits and seat oversupplies
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                    Automated anomaly detection flagging qualification deficits and seat oversupplies
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={() => setIsFullRadarModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Filter Tabs */}
-            <div className="px-6 py-3 border-b border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 text-xs">
+            <div className="px-3 sm:px-6 py-2.5 sm:py-3 border-b border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5 sm:gap-2 text-xs">
               <button
                 onClick={() => setActiveCategoryFilter('all')}
-                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-semibold transition ${
                   activeCategoryFilter === 'all'
                     ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
@@ -332,7 +332,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </button>
               <button
                 onClick={() => setActiveCategoryFilter('critical')}
-                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-semibold transition ${
                   activeCategoryFilter === 'critical'
                     ? 'bg-rose-600 text-white'
                     : 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300'
@@ -342,7 +342,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </button>
               <button
                 onClick={() => setActiveCategoryFilter('emerging')}
-                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-semibold transition ${
                   activeCategoryFilter === 'emerging'
                     ? 'bg-amber-600 text-white'
                     : 'bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300'
@@ -352,7 +352,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </button>
               <button
                 onClick={() => setActiveCategoryFilter('oversupply')}
-                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-semibold transition ${
                   activeCategoryFilter === 'oversupply'
                     ? 'bg-purple-600 text-white'
                     : 'bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300'
@@ -362,7 +362,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </button>
               <button
                 onClick={() => setActiveCategoryFilter('balanced')}
-                className={`px-3 py-1 rounded-lg font-semibold transition ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg font-semibold transition ${
                   activeCategoryFilter === 'balanced'
                     ? 'bg-emerald-600 text-white'
                     : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
@@ -373,7 +373,7 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
 
             {/* Modal Body: Cards List */}
-            <div className="p-6 overflow-y-auto space-y-3">
+            <div className="p-3 sm:p-6 overflow-y-auto space-y-3">
               {displayedWarnings.map((w) => {
                 const isCritical = w.type === 'critical-shortage';
                 const isEmerging = w.type === 'emerging-gap';
@@ -392,8 +392,8 @@ export const EarlyWarningSystem: React.FC = () => {
                         : 'border-l-4 border-l-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/20 border-slate-200 dark:border-slate-800'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         <span
                           className={`font-bold px-2 py-0.5 rounded text-[10px] ${
                             isCritical
@@ -417,7 +417,7 @@ export const EarlyWarningSystem: React.FC = () => {
                       </span>
                     </div>
 
-                    <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 mt-1">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-slate-500 dark:text-slate-400 mt-1">
                       <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
                       <span>{w.district}, {w.state}</span>
                       <span>&bull;</span>
@@ -428,11 +428,11 @@ export const EarlyWarningSystem: React.FC = () => {
                       {w.forecast}
                     </p>
 
-                    <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                    <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                       <span className="text-indigo-700 dark:text-indigo-300 font-semibold text-[11px]">
                         Action: {w.recommendedAction}
                       </span>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
                         <button
                           onClick={() => {
                             selectEarlyWarningAndFilter(w);
@@ -456,7 +456,7 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
+            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
               <button
                 onClick={() => setIsFullRadarModalOpen(false)}
                 className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-800 hover:bg-slate-700"
@@ -471,31 +471,31 @@ export const EarlyWarningSystem: React.FC = () => {
 
       {/* Deep-Dive Brief Modal for Specific Item */}
       {detailModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2">
                 <span
-                  className={`w-3 h-3 rounded-full ${
+                  className={`w-3 h-3 rounded-full shrink-0 ${
                     detailModalItem.gap > 0 ? 'bg-rose-500' : 'bg-purple-500'
                   }`}
                 />
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
                   Early Warning Intelligence Brief: {detailModalItem.trade}
                 </h3>
               </div>
               <button
                 onClick={() => setDetailModalItem(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-4 text-xs">
+            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 text-xs overflow-y-auto">
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
                 <div className="flex justify-between">
                   <span className="text-slate-500">Jurisdiction:</span>
@@ -544,7 +544,7 @@ export const EarlyWarningSystem: React.FC = () => {
 
               <div className="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800">
                 <div className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5 mb-1">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                   Prescribed Planner Action:
                 </div>
                 <p className="text-indigo-950 dark:text-indigo-300 font-medium">
@@ -554,7 +554,7 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex items-center justify-between">
+            <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2">
               <button
                 onClick={() => {
                   setDetailModalItem(null);

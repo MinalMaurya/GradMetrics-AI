@@ -124,13 +124,13 @@ export const PlacementAnalytics: React.FC = () => {
           </button>
         </div>
 
-        {/* Compact Chart Canvas (220-240px height as per requirement 4) */}
-        <div className="h-[220px] sm:h-[240px] w-full pt-2">
+        {/* Compact Chart Canvas */}
+        <div className="h-[200px] sm:h-[240px] w-full pt-1 sm:pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={compactTradeList}
               layout="vertical"
-              margin={{ top: 5, right: 30, left: 10, bottom: 0 }}
+              margin={{ top: 5, right: 25, left: -10, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} horizontal={false} />
               <XAxis
@@ -147,7 +147,7 @@ export const PlacementAnalytics: React.FC = () => {
                 tickLine={false}
                 stroke={axisColor}
                 fontSize={10}
-                width={110}
+                width={100}
               />
               <Tooltip content={<CustomTooltip />} />
               
@@ -199,20 +199,20 @@ export const PlacementAnalytics: React.FC = () => {
 
       {/* Expanded Modal / Full-Screen Analytics Panel (Requirement 5) */}
       {isFullModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs">
+            <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-800/40">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <Award className="w-4 h-4" />
                 </div>
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="min-w-0">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
                     Trade Absorption &amp; Market Uptake: Complete Analytics
                   </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
                     Comprehensive employment conversion and post-training uptake metrics (NCVET Verified Trainees)
                   </p>
                 </div>
@@ -220,20 +220,20 @@ export const PlacementAnalytics: React.FC = () => {
 
               <button
                 onClick={() => setIsFullModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto space-y-5">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-5">
               
               {/* Benchmark Summary Bar */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                   <div className="text-[10px] uppercase font-bold text-slate-400">National Benchmark</div>
-                  <div className="text-2xl font-black font-mono text-indigo-600 dark:text-indigo-400 mt-0.5">
+                  <div className="text-xl sm:text-2xl font-black font-mono text-indigo-600 dark:text-indigo-400 mt-0.5">
                     {nationalBenchmark}%
                   </div>
                   <div className="text-[11px] text-slate-500 mt-0.5">Minimum statutory target</div>
@@ -241,7 +241,7 @@ export const PlacementAnalytics: React.FC = () => {
 
                 <div className="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60">
                   <div className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">Top Performing Trade</div>
-                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">
+                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
                     Data Engineering (91%)
                   </div>
                   <div className="text-[11px] text-emerald-600 font-mono mt-0.5">+17% above national benchmark</div>
@@ -249,7 +249,7 @@ export const PlacementAnalytics: React.FC = () => {
 
                 <div className="p-3 rounded-xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60">
                   <div className="text-[10px] uppercase font-bold text-purple-700 dark:text-purple-300">Underperforming Cohort</div>
-                  <div className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">
+                  <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
                     Retail Sales (54%)
                   </div>
                   <div className="text-[11px] text-purple-600 font-mono mt-0.5">-20% below national benchmark</div>
@@ -261,12 +261,12 @@ export const PlacementAnalytics: React.FC = () => {
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Complete Trade Absorption Matrix
                 </h4>
-                <div className="h-[260px] w-full">
+                <div className="h-[240px] sm:h-[260px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={fullTradeAbsorptionList}
                       layout="vertical"
-                      margin={{ top: 5, right: 35, left: 20, bottom: 5 }}
+                      margin={{ top: 5, right: 25, left: -5, bottom: 5 }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} horizontal={false} />
                       <XAxis
@@ -274,7 +274,7 @@ export const PlacementAnalytics: React.FC = () => {
                         domain={[0, 100]}
                         tickLine={false}
                         stroke={axisColor}
-                        fontSize={11}
+                        fontSize={10}
                         unit="%"
                       />
                       <YAxis
@@ -282,8 +282,8 @@ export const PlacementAnalytics: React.FC = () => {
                         dataKey="trade"
                         tickLine={false}
                         stroke={axisColor}
-                        fontSize={11}
-                        width={130}
+                        fontSize={10}
+                        width={110}
                       />
                       <Tooltip content={<CustomTooltip />} />
                       

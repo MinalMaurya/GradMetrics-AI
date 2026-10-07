@@ -55,7 +55,7 @@ const DashboardContent: React.FC = () => {
       <FilterBar />
 
       {/* Main Dashboard Canvas */}
-      <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-5">
+      <main className="flex-1 max-w-[1600px] w-full mx-auto px-3 sm:px-6 lg:px-8 py-3.5 sm:py-5 space-y-4 sm:space-y-5">
         
         {/* Compact Problem Statement Banner for PS 26246 */}
         <section aria-label="SIH Problem Statement 26246">
@@ -148,7 +148,7 @@ const DashboardContent: React.FC = () => {
         </section>
 
         {/* Policy Action Callout & Decision Support Banner (Prompt Item 25) */}
-        <section className="rounded-xl p-5 sm:p-6 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white shadow-lg border border-indigo-800/80 relative overflow-hidden">
+        <section className="rounded-xl p-4 sm:p-5 lg:p-6 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white shadow-lg border border-indigo-800/80 relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="max-w-2xl">
               <div className="flex items-center space-x-2 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-1">
@@ -163,10 +163,10 @@ const DashboardContent: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex items-center space-x-3 shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0 w-full md:w-auto">
               <button
                 onClick={() => setIsPolicySimulatorOpen(true)}
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 shadow-md transition"
+                className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 shadow-md transition w-full sm:w-auto"
               >
                 <Sliders className="w-4 h-4 text-indigo-600" />
                 <span>Launch Policy Simulator</span>
@@ -174,7 +174,7 @@ const DashboardContent: React.FC = () => {
               
               <button
                 onClick={() => setIsExportModalOpen(true)}
-                className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-indigo-600/80 hover:bg-indigo-600 border border-indigo-400/40 shadow-xs transition"
+                className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-indigo-600/80 hover:bg-indigo-600 border border-indigo-400/40 shadow-xs transition w-full sm:w-auto"
               >
                 <FileCheck className="w-4 h-4" />
                 <span>Export Executive Brief</span>
@@ -182,7 +182,7 @@ const DashboardContent: React.FC = () => {
 
               <button
                 onClick={() => setIsApiModalOpen(true)}
-                className="hidden sm:inline-flex items-center space-x-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 shadow-xs transition"
+                className="hidden sm:inline-flex items-center justify-center space-x-2 px-3 py-2.5 rounded-lg text-xs font-semibold text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 shadow-xs transition"
               >
                 <Code2 className="w-4 h-4 text-indigo-400" />
                 <span>API Gateway</span>
@@ -194,9 +194,9 @@ const DashboardContent: React.FC = () => {
       </main>
 
       {/* Footer (Aligned with Item 20 & Item 2) */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-10 py-6 text-xs transition-colors duration-200">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 dark:text-slate-400">
-          <div className="flex items-center space-x-2">
+      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 mt-8 sm:mt-10 py-5 sm:py-6 text-xs transition-colors duration-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 text-slate-500 dark:text-slate-400 text-center md:text-left">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 sm:gap-2">
             <div className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-0.5 flex items-center justify-center shrink-0">
               <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
             </div>
@@ -207,7 +207,7 @@ const DashboardContent: React.FC = () => {
             <span className="hidden md:inline font-mono text-indigo-600 dark:text-indigo-400 font-semibold">SIH 2026 PS 26246</span>
           </div>
 
-          <div className="flex items-center space-x-4 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-3 gap-y-1 text-[11px]">
             <span>Data Sources: NCS &bull; e-Shram &bull; PLFS &bull; NCO &bull; NSQF</span>
             <span>Security: Gov-Standard ISO/IEC 27001</span>
             <span className="font-mono text-emerald-500">Periodic Refresh: Weekly</span>

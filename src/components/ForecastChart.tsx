@@ -109,31 +109,31 @@ export const ForecastChart: React.FC = () => {
   const axisColor = isDarkMode ? '#94a3b8' : '#64748b';
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200">
+    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+          <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+            <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               2027 Demand-Supply Forecast
             </h2>
-            <span className="text-[11px] px-2 py-0.5 font-bold rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span className="text-[10px] sm:text-[11px] px-2 py-0.5 font-bold rounded-full bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 whitespace-nowrap">
               Forecast Horizon: 24 Months
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Predictive machine-learning model comparing Projected Labour Demand vs Projected Training Supply
           </p>
         </div>
 
         {/* View Switcher: Aggregate Demand vs Supply OR Trade Trajectories */}
-        <div className="inline-flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+        <div className="inline-flex p-0.5 sm:p-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs self-start sm:self-auto">
           <button
             onClick={() => setViewMode('aggregate')}
-            className={`px-2.5 py-1 rounded-md transition ${
+            className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
               viewMode === 'aggregate'
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
@@ -141,9 +141,9 @@ export const ForecastChart: React.FC = () => {
           </button>
           <button
             onClick={() => setViewMode('trades')}
-            className={`px-2.5 py-1 rounded-md transition ${
+            className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
               viewMode === 'trades'
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                 : 'text-slate-600 dark:text-slate-400'
             }`}
           >
@@ -153,10 +153,10 @@ export const ForecastChart: React.FC = () => {
       </div>
 
       {/* Prominent Projected Horizon Milestones (Prompt Item 9) */}
-      <div className="grid grid-cols-3 gap-2.5 my-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 my-3 sm:my-3.5">
         <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
           <div className="text-[10px] text-slate-400 font-semibold uppercase">2026 Baseline</div>
-          <div className="text-base font-extrabold font-mono text-slate-900 dark:text-white mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white mt-0.5">
             +53K Shortage
           </div>
           <div className="text-[10px] text-slate-500 dark:text-slate-400">Demand: 395K &bull; Supply: 342K</div>
@@ -164,7 +164,7 @@ export const ForecastChart: React.FC = () => {
 
         <div className="p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60">
           <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase">2027 Projected</div>
-          <div className="text-base font-extrabold font-mono text-amber-700 dark:text-amber-300 mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-amber-700 dark:text-amber-300 mt-0.5">
             +85K Shortage
           </div>
           <div className="text-[10px] text-amber-600/80 dark:text-amber-400">Demand: 460K &bull; Supply: 375K</div>
@@ -172,7 +172,7 @@ export const ForecastChart: React.FC = () => {
 
         <div className="p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60">
           <div className="text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase">2028 Horizon</div>
-          <div className="text-base font-extrabold font-mono text-rose-700 dark:text-rose-300 mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-rose-700 dark:text-rose-300 mt-0.5">
             +120K Shortage
           </div>
           <div className="text-[10px] text-rose-600/80 dark:text-rose-400">Demand: 530K &bull; Supply: 410K</div>
@@ -180,12 +180,12 @@ export const ForecastChart: React.FC = () => {
       </div>
 
       {/* Main Forecast Chart Canvas */}
-      <div className="h-[290px] w-full pt-2">
+      <div className="h-[250px] sm:h-[290px] w-full pt-1 sm:pt-2">
         <ResponsiveContainer width="100%" height="100%">
           {viewMode === 'aggregate' ? (
             <ComposedChart
               data={forecastData}
-              margin={{ top: 10, right: 25, left: -10, bottom: 0 }}
+              margin={{ top: 10, right: 15, left: -20, bottom: 0 }}
             >
               <defs>
                 <linearGradient id="forecastDemandArea" x1="0" y1="0" x2="0" y2="1">

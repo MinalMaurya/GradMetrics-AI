@@ -33,41 +33,44 @@ export const DrillDownBreadcrumbs: React.FC = () => {
 
   return (
     <div className="space-y-2">
-      {/* 1. Core Logic Pipeline Flow (as mandated by Problem Statement 26246) */}
-      <div className="hidden lg:flex items-center justify-between px-4 py-2 rounded-xl bg-slate-900/5 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs">
-        <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-300">
-          <span className="font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider text-[11px]">
+      {/* 1. Core Logic Pipeline Flow (Mandated by Problem Statement 26246) */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-slate-900/5 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs gap-2">
+        <div className="hidden lg:flex items-center space-x-2 text-slate-600 dark:text-slate-300 overflow-x-auto no-scrollbar">
+          <span className="font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider text-[11px] whitespace-nowrap">
             INTELLIGENCE PIPELINE:
           </span>
-          <span className="font-semibold text-slate-900 dark:text-white">LABOUR DEMAND</span>
+          <span className="font-semibold text-slate-900 dark:text-white whitespace-nowrap">LABOUR DEMAND</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-slate-900 dark:text-white">TRAINING CAPACITY</span>
+          <span className="font-semibold text-slate-900 dark:text-white whitespace-nowrap">TRAINING CAPACITY</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-amber-600 dark:text-amber-400">DEMAND-SUPPLY GAP</span>
+          <span className="font-semibold text-amber-600 dark:text-amber-400 whitespace-nowrap">DEMAND-SUPPLY GAP</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">FORECAST</span>
+          <span className="font-semibold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">FORECAST</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-rose-600 dark:text-rose-400">EARLY WARNING</span>
+          <span className="font-semibold text-rose-600 dark:text-rose-400 whitespace-nowrap">EARLY WARNING</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">PLANNER ACTION</span>
+          <span className="font-semibold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">PLANNER ACTION</span>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto">
+          <span className="lg:hidden text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+            Demo Scenario:
+          </span>
           <button
             onClick={loadDemoScenario}
-            className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition shadow-xs"
+            className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition shadow-xs cursor-pointer min-h-[32px]"
             title="Load SIH 2026 Judge Demo Flow (Pune / Data Engineering Shortage)"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-            <span>Load Demo Scenario (Pune &bull; Data Eng +31K)</span>
+            <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+            <span>Load Demo Scenario <span className="hidden sm:inline">(Pune &bull; Data Eng +31K)</span></span>
           </button>
         </div>
       </div>
 
       {/* 2. Interactive Clickable Drill-down Breadcrumb Bar */}
-      <div className="bg-white dark:bg-slate-900 px-4 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center flex-wrap gap-1.5 text-slate-600 dark:text-slate-300">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
+      <div className="bg-white dark:bg-slate-900 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-wrap items-center justify-between gap-2 sm:gap-3 text-xs">
+        <div className="flex items-center flex-wrap gap-1 sm:gap-1.5 text-slate-600 dark:text-slate-300">
+          <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-0.5 sm:mr-1">
             Drill-Down Scope:
           </span>
 

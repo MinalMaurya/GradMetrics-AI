@@ -109,32 +109,32 @@ export const SkillGapMatrix: React.FC = () => {
   const axisColor = isDarkMode ? '#94a3b8' : '#64748b';
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200">
+    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
       
       {/* Title & View Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
-          <div className="flex items-center space-x-2">
-            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+          <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+            <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               Demand-Supply Gap Intelligence
             </h2>
-            <span className="text-[11px] px-2 py-0.5 font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <span className="text-[10px] sm:text-[11px] px-2 py-0.5 font-semibold rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 whitespace-nowrap">
               Trade Assessment
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Normalized comparison: Labour Demand Index vs Training Capacity (0–100)
           </p>
         </div>
 
         {/* View Toggle */}
         <div className="flex items-center space-x-2">
-          <div className="inline-flex p-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-xs">
+          <div className="inline-flex p-0.5 sm:p-1 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-xs">
             <button
               onClick={() => setActiveTab('chart')}
-              className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md transition ${
+              className={`flex items-center space-x-1 sm:space-x-1.5 px-2.5 py-1 rounded-md transition cursor-pointer ${
                 activeTab === 'chart'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -143,9 +143,9 @@ export const SkillGapMatrix: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('matrix')}
-              className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md transition ${
+              className={`flex items-center space-x-1 sm:space-x-1.5 px-2.5 py-1 rounded-md transition cursor-pointer ${
                 activeTab === 'matrix'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-sm font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -157,52 +157,52 @@ export const SkillGapMatrix: React.FC = () => {
       </div>
 
       {/* Prominent Category Badges Overview (Prompt Item 8) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 my-3 sm:my-4">
         {/* Shortage 1 */}
         <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-900/60">
-          <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300">Data Engineering</div>
-          <div className="flex items-baseline justify-between mt-1">
-            <span className="text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200">+31K</span>
-            <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase">CRITICAL SHORTAGE</span>
+          <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300 truncate">Data Engineering</div>
+          <div className="flex items-baseline justify-between mt-1 gap-1">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200">+31K</span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap">CRITICAL SHORTAGE</span>
           </div>
         </div>
 
         {/* Shortage 2 */}
         <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-900/60">
-          <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300">Solar Technician</div>
-          <div className="flex items-baseline justify-between mt-1">
-            <span className="text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200">+17K</span>
-            <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase">CRITICAL SHORTAGE</span>
+          <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300 truncate">Solar Technician</div>
+          <div className="flex items-baseline justify-between mt-1 gap-1">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200">+17K</span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap">CRITICAL SHORTAGE</span>
           </div>
         </div>
 
         {/* Oversupply 1 */}
         <div className="p-2.5 rounded-lg bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/70 dark:border-purple-900/60">
-          <div className="text-[11px] font-semibold text-purple-700 dark:text-purple-300">Retail Sales</div>
-          <div className="flex items-baseline justify-between mt-1">
-            <span className="text-xl font-mono font-extrabold text-purple-800 dark:text-purple-200">-7K</span>
-            <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase">OVERSUPPLY</span>
+          <div className="text-[11px] font-semibold text-purple-700 dark:text-purple-300 truncate">Retail Sales</div>
+          <div className="flex items-baseline justify-between mt-1 gap-1">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-purple-800 dark:text-purple-200">-7K</span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase whitespace-nowrap">OVERSUPPLY</span>
           </div>
         </div>
 
         {/* Balanced 1 */}
         <div className="p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-900/60">
-          <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">Electrician</div>
-          <div className="flex items-baseline justify-between mt-1">
-            <span className="text-xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200">+2K</span>
-            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">BALANCED</span>
+          <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 truncate">Electrician</div>
+          <div className="flex items-baseline justify-between mt-1 gap-1">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200">+2K</span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase whitespace-nowrap">BALANCED</span>
           </div>
         </div>
       </div>
 
       {/* Content: Chart vs Matrix View */}
       {activeTab === 'chart' ? (
-        <div className="h-[340px] w-full pt-2">
+        <div className="h-[280px] sm:h-[340px] w-full pt-1 sm:pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={skillDomains}
               layout="vertical"
-              margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
+              margin={{ top: 5, right: 15, left: -10, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} horizontal={false} />
               <XAxis
@@ -210,15 +210,15 @@ export const SkillGapMatrix: React.FC = () => {
                 domain={[0, 100]}
                 tickLine={false}
                 stroke={axisColor}
-                fontSize={11}
+                fontSize={10}
               />
               <YAxis
                 type="category"
                 dataKey="domain"
                 tickLine={false}
                 stroke={axisColor}
-                fontSize={11}
-                width={130}
+                fontSize={10}
+                width={105}
               />
               <Tooltip content={<CustomChartTooltip />} />
               <Legend
@@ -226,7 +226,7 @@ export const SkillGapMatrix: React.FC = () => {
                 align="right"
                 iconType="circle"
                 iconSize={8}
-                wrapperStyle={{ paddingBottom: '10px', fontSize: '11px' }}
+                wrapperStyle={{ paddingBottom: '10px', fontSize: '10px' }}
               />
               <Bar
                 dataKey="marketDemand"
@@ -247,10 +247,10 @@ export const SkillGapMatrix: React.FC = () => {
         </div>
       ) : (
         /* Detailed Matrix Table */
-        <div className="overflow-x-auto mt-2">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="overflow-x-auto mt-2 -mx-1 sm:mx-0">
+          <table className="w-full text-left text-xs border-collapse min-w-[620px]">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider">
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider whitespace-nowrap">
                 <th className="py-2.5 px-3">Trade / Occupation</th>
                 <th className="py-2.5 px-3 text-right">Labour Demand</th>
                 <th className="py-2.5 px-3 text-right">Training Capacity</th>
@@ -260,7 +260,7 @@ export const SkillGapMatrix: React.FC = () => {
                 <th className="py-2.5 px-3 text-right">Avg Package</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 whitespace-nowrap">
               {skillDomains.map((item) => (
                 <tr
                   key={item.domain}
