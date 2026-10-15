@@ -29,7 +29,7 @@ export const TrainingPriority: React.FC = () => {
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <ListOrdered className="w-4 h-4" />
             </div>
             <div>
@@ -44,7 +44,7 @@ export const TrainingPriority: React.FC = () => {
 
           <button
             onClick={() => setIsFullMatrixOpen(true)}
-            className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
+            className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5 cursor-pointer"
           >
             <span>All ({trainingPriorities.length})</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -63,7 +63,7 @@ export const TrainingPriority: React.FC = () => {
                 onClick={() => setTrade(item.trade as any)}
                 className={`p-2.5 rounded-lg border transition cursor-pointer group ${
                   isSelected
-                    ? 'bg-indigo-50/80 dark:bg-indigo-950/60 border-indigo-300 dark:border-indigo-700 ring-1 ring-indigo-500'
+                    ? 'bg-blue-50/80 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 ring-1 ring-blue-500'
                     : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
@@ -73,7 +73,7 @@ export const TrainingPriority: React.FC = () => {
                       {item.rank}
                     </span>
                     <div>
-                      <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                      <div className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
                         {item.trade}
                       </div>
                       <div className="text-[10px] text-slate-400">
@@ -83,7 +83,7 @@ export const TrainingPriority: React.FC = () => {
                   </div>
 
                   <div className="text-right">
-                    <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 text-[10px] font-mono font-bold text-indigo-700 dark:text-indigo-300">
+                    <div className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-[10px] font-mono font-bold text-blue-700 dark:text-blue-300">
                       <span>{item.priorityScore}</span>
                       <span className="text-[9px] text-slate-400">/100</span>
                     </div>
@@ -101,7 +101,7 @@ export const TrainingPriority: React.FC = () => {
                 <div className="mt-2 flex items-center space-x-2">
                   <div className="flex-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-rose-500"
+                      className="h-full rounded-full bg-blue-600 dark:bg-blue-500"
                       style={{ width: `${item.priorityScore}%` }}
                     />
                   </div>
@@ -117,11 +117,11 @@ export const TrainingPriority: React.FC = () => {
         {/* Footer Action */}
         <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
           <span className="text-slate-500 dark:text-slate-400">
-            Formula: <span className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">Demand &times; Gap &times; Growth</span>
+            Formula: <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">Demand &times; Gap &times; Growth</span>
           </span>
           <button
             onClick={() => setIsFullMatrixOpen(true)}
-            className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
+            className="text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
           >
             <span>Full Matrix</span>
             <ChevronRight className="w-3 h-3" />
@@ -138,7 +138,7 @@ export const TrainingPriority: React.FC = () => {
             {/* Modal Header */}
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <ListOrdered className="w-4 h-4" />
                 </div>
                 <div>
@@ -199,7 +199,7 @@ export const TrainingPriority: React.FC = () => {
                         {item.labourDemand ? (item.labourDemand / 1000).toFixed(0) : '0'}K
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                      <td className="py-3 px-3 text-right font-mono font-bold text-slate-700 dark:text-slate-300">
                         {item.trainingCapacity ? (item.trainingCapacity / 1000).toFixed(0) : '0'}K
                       </td>
 
@@ -216,7 +216,7 @@ export const TrainingPriority: React.FC = () => {
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <div className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950 font-mono font-bold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs">
+                        <div className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950 font-mono font-bold text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs">
                           <span>{item.priorityScore}</span>
                           <span className="text-[10px] text-slate-400">/100</span>
                         </div>
@@ -238,7 +238,7 @@ export const TrainingPriority: React.FC = () => {
                   setIsFullMatrixOpen(false);
                   setIsPolicySimulatorOpen(true);
                 }}
-                className="flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs"
+                className="flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-xs"
               >
                 <Sliders className="w-3.5 h-3.5" />
                 <span>Simulate Allocation Across Trades</span>

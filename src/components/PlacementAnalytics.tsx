@@ -82,7 +82,7 @@ export const PlacementAnalytics: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Hub:</span>
-              <span className="text-indigo-300 font-medium truncate max-w-[110px]">{data.leadDistrict}</span>
+              <span className="text-blue-300 font-medium truncate max-w-[110px]">{data.leadDistrict}</span>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@ export const PlacementAnalytics: React.FC = () => {
 
           <button
             onClick={() => setIsFullModalOpen(true)}
-            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 group cursor-pointer whitespace-nowrap"
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 group cursor-pointer whitespace-nowrap"
           >
             <span>View Full Analytics</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -153,7 +153,7 @@ export const PlacementAnalytics: React.FC = () => {
               
               <ReferenceLine
                 x={nationalBenchmark}
-                stroke="#6366f1"
+                stroke="#2563eb"
                 strokeDasharray="3 3"
                 strokeWidth={1.5}
               />
@@ -174,7 +174,7 @@ export const PlacementAnalytics: React.FC = () => {
                       key={`cell-${entry.trade}`}
                       fill={
                         isSelected
-                          ? '#818cf8'
+                          ? '#3b82f6'
                           : isAbove
                           ? '#10b981' // emerald for above benchmark
                           : '#f43f5e' // rose for sub-benchmark oversupply
@@ -233,7 +233,7 @@ export const PlacementAnalytics: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                   <div className="text-[10px] uppercase font-bold text-slate-400">National Benchmark</div>
-                  <div className="text-xl sm:text-2xl font-black font-mono text-indigo-600 dark:text-indigo-400 mt-0.5">
+                  <div className="text-xl sm:text-2xl font-black font-mono text-blue-600 dark:text-blue-400 mt-0.5">
                     {nationalBenchmark}%
                   </div>
                   <div className="text-[11px] text-slate-500 mt-0.5">Minimum statutory target</div>
@@ -289,13 +289,13 @@ export const PlacementAnalytics: React.FC = () => {
                       
                       <ReferenceLine
                         x={nationalBenchmark}
-                        stroke="#6366f1"
+                        stroke="#2563eb"
                         strokeDasharray="4 4"
                         strokeWidth={2}
                         label={{
                           value: `Target: ${nationalBenchmark}%`,
                           position: 'top',
-                          fill: isDarkMode ? '#a5b4fc' : '#4f46e5',
+                          fill: isDarkMode ? '#93c5fd' : '#1d4ed8',
                           fontSize: 10,
                           fontWeight: 600
                         }}
@@ -317,7 +317,7 @@ export const PlacementAnalytics: React.FC = () => {
                               key={`modal-cell-${entry.trade}`}
                               fill={
                                 isSelected
-                                  ? '#818cf8'
+                                  ? '#3b82f6'
                                   : isAbove
                                   ? '#10b981'
                                   : '#f43f5e'
@@ -368,7 +368,7 @@ export const PlacementAnalytics: React.FC = () => {
                               {item.leadSector}
                             </td>
                             <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                              <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
+                              <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
                               <span>{item.leadDistrict}</span>
                             </td>
                             <td className="py-2.5 px-3 text-right font-mono font-bold text-slate-900 dark:text-white">
@@ -401,13 +401,13 @@ export const PlacementAnalytics: React.FC = () => {
                 }}
                 className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"
               >
-                <Sliders className="w-3.5 h-3.5 text-indigo-600" />
+                <Sliders className="w-3.5 h-3.5 text-blue-600" />
                 <span>Simulate Policy</span>
               </button>
 
               <button
                 onClick={() => setIsFullModalOpen(false)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition"
               >
                 Close Analytics
               </button>

@@ -122,7 +122,7 @@ export const DataIngestionModal: React.FC = () => {
         {/* Header */}
         <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
               <UploadCloud className="w-5 h-5" />
             </div>
             <div>
@@ -138,15 +138,16 @@ export const DataIngestionModal: React.FC = () => {
           <button
             onClick={() => setIsDataIngestionOpen(false)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            aria-label="Close ingestion modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Current Dataset Provenance Banner */}
-        <div className="px-4 sm:px-6 py-2.5 bg-indigo-50/60 dark:bg-indigo-950/30 border-b border-indigo-100 dark:border-indigo-900/40 flex flex-wrap items-center justify-between gap-2 text-xs">
-          <div className="flex items-center space-x-2 text-indigo-900 dark:text-indigo-200">
-            <Info className="w-4 h-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+        <div className="px-4 sm:px-6 py-2.5 bg-blue-50/60 dark:bg-blue-950/30 border-b border-blue-100 dark:border-blue-900/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center space-x-2 text-blue-900 dark:text-blue-200">
+            <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>
               Active Dataset: <strong>{datasetMetadata.datasetName}</strong> ({datasetMetadata.recordCount} records) &bull; Provenance: <strong>{datasetMetadata.provenance}</strong>
             </span>
@@ -157,7 +158,7 @@ export const DataIngestionModal: React.FC = () => {
                 resetToPilotDataset();
                 setIsDataIngestionOpen(false);
               }}
-              className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-white dark:bg-slate-800 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-50 transition cursor-pointer"
+              className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200 dark:border-blue-800 hover:bg-blue-50 transition cursor-pointer"
             >
               <RotateCcw className="w-3 h-3" />
               <span>{t('resetPilotBtn')}</span>
@@ -174,7 +175,7 @@ export const DataIngestionModal: React.FC = () => {
               <span>Quick Test: Load Pre-Formatted Sample Datasets</span>
               <button
                 onClick={handleDownloadTemplate}
-                className="text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 font-semibold normal-case"
+                className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-semibold normal-case"
               >
                 <Download className="w-3 h-3" />
                 <span>Download Blank CSV Template</span>
@@ -183,10 +184,10 @@ export const DataIngestionModal: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <button
                 onClick={() => handleLoadSample(SAMPLE_CSV_VACANCIES, 'Multi-State Tech & Auto Vacancies (7 records)')}
-                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500 dark:hover:border-indigo-500 bg-slate-50 dark:bg-slate-800/50 text-left transition cursor-pointer"
+                className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-500 bg-slate-50 dark:bg-slate-800/50 text-left transition cursor-pointer"
               >
                 <div className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-500" />
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-blue-500" />
                   <span>Tech &amp; EV Vacancies</span>
                 </div>
                 <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
@@ -235,16 +236,53 @@ export const DataIngestionModal: React.FC = () => {
               htmlFor="lmi-csv-file-input"
               className="flex flex-col items-center justify-center cursor-pointer"
             >
-              <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-2">
+              <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-2">
                 <UploadCloud className="w-6 h-6" />
               </div>
               <span className="font-semibold text-slate-800 dark:text-slate-200">
                 {fileName ? fileName : t('dropCsvHere')}
               </span>
               <span className="text-[11px] text-slate-400 mt-0.5">
-                Supports Standard RFC-4180 CSV with headers: state, district, sector, trade, labourDemand, trainingCapacity
+                Supports Standard RFC-4180 CSV with required and optional LMI headers
               </span>
             </label>
+          </div>
+
+          {/* Supported CSV Format Specification Guide */}
+          <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/80">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-bold text-[11px] text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                Supported CSV Schema Specification (RFC-4180)
+              </span>
+              <span className="text-[10px] font-mono text-slate-400">UTF-8 Encoded</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px]">
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">state, district</div>
+                <div className="text-[10px] text-slate-500 mt-0.5"><span className="text-rose-500 font-bold">*Required</span> &bull; Text (e.g. Maharashtra, Pune)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">sector, trade</div>
+                <div className="text-[10px] text-slate-500 mt-0.5"><span className="text-rose-500 font-bold">*Required</span> &bull; Text (e.g. IT/ITeS, Data Engineering)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">labourDemand, trainingCapacity</div>
+                <div className="text-[10px] text-slate-500 mt-0.5"><span className="text-rose-500 font-bold">*Required</span> &bull; Integer &gt;= 0</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">demandGrowth, supplyGrowth</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Optional &bull; Float % YoY (e.g. 29.5, 8.1)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">reportingPeriod</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Optional &bull; Text (e.g. 2026-Q3)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
+                <div className="font-mono font-bold text-slate-800 dark:text-slate-200 text-[10px]">dataSource</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Optional &bull; Text (e.g. State Portal)</div>
+              </div>
+            </div>
           </div>
 
           {/* Validation & NCO Taxonomy Mapping Results */}
@@ -305,7 +343,7 @@ export const DataIngestionModal: React.FC = () => {
               {/* NCO Taxonomy Cross-walk Preview */}
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-blue-500" />
                   <span>Automatic NCO-2015 &amp; NSQF Taxonomy Normalisation Preview</span>
                 </div>
                 <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden max-h-48 overflow-y-auto">
@@ -327,7 +365,7 @@ export const DataIngestionModal: React.FC = () => {
                           <td className="p-2 font-sans font-medium text-slate-900 dark:text-white">
                             {r.district}, {r.state}
                           </td>
-                          <td className="p-2 font-sans text-indigo-600 dark:text-indigo-400 font-semibold">
+                          <td className="p-2 font-sans text-blue-600 dark:text-blue-400 font-semibold">
                             {r.trade}
                           </td>
                           <td className="p-2 text-slate-700 dark:text-slate-300">
@@ -383,7 +421,7 @@ export const DataIngestionModal: React.FC = () => {
                   ? 'bg-emerald-600 text-white'
                   : !validationResult || validationResult.validRows === 0
                   ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                  : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
               }`}
             >
               {isApplied ? (

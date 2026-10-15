@@ -21,13 +21,13 @@ export const NcoNsqfMapping: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 dark:bg-blue-500 text-white flex items-center justify-center shadow-xs shrink-0">
               <Tag className="w-4 h-4" />
             </div>
             <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               OCCUPATION &amp; SKILL TAXONOMY MAPPING
             </h2>
-            <span className="text-[10px] px-2 py-0.5 font-bold uppercase rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span className="text-[10px] px-2 py-0.5 font-bold uppercase rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
               NCVET Standard
             </span>
           </div>
@@ -38,7 +38,7 @@ export const NcoNsqfMapping: React.FC = () => {
 
         {/* Visual taxonomy pipeline breadcrumb */}
         <div className="hidden lg:flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-          <span className="font-mono text-indigo-600 dark:text-indigo-400">NCO Code</span>
+          <span className="font-mono text-blue-600 dark:text-blue-400">NCO Code</span>
           <span>&rarr;</span>
           <span className="text-slate-800 dark:text-slate-200">Occupation</span>
           <span>&rarr;</span>
@@ -46,7 +46,7 @@ export const NcoNsqfMapping: React.FC = () => {
           <span>&rarr;</span>
           <span className="text-slate-800 dark:text-slate-200">Sector</span>
           <span>&rarr;</span>
-          <span className="text-indigo-600 dark:text-indigo-400">Trade / Skill</span>
+          <span className="text-blue-600 dark:text-blue-400">Trade / Skill</span>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export const NcoNsqfMapping: React.FC = () => {
                 }}
                 className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition"
               >
-                <td className="py-3 px-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                <td className="py-3 px-3 font-mono font-bold text-blue-600 dark:text-blue-400">
                   {item.ncoCode}
                 </td>
 

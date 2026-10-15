@@ -50,7 +50,7 @@ export const EmergingSkills: React.FC = () => {
           </div>
         </div>
 
-        <span className="text-[10px] px-2 py-0.5 font-bold uppercase rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+        <span className="text-[10px] px-2 py-0.5 font-bold uppercase rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
           Q3 Telemetry
         </span>
       </div>
@@ -60,18 +60,28 @@ export const EmergingSkills: React.FC = () => {
         {emergingTradeList.map((item) => (
           <div
             key={item.trade}
+            role="button"
+            tabIndex={0}
             onClick={() => {
               setSector(item.sector as any);
               setTrade(item.trade as any);
             }}
-            className="p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800/80 transition group cursor-pointer"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setSector(item.sector as any);
+                setTrade(item.trade as any);
+              }
+            }}
+            className="p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-700/60 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-450 ease-out group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label={`Filter by ${item.trade} in ${item.sector}`}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
                 <span className="w-5 h-5 rounded-full bg-white dark:bg-slate-700 font-mono text-[11px] font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200 dark:border-slate-600">
                   {item.rank}
                 </span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
                   {item.trade}
                 </span>
               </div>
@@ -88,7 +98,7 @@ export const EmergingSkills: React.FC = () => {
             <div className="mt-2 flex items-center space-x-2">
               <div className="flex-1 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-rose-500"
+                  className="h-full rounded-full bg-gradient-to-r from-blue-600 to-emerald-500"
                   style={{ width: `${(item.growth / 40) * 100}%` }}
                 />
               </div>
@@ -98,7 +108,7 @@ export const EmergingSkills: React.FC = () => {
             </div>
 
             <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
-              <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{item.sector}</span>
+              <span className="text-blue-600 dark:text-blue-400 font-semibold">{item.sector}</span>
               <span className="font-medium text-slate-500 dark:text-slate-400">{item.status}</span>
             </div>
           </div>

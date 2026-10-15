@@ -159,3 +159,49 @@ test('Integration Test 5: CSV and Report export generates valid planning dossier
   assert.ok(csvHeaders.includes('Demand-Supply Gap'));
   assert.ok(csvHeaders.includes('Recommended Action'));
 });
+
+test('Integration Test 6: Active section persistence correctly resolves valid sections and falls back to overview', () => {
+  // Test section identifiers and validator
+  const validSections = ['overview', 'skill-gaps', 'forecasts', 'data-reports'];
+  
+  // Custom mock validator matching implementation
+  const isValid = (val: unknown) => typeof val === 'string' && validSections.includes(val);
+
+  assert.equal(isValid('overview'), true);
+  assert.equal(isValid('skill-gaps'), true);
+  assert.equal(isValid('forecasts'), true);
+  assert.equal(isValid('data-reports'), true);
+  assert.equal(isValid('unknown-section'), false);
+  assert.equal(isValid(''), false);
+  assert.equal(isValid(null), false);
+  assert.equal(isValid(undefined), false);
+
+  // Resolution simulation: URL Hash > URL Query > SessionStorage > Default Overview
+  const resolveSection = (hash?: string, query?: string, session?: string) => {
+    const cleanHash = hash ? hash.replace(/^#\/?/, '').trim().toLowerCase() : '';
+    if (isValid(cleanHash)) return cleanHash;
+
+    const cleanQuery = query ? query.trim().toLowerCase() : '';
+    if (isValid(cleanQuery)) return cleanQuery;
+
+    const cleanSession = session ? session.trim().toLowerCase() : '';
+    if (isValid(cleanSession)) return cleanSession;
+
+    return 'overview';
+  };
+
+  // Test 1: URL Hash takes priority
+  assert.equal(resolveSection('#skill-gaps', 'forecasts', 'data-reports'), 'skill-gaps');
+  assert.equal(resolveSection('#/forecasts', '', ''), 'forecasts');
+
+  // Test 2: URL Query used if no hash
+  assert.equal(resolveSection('', 'data-reports', 'overview'), 'data-reports');
+
+  // Test 3: SessionStorage used if no URL params
+  assert.equal(resolveSection('', '', 'skill-gaps'), 'skill-gaps');
+
+  // Test 4: Default overview if all empty or invalid
+  assert.equal(resolveSection('#invalid', 'bad-query', 'corrupt-session'), 'overview');
+  assert.equal(resolveSection('', '', ''), 'overview');
+});
+

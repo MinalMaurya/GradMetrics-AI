@@ -76,7 +76,7 @@ export const SupplyDemandChart: React.FC = () => {
 
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-indigo-400 inline-block" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
                 Training Capacity (Seats):
               </span>
               <span className="font-mono font-bold text-white">
@@ -135,15 +135,20 @@ export const SupplyDemandChart: React.FC = () => {
             
             {/* Status Pill on Chart Header */}
             <span
-              className={`text-[9px] sm:text-[10px] px-2 sm:px-2.5 py-0.5 font-bold uppercase rounded-full border whitespace-nowrap ${
+              className={`text-[10px] sm:text-[11px] px-2.5 py-0.5 font-bold uppercase rounded-md border inline-flex items-center gap-1.5 whitespace-nowrap ${
                 isCurrentShortage
-                  ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-900'
+                  ? 'bg-amber-50 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-900'
                   : isCurrentOversupply
-                  ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border-purple-200 dark:border-purple-900'
-                  : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
+                  ? 'bg-purple-50 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300 border-purple-200 dark:border-purple-900'
+                  : 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
               }`}
             >
-              {isCurrentShortage ? '🔴 SHORTAGE' : isCurrentOversupply ? '🟣 OVERSUPPLY' : '🟢 BALANCED'}
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isCurrentShortage ? 'bg-amber-500' : isCurrentOversupply ? 'bg-purple-500' : 'bg-emerald-500'
+                }`}
+              />
+              {isCurrentShortage ? 'Worker Shortage' : isCurrentOversupply ? 'Capacity Surplus' : 'Equilibrium'}
             </span>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -160,7 +165,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setMetricFilter('all')}
               className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'all'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -171,7 +176,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setMetricFilter('demand')}
               className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'demand'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -182,7 +187,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setMetricFilter('supply')}
               className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'supply'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -193,7 +198,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setMetricFilter('gap')}
               className={`px-2 sm:px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 metricFilter === 'gap'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs font-semibold'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs font-semibold'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -208,7 +213,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setChartStyle('composed')}
               className={`p-1 rounded cursor-pointer ${
                 chartStyle === 'composed'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
               }`}
               title="Composed Line & Area Chart"
@@ -219,7 +224,7 @@ export const SupplyDemandChart: React.FC = () => {
               onClick={() => setChartStyle('bar')}
               className={`p-1 rounded cursor-pointer ${
                 chartStyle === 'bar'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 shadow-xs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-400'
               }`}
               title="Grouped Bar Chart"
@@ -347,7 +352,7 @@ export const SupplyDemandChart: React.FC = () => {
 
       {/* Strategic Insight Callout */}
       <div className="mt-4 p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex items-start space-x-3">
-        <div className="p-1 rounded bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5">
+        <div className="p-1 rounded bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5">
           <TrendingUp className="w-4 h-4" />
         </div>
         <div className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">

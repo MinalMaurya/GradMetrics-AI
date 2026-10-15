@@ -18,16 +18,16 @@ export const ProblemStatementCard: React.FC = () => {
   return (
     <>
       {/* Executive Problem Statement Section */}
-      <div className="rounded-xl p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border border-indigo-900/60 shadow-sm relative overflow-hidden">
+      <div className="rounded-xl p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white border border-blue-900/60 shadow-sm relative overflow-hidden">
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 w-80 h-full bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-80 h-full bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5 max-w-4xl">
             
             {/* Eyebrow / Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-indigo-500/25 text-indigo-300 border border-indigo-500/40">
+              <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded bg-blue-500/25 text-blue-300 border border-blue-500/40">
                 PROBLEM STATEMENT
               </span>
               <span className="text-xs font-mono font-extrabold px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
@@ -53,7 +53,7 @@ export const ProblemStatementCard: React.FC = () => {
           <div className="shrink-0 flex items-center pt-2 md:pt-0 w-full md:w-auto">
             <button
               onClick={() => setIsOpen(true)}
-              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-400/40 shadow-sm transition active:scale-95 group cursor-pointer w-full sm:w-auto"
+              className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 border border-blue-400/40 shadow-sm transition active:scale-95 group cursor-pointer w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <span>View Full Problem Statement</span>
               <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -70,7 +70,7 @@ export const ProblemStatementCard: React.FC = () => {
             {/* Modal Header */}
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <FileText className="w-5 h-5" />
                 </div>
                 <div>
@@ -78,7 +78,7 @@ export const ProblemStatementCard: React.FC = () => {
                     <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
                       PS ID: 26246
                     </span>
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
                       SIH 2026
                     </span>
                   </div>
@@ -90,7 +90,8 @@ export const ProblemStatementCard: React.FC = () => {
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
+                aria-label="Close problem statement modal"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -115,7 +116,7 @@ export const ProblemStatementCard: React.FC = () => {
                 </div>
                 <div>
                   <div className="text-[10px] uppercase font-bold text-slate-400">Category</div>
-                  <div className="font-semibold text-indigo-600 dark:text-indigo-400 mt-0.5">Software</div>
+                  <div className="font-semibold text-blue-600 dark:text-blue-400 mt-0.5">Software</div>
                 </div>
               </div>
 
@@ -155,11 +156,11 @@ export const ProblemStatementCard: React.FC = () => {
               </div>
 
               {/* Target Beneficiaries */}
-              <div className="p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-[11px] space-y-1">
-                <span className="font-bold text-indigo-900 dark:text-indigo-200">
+              <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-[11px] space-y-1">
+                <span className="font-bold text-blue-900 dark:text-blue-200">
                   Target Beneficiaries &amp; Users:
                 </span>
-                <p className="text-indigo-950 dark:text-indigo-300">
+                <p className="text-slate-700 dark:text-slate-300">
                   Ministry of Skill Development and Entrepreneurship (MSDE), National Council for Vocational Education and Training (NCVET), Directorate General of Training (DGT), Sector Skill Councils (SSCs), State Skill Missions (SSDMs), and District Skill Committees (DSCs).
                 </p>
               </div>
@@ -170,7 +171,7 @@ export const ProblemStatementCard: React.FC = () => {
             <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
               <button
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
               >
                 Close Brief
               </button>

@@ -36,7 +36,7 @@ export const DrillDownBreadcrumbs: React.FC = () => {
       {/* 1. Core Logic Pipeline Flow (Mandated by Problem Statement 26246) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-slate-900/5 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs gap-2">
         <div className="hidden lg:flex items-center space-x-2 text-slate-600 dark:text-slate-300 overflow-x-auto no-scrollbar">
-          <span className="font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider text-[11px] whitespace-nowrap">
+          <span className="font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider text-[11px] whitespace-nowrap">
             INTELLIGENCE PIPELINE:
           </span>
           <span className="font-semibold text-slate-900 dark:text-white whitespace-nowrap">LABOUR DEMAND</span>
@@ -45,7 +45,7 @@ export const DrillDownBreadcrumbs: React.FC = () => {
           <span className="text-slate-400">&rarr;</span>
           <span className="font-semibold text-amber-600 dark:text-amber-400 whitespace-nowrap">DEMAND-SUPPLY GAP</span>
           <span className="text-slate-400">&rarr;</span>
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">FORECAST</span>
+          <span className="font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">FORECAST</span>
           <span className="text-slate-400">&rarr;</span>
           <span className="font-semibold text-rose-600 dark:text-rose-400 whitespace-nowrap">EARLY WARNING</span>
           <span className="text-slate-400">&rarr;</span>
@@ -53,12 +53,12 @@ export const DrillDownBreadcrumbs: React.FC = () => {
         </div>
 
         <div className="flex items-center justify-between lg:justify-end w-full lg:w-auto">
-          <span className="lg:hidden text-[11px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+          <span className="lg:hidden text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
             Demo Scenario:
           </span>
           <button
             onClick={loadDemoScenario}
-            className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition shadow-xs cursor-pointer min-h-[32px]"
+            className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition shadow-xs cursor-pointer min-h-[32px] focus:outline-none focus:ring-2 focus:ring-blue-500"
             title="Load SIH 2026 Judge Demo Flow (Pune / Data Engineering Shortage)"
           >
             <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
@@ -82,13 +82,13 @@ export const DrillDownBreadcrumbs: React.FC = () => {
               setSector('All Sectors');
               setTrade('All Trades');
             }}
-            className={`font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center gap-1 px-2 py-0.5 rounded-md ${
+            className={`font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1 px-2 py-0.5 rounded-md cursor-pointer ${
               isNational && !hasSector && !hasTrade
-                ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 font-bold'
+                ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 font-bold'
                 : 'text-slate-700 dark:text-slate-200'
             }`}
           >
-            <MapPin className="w-3 h-3 text-indigo-500" />
+            <MapPin className="w-3 h-3 text-blue-500" />
             <span>India (National)</span>
           </button>
 
@@ -102,9 +102,9 @@ export const DrillDownBreadcrumbs: React.FC = () => {
                   setSector('All Sectors');
                   setTrade('All Trades');
                 }}
-                className={`font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition px-2 py-0.5 rounded-md ${
+                className={`font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition px-2 py-0.5 rounded-md cursor-pointer ${
                   hasState && !hasDistrict && !hasSector && !hasTrade
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 font-bold'
+                    ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 font-bold'
                     : 'text-slate-700 dark:text-slate-200'
                 }`}
               >
@@ -122,9 +122,9 @@ export const DrillDownBreadcrumbs: React.FC = () => {
                   setSector('All Sectors');
                   setTrade('All Trades');
                 }}
-                className={`font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition px-2 py-0.5 rounded-md ${
+                className={`font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition px-2 py-0.5 rounded-md cursor-pointer ${
                   hasDistrict && !hasSector && !hasTrade
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 font-bold'
+                    ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 font-bold'
                     : 'text-slate-700 dark:text-slate-200'
                 }`}
               >
@@ -141,9 +141,9 @@ export const DrillDownBreadcrumbs: React.FC = () => {
                 onClick={() => {
                   setTrade('All Trades');
                 }}
-                className={`font-semibold hover:text-indigo-600 dark:hover:text-indigo-400 transition px-2 py-0.5 rounded-md ${
+                className={`font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition px-2 py-0.5 rounded-md cursor-pointer ${
                   hasSector && !hasTrade
-                    ? 'bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 font-bold'
+                    ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-300 font-bold'
                     : 'text-slate-700 dark:text-slate-200'
                 }`}
               >
@@ -156,8 +156,8 @@ export const DrillDownBreadcrumbs: React.FC = () => {
           {hasTrade && (
             <>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="bg-indigo-100 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200 font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Wrench className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+              <span className="bg-blue-100 dark:bg-blue-900/80 text-blue-800 dark:text-blue-200 font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Wrench className="w-3 h-3 text-blue-600 dark:text-blue-400" />
                 {filters.trade}
               </span>
             </>
@@ -167,7 +167,7 @@ export const DrillDownBreadcrumbs: React.FC = () => {
         {/* Level Indicator Tag */}
         <div className="flex items-center space-x-2 text-[11px]">
           <span className="text-slate-400">Current Granularity:</span>
-          <span className="font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400">
+          <span className="font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400">
             {hasTrade
               ? 'TRADE / OCCUPATION'
               : hasSector

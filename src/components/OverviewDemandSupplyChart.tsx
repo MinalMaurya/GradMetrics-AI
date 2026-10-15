@@ -63,7 +63,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
             </div>
             <div className="flex justify-between items-center text-slate-300">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-sm bg-indigo-500 inline-block" />
+                <span className="w-2.5 h-2.5 rounded-sm bg-slate-400 inline-block" />
                 Training Capacity:
               </span>
               <span className="font-mono font-semibold text-white">
@@ -72,8 +72,8 @@ export const OverviewDemandSupplyChart: React.FC = () => {
             </div>
             <div className="pt-1.5 mt-1 border-t border-slate-800 flex justify-between items-center font-bold">
               <span>Skill Gap:</span>
-              <span className={isShortage ? 'text-amber-400' : 'text-emerald-400'}>
-                {isShortage ? `+${gap.toLocaleString('en-IN')} Shortage` : `-${Math.abs(gap).toLocaleString('en-IN')} Oversupply`}
+              <span className={isShortage ? 'text-amber-400' : 'text-purple-400'}>
+                {isShortage ? `+${gap.toLocaleString('en-IN')} Shortage` : `-${Math.abs(gap).toLocaleString('en-IN')} Surplus`}
               </span>
             </div>
           </div>
@@ -105,7 +105,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-72 w-full">
+      <div className="h-80 w-full">
         {chartData.length === 0 ? (
           <div className="h-full flex items-center justify-center text-slate-400 text-xs">
             No trade data matches the selected filters.
@@ -114,8 +114,8 @@ export const OverviewDemandSupplyChart: React.FC = () => {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 10, right: 10, left: -10, bottom: 25 }}
-              barGap={6}
+              margin={{ top: 10, right: 15, left: -5, bottom: 35 }}
+              barGap={8}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
@@ -124,38 +124,41 @@ export const OverviewDemandSupplyChart: React.FC = () => {
               />
               <XAxis
                 dataKey="trade"
-                tick={{ fontSize: 11, fill: isDarkMode ? '#94a3b8' : '#64748b' }}
+                tick={{ fontSize: 11, fill: isDarkMode ? '#cbd5e1' : '#475569', fontWeight: 500 }}
                 interval={0}
-                angle={-15}
+                angle={-20}
                 textAnchor="end"
                 tickLine={false}
+                dy={6}
               />
               <YAxis
                 tickFormatter={formatYAxis}
                 tick={{ fontSize: 11, fill: isDarkMode ? '#94a3b8' : '#64748b' }}
                 tickLine={false}
                 axisLine={false}
+                width={40}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend
                 verticalAlign="top"
                 align="right"
-                iconType="circle"
-                wrapperStyle={{ paddingBottom: '12px', fontSize: '12px' }}
+                iconType="rect"
+                iconSize={10}
+                wrapperStyle={{ paddingBottom: '16px', fontSize: '12px' }}
               />
               <Bar
-                name="Expected Job Demand"
+                name="Expected Job Demand (Openings)"
                 dataKey="demand"
                 fill="#2563eb"
                 radius={[4, 4, 0, 0]}
-                maxBarSize={40}
+                maxBarSize={36}
               />
               <Bar
-                name="Estimated Training Supply"
+                name="Estimated Training Supply (Seats)"
                 dataKey="supply"
-                fill="#6366f1"
+                fill="#64748b"
                 radius={[4, 4, 0, 0]}
-                maxBarSize={40}
+                maxBarSize={36}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -163,13 +166,13 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       </div>
 
       {/* Short explanation of what the chart means */}
-      <div className="mt-4 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
+      <div className="mt-4 p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
         <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-slate-800 dark:text-slate-200 font-semibold">How to read this chart: </strong>
-          Blue bars show employer vacancies; purple bars show training seat capacity.
-          Where blue exceeds purple (such as Data Engineering or Solar Technician), there is a worker shortage.
-          Where purple exceeds blue (such as Retail Sales), training intake exceeds current market demand.
+          <strong className="text-slate-900 dark:text-white font-semibold">How to read this chart: </strong>
+          Blue bars show employer vacancies; slate-grey bars show training seat capacity.
+          Where blue exceeds grey (such as Data Engineering or Solar Technician), there is a net worker shortage.
+          Where grey exceeds blue (such as Retail Sales), institutional training intake exceeds current market absorption.
         </div>
       </div>
 

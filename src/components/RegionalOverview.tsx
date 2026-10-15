@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   MapPin,
   ArrowUpDown,
@@ -31,6 +31,25 @@ export const RegionalOverview: React.FC = () => {
   const [sortAsc, setSortAsc] = useState<boolean>(false);
   const [tableSearch, setTableSearch] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'states' | 'districts'>('states');
+
+  const regionalStats = useMemo(() => {
+    let critical = 0;
+    let emerging = 0;
+    let oversupply = 0;
+    let balanced = 0;
+    regionalData.forEach((item) => {
+      const s = item.gapStatus.toLowerCase();
+      if (s.includes('critical')) critical++;
+      else if (s.includes('emerging') || s.includes('shortage')) emerging++;
+      else if (s.includes('surplus') || s.includes('oversupply')) oversupply++;
+      else balanced++;
+    });
+    return { critical, emerging, oversupply, balanced };
+  }, [regionalData]);
+
+  const leadShortage = useMemo(() => {
+    return [...tradeRecords].sort((a, b) => b.gap - a.gap)[0];
+  }, [tradeRecords]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -85,7 +104,7 @@ export const RegionalOverview: React.FC = () => {
               placeholder="Search district, trade..."
               value={tableSearch}
               onChange={(e) => setTableSearch(e.target.value)}
-              className="pl-7 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full sm:w-44 min-h-[34px]"
+              className="pl-7 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full sm:w-44 min-h-[34px]"
             />
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
           </div>
@@ -95,7 +114,7 @@ export const RegionalOverview: React.FC = () => {
               onClick={() => setActiveTab('states')}
               className={`px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'states'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 font-semibold shadow-xs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 font-semibold shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
@@ -105,7 +124,7 @@ export const RegionalOverview: React.FC = () => {
               onClick={() => setActiveTab('districts')}
               className={`px-2.5 py-1 rounded-md transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'districts'
-                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-300 font-semibold shadow-xs'
+                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-300 font-semibold shadow-xs'
                   : 'text-slate-600 dark:text-slate-400'
               }`}
             >
@@ -115,35 +134,35 @@ export const RegionalOverview: React.FC = () => {
         </div>
       </div>
 
-      {/* Regional Status Summary Badges (Item 19) */}
+      {/* Regional Status Summary Badges (Dynamic counts) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 my-2.5 sm:my-3 text-xs">
         <div className="p-2 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-rose-800 dark:text-rose-200 font-bold text-[11px] sm:text-xs">
             <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             <span className="truncate">Critical Shortage</span>
           </span>
-          <span className="font-mono font-bold text-rose-700 dark:text-rose-300 ml-1 shrink-0 text-[11px] sm:text-xs">5 Regions</span>
+          <span className="font-mono font-bold text-rose-700 dark:text-rose-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.critical} Regions</span>
         </div>
         <div className="p-2 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-amber-800 dark:text-amber-200 font-bold text-[11px] sm:text-xs">
             <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
             <span className="truncate">Emerging Gap</span>
           </span>
-          <span className="font-mono font-bold text-amber-700 dark:text-amber-300 ml-1 shrink-0 text-[11px] sm:text-xs">3 Regions</span>
+          <span className="font-mono font-bold text-amber-700 dark:text-amber-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.emerging} Regions</span>
         </div>
         <div className="p-2 rounded-lg bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-purple-800 dark:text-purple-200 font-bold text-[11px] sm:text-xs">
             <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0" />
             <span className="truncate">Oversupply</span>
           </span>
-          <span className="font-mono font-bold text-purple-700 dark:text-purple-300 ml-1 shrink-0 text-[11px] sm:text-xs">2 Regions</span>
+          <span className="font-mono font-bold text-purple-700 dark:text-purple-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.oversupply} Regions</span>
         </div>
         <div className="p-2 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-200 font-bold text-[11px] sm:text-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
             <span className="truncate">Balanced</span>
           </span>
-          <span className="font-mono font-bold text-emerald-700 dark:text-emerald-300 ml-1 shrink-0 text-[11px] sm:text-xs">1 Region</span>
+          <span className="font-mono font-bold text-emerald-700 dark:text-emerald-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.balanced} Region{regionalStats.balanced !== 1 ? 's' : ''}</span>
         </div>
       </div>
 
@@ -157,7 +176,7 @@ export const RegionalOverview: React.FC = () => {
                 <th className="py-2.5 px-3">Zone</th>
                 <th
                   onClick={() => handleSort('labourDemand')}
-                  className="py-2.5 px-3 text-right cursor-pointer hover:text-indigo-600 transition"
+                  className="py-2.5 px-3 text-right cursor-pointer hover:text-blue-600 transition"
                 >
                   <div className="flex items-center justify-end gap-1">
                     <span>Labour Demand</span>
@@ -166,7 +185,7 @@ export const RegionalOverview: React.FC = () => {
                 </th>
                 <th
                   onClick={() => handleSort('trainingCapacity')}
-                  className="py-2.5 px-3 text-right cursor-pointer hover:text-indigo-600 transition"
+                  className="py-2.5 px-3 text-right cursor-pointer hover:text-blue-600 transition"
                 >
                   <div className="flex items-center justify-end gap-1">
                     <span>Training Capacity</span>
@@ -175,7 +194,7 @@ export const RegionalOverview: React.FC = () => {
                 </th>
                 <th
                   onClick={() => handleSort('gap')}
-                  className="py-2.5 px-3 text-right cursor-pointer hover:text-indigo-600 transition"
+                  className="py-2.5 px-3 text-right cursor-pointer hover:text-blue-600 transition"
                 >
                   <div className="flex items-center justify-end gap-1">
                     <span>Demand-Supply Gap</span>
@@ -200,15 +219,15 @@ export const RegionalOverview: React.FC = () => {
                     onClick={() => setGeography(item.state as GeographyState)}
                     className={`cursor-pointer transition-colors duration-150 ${
                       isSelected
-                        ? 'bg-indigo-50/80 dark:bg-indigo-950/60 font-semibold'
+                        ? 'bg-blue-50/80 dark:bg-blue-950/60 font-semibold'
                         : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
                     }`}
                   >
                     <td className="py-3 px-3 font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                      <MapPin className={`w-3.5 h-3.5 ${isSelected ? 'text-indigo-600' : 'text-slate-400'}`} />
+                      <MapPin className={`w-3.5 h-3.5 ${isSelected ? 'text-blue-600' : 'text-slate-400'}`} />
                       <span>{item.state}</span>
                       {isSelected && (
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-600 text-white font-mono">
+                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-blue-600 text-white font-mono">
                           ACTIVE
                         </span>
                       )}
@@ -222,7 +241,7 @@ export const RegionalOverview: React.FC = () => {
                       {(item.labourDemand / 1000).toFixed(0)}K
                     </td>
 
-                    <td className="py-3 px-3 text-right font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                    <td className="py-3 px-3 text-right font-mono font-bold text-slate-700 dark:text-slate-300">
                       {(item.trainingCapacity / 1000).toFixed(0)}K
                     </td>
 
@@ -252,6 +271,11 @@ export const RegionalOverview: React.FC = () => {
                             : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
                         }`}
                       >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                            isShortage ? 'bg-rose-500' : isOversupply ? 'bg-purple-500' : 'bg-emerald-500'
+                          }`}
+                        />
                         {item.gapStatus}
                       </span>
                     </td>
@@ -301,14 +325,14 @@ export const RegionalOverview: React.FC = () => {
 
                     <td className="py-3 px-3 font-bold text-slate-900 dark:text-white">
                       <div>{r.trade}</div>
-                      <div className="text-[10px] text-indigo-500 font-mono">NCO {r.ncoCode} &bull; {r.nsqfLevel}</div>
+                      <div className="text-[10px] text-blue-600 dark:text-blue-400 font-mono">NCO {r.ncoCode} &bull; {r.nsqfLevel}</div>
                     </td>
 
                     <td className="py-3 px-3 text-right font-mono font-bold text-blue-600 dark:text-blue-400">
                       {(r.labourDemand / 1000).toFixed(0)}K
                     </td>
 
-                    <td className="py-3 px-3 text-right font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                    <td className="py-3 px-3 text-right font-mono font-bold text-slate-700 dark:text-slate-300">
                       {(r.trainingCapacity / 1000).toFixed(0)}K
                     </td>
 
@@ -334,6 +358,11 @@ export const RegionalOverview: React.FC = () => {
                             : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900'
                         }`}
                       >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                            isShortage ? 'bg-rose-500' : isOver ? 'bg-purple-500' : 'bg-emerald-500'
+                          }`}
+                        />
                         {r.status}
                       </span>
                     </td>
@@ -356,7 +385,11 @@ export const RegionalOverview: React.FC = () => {
         </div>
         <div className="flex items-center space-x-2">
           <span className="font-semibold text-slate-700 dark:text-slate-300">Lead Shortage Hotspot:</span>
-          <span>Pune, Maharashtra (Data Engineering +31K)</span>
+          <span className="font-medium text-slate-800 dark:text-slate-200">
+            {leadShortage
+              ? `${leadShortage.district}, ${leadShortage.state} (${leadShortage.trade} +${Math.round(leadShortage.gap / 1000)}K)`
+              : 'None'}
+          </span>
         </div>
       </div>
 

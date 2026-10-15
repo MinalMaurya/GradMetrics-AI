@@ -115,7 +115,7 @@ export const ApiLayerModal: React.FC = () => {
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
               <Code2 className="w-5 h-5" />
             </div>
             <div>
@@ -137,6 +137,7 @@ export const ApiLayerModal: React.FC = () => {
           <button
             onClick={() => setIsApiModalOpen(false)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            aria-label="Close API gateway modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -146,10 +147,10 @@ export const ApiLayerModal: React.FC = () => {
         <div className="p-5 space-y-4 overflow-y-auto text-xs">
           
           {/* Base URL Banner */}
-          <div className="p-3 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-slate-700 dark:text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+          <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-slate-700 dark:text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
             <div>
               <span className="font-semibold text-slate-900 dark:text-white">Live Base Endpoint:</span>
-              <span className="font-mono text-indigo-600 dark:text-indigo-400 ml-1.5 break-all">https://api.gradmetrics.gov.in/api/v1</span>
+              <span className="font-mono text-blue-600 dark:text-blue-400 ml-1.5 break-all">https://api.gradmetrics.gov.in/api/v1</span>
             </div>
             <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-800 self-start sm:self-auto shrink-0">
               OpenAPI 3.1 &bull; JSON Schema
@@ -168,7 +169,7 @@ export const ApiLayerModal: React.FC = () => {
                   onClick={() => setActiveConsoleEndpoint(ep.path)}
                   className={`p-2.5 rounded-xl border text-left transition cursor-pointer ${
                     activeConsoleEndpoint === ep.path
-                      ? 'border-indigo-600 bg-indigo-50/80 dark:bg-indigo-950/60 shadow-xs'
+                      ? 'border-blue-600 bg-blue-50/80 dark:bg-blue-950/60 shadow-xs'
                       : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
                   }`}
                 >
@@ -202,7 +203,7 @@ export const ApiLayerModal: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => handleCopyCurl(currentEndpointObj.path, currentEndpointObj.sampleParams)}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-[10px] flex items-center gap-1 transition"
+                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-mono text-[10px] flex items-center gap-1 transition cursor-pointer"
                 >
                   {copiedEndpoint === currentEndpointObj.path ? (
                     <>
@@ -219,7 +220,7 @@ export const ApiLayerModal: React.FC = () => {
 
                 <button
                   onClick={handleCopyJsonResponse}
-                  className="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-mono text-[10px] flex items-center gap-1 transition"
+                  className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-mono text-[10px] flex items-center gap-1 transition cursor-pointer"
                 >
                   {copiedJson ? (
                     <>
@@ -256,7 +257,7 @@ export const ApiLayerModal: React.FC = () => {
           </span>
           <button
             onClick={() => setIsApiModalOpen(false)}
-            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition cursor-pointer"
+            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition cursor-pointer"
           >
             Close Gateway
           </button>

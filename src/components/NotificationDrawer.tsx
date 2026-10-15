@@ -36,7 +36,7 @@ export const NotificationDrawer: React.FC = () => {
           {/* Header */}
           <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
             <div className="flex items-center space-x-2">
-              <Bell className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+              <Bell className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">
                 Intelligence Stream
               </h3>
@@ -51,7 +51,7 @@ export const NotificationDrawer: React.FC = () => {
               {unreadNotifsCount > 0 && (
                 <button
                   onClick={markNotificationsAsRead}
-                  className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                  className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
                 >
                   <CheckCheck className="w-3.5 h-3.5" />
                   <span>Mark all read</span>
@@ -59,7 +59,8 @@ export const NotificationDrawer: React.FC = () => {
               )}
               <button
                 onClick={() => setIsNotificationOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                aria-label="Close notification drawer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -73,12 +74,12 @@ export const NotificationDrawer: React.FC = () => {
                 key={n.id}
                 className={`p-3.5 rounded-xl border transition ${
                   !n.read
-                    ? 'bg-indigo-50/40 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900/60'
+                    ? 'bg-blue-50/40 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/60'
                     : 'bg-slate-50/40 dark:bg-slate-800/30 border-slate-200/60 dark:border-slate-800'
                 }`}
               >
                 <div className="flex items-center justify-between text-[11px] mb-1">
-                  <span className="font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">
+                  <span className="font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
                     {n.category}
                   </span>
                   <span className="text-slate-400 font-mono">{n.time}</span>

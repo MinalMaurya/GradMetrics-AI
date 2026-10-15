@@ -65,7 +65,7 @@ export const EarlyWarningSystem: React.FC = () => {
       <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center space-x-2">
             <div className="w-7 h-7 rounded-lg bg-rose-600 dark:bg-rose-500 text-white flex items-center justify-center shadow-xs">
               <AlertOctagon className="w-4 h-4" />
@@ -86,16 +86,16 @@ export const EarlyWarningSystem: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsThresholdModalOpen(true)}
-              className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
               title="Tune Anomaly Sensitivity Thresholds"
             >
-              <Sliders className="w-3 h-3 text-indigo-500" />
+              <Sliders className="w-3 h-3 text-blue-500" />
               <span>{t('configureThresholdsBtn')}</span>
             </button>
 
             <button
               onClick={() => setIsFullRadarModalOpen(true)}
-              className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
+              className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5 cursor-pointer"
             >
               <span>All ({earlyWarnings.length})</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -229,15 +229,15 @@ export const EarlyWarningSystem: React.FC = () => {
                 {shortageAlert.trade}
               </span>
               <span className="font-mono font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-1.5 py-0.5 rounded text-[10px]">
-                +{shortageAlert.gap > 0 ? (shortageAlert.gap / 1000).toFixed(0) : '31'}K Shortage
+                +{shortageAlert ? Math.max(0, Math.round(shortageAlert.gap / 1000)) : 0}K Shortage
               </span>
             </div>
 
             <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
+              <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
               <span>{shortageAlert.district}, {shortageAlert.state}</span>
               <span>&bull;</span>
-              <span className="text-indigo-600 dark:text-indigo-400 font-medium">{shortageAlert.sector}</span>
+              <span className="text-blue-600 dark:text-blue-400 font-medium">{shortageAlert.sector}</span>
             </div>
 
             <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1.5">
@@ -261,19 +261,19 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-50/80 to-indigo-50/40 dark:from-purple-950/30 dark:to-slate-900 border border-purple-200/80 dark:border-purple-900/60 text-xs">
+          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-50/80 to-blue-50/40 dark:from-purple-950/30 dark:to-slate-900 border border-purple-200/80 dark:border-purple-900/60 text-xs">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-purple-500" />
                 {oversupplyAlert.trade}
               </span>
               <span className="font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded text-[10px]">
-                {oversupplyAlert.gap < 0 ? (oversupplyAlert.gap / 1000).toFixed(0) : '-7'}K Surplus
+                {oversupplyAlert ? Math.round(oversupplyAlert.gap / 1000) : 0}K Surplus
               </span>
             </div>
 
             <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
+              <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
               <span>{oversupplyAlert.district}, {oversupplyAlert.state}</span>
               <span>&bull;</span>
               <span className="text-purple-600 dark:text-purple-400 font-medium">{oversupplyAlert.sector}</span>
@@ -432,10 +432,10 @@ export const EarlyWarningSystem: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-slate-500 dark:text-slate-400 mt-1">
-                      <MapPin className="w-3 h-3 text-indigo-500 shrink-0" />
+                      <MapPin className="w-3 h-3 text-blue-500 shrink-0" />
                       <span>{w.district}, {w.state}</span>
                       <span>&bull;</span>
-                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold">{w.sector}</span>
+                      <span className="text-blue-600 dark:text-blue-400 font-semibold">{w.sector}</span>
                     </div>
 
                     <p className="text-slate-700 dark:text-slate-300 mt-1.5 font-medium">
@@ -443,7 +443,7 @@ export const EarlyWarningSystem: React.FC = () => {
                     </p>
 
                     <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                      <span className="text-indigo-700 dark:text-indigo-300 font-semibold text-[11px]">
+                      <span className="text-slate-700 dark:text-slate-300 font-semibold text-[11px]">
                         Action: {w.recommendedAction}
                       </span>
                       <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
@@ -458,7 +458,7 @@ export const EarlyWarningSystem: React.FC = () => {
                         </button>
                         <button
                           onClick={() => setDetailModalItem(w)}
-                          className="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-[11px]"
+                          className="px-2.5 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold text-[11px]"
                         >
                           Brief Details
                         </button>
@@ -519,7 +519,7 @@ export const EarlyWarningSystem: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Sector / Classification:</span>
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="font-bold text-blue-600 dark:text-blue-400">
                     {detailModalItem.sector}
                   </span>
                 </div>
@@ -569,12 +569,12 @@ export const EarlyWarningSystem: React.FC = () => {
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800">
-                <div className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5 mb-1">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+              <div className="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/50 border border-blue-200 dark:border-blue-800">
+                <div className="font-bold text-blue-900 dark:text-blue-200 flex items-center gap-1.5 mb-1">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                   Prescribed Planner Action:
                 </div>
-                <p className="text-indigo-950 dark:text-indigo-300 font-medium">
+                <p className="text-blue-950 dark:text-blue-300 font-medium">
                   {detailModalItem.recommendedAction}
                 </p>
               </div>
@@ -595,13 +595,13 @@ export const EarlyWarningSystem: React.FC = () => {
                 }}
                 className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"
               >
-                <Sliders className="w-3.5 h-3.5 text-indigo-600" />
+                <Sliders className="w-3.5 h-3.5 text-blue-600" />
                 <span>Simulate Policy</span>
               </button>
 
               <button
                 onClick={() => setDetailModalItem(null)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition"
               >
                 Close
               </button>

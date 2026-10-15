@@ -116,7 +116,7 @@ export const PolicySimulatorModal: React.FC = () => {
         {/* Header */}
         <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
               <Sliders className="w-5 h-5" />
             </div>
             <div>
@@ -131,7 +131,8 @@ export const PolicySimulatorModal: React.FC = () => {
 
           <button
             onClick={() => setIsPolicySimulatorOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0 cursor-pointer"
+            aria-label="Close simulator modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -141,11 +142,11 @@ export const PolicySimulatorModal: React.FC = () => {
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto">
           
           {/* Target Scope Pill */}
-          <div className="p-3 rounded-lg bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
-            <span className="text-indigo-800 dark:text-indigo-300 font-medium">
+          <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
+            <span className="text-blue-800 dark:text-blue-300 font-medium">
               Simulation Target: <strong>{filters.district !== 'All Districts' ? filters.district + ', ' : ''}{filters.geography}</strong> &bull; <strong>{filters.trade}</strong>
             </span>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-900 font-bold text-indigo-800 dark:text-indigo-200 self-start sm:self-auto shrink-0">
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-200/60 dark:bg-blue-900 font-bold text-blue-800 dark:text-blue-200 self-start sm:self-auto shrink-0">
               NCVET Policy Engine
             </span>
           </div>
@@ -156,7 +157,7 @@ export const PolicySimulatorModal: React.FC = () => {
               <label className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                 <span>1. Adjust Training Intake Seats:</span>
               </label>
-              <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-sm">
+              <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm">
                 +{simulatedSeatIncrease}% Seats
               </span>
             </div>
@@ -167,7 +168,7 @@ export const PolicySimulatorModal: React.FC = () => {
               step="5"
               value={simulatedSeatIncrease}
               onChange={(e) => setSimulatedSeatIncrease(Number(e.target.value))}
-              className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-mono">
               <span>Status Quo (0%)</span>
@@ -180,7 +181,7 @@ export const PolicySimulatorModal: React.FC = () => {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <label className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-indigo-500" />
+                <Building2 className="w-3.5 h-3.5 text-blue-500" />
                 <span>2. Open New Training Centres (PMKVY / ITI):</span>
               </label>
               <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400 text-sm">
@@ -233,7 +234,7 @@ export const PolicySimulatorModal: React.FC = () => {
           {/* Interactive Projected Results (Prompt Item 25 Highlight) */}
           <div className="border-t border-slate-200 dark:border-slate-800 pt-5">
             <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              <Sparkles className="w-3.5 h-3.5 text-blue-500" />
               Simulated Deficit Impact (Example: Data Engineering)
             </h4>
 
@@ -257,12 +258,12 @@ export const PolicySimulatorModal: React.FC = () => {
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
                 <div className="text-[11px] text-slate-500 dark:text-slate-400">Projected Shortage</div>
                 <div className="flex items-baseline space-x-1 mt-1">
-                  <span className="text-2xl font-black font-mono text-indigo-600 dark:text-indigo-400">
+                  <span className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400">
                     {Math.round(projectedShortage / 1000)}K
                   </span>
                   <span className="text-xs text-slate-400">seats</span>
                 </div>
-                <div className="text-[10px] text-indigo-600 dark:text-indigo-400 mt-1 font-semibold">
+                <div className="text-[10px] text-blue-600 dark:text-blue-400 mt-1 font-semibold">
                   With planned capacity
                 </div>
               </div>
@@ -306,12 +307,12 @@ export const PolicySimulatorModal: React.FC = () => {
                 aria-label="Scenario name"
                 placeholder="Name this policy scenario"
                 maxLength={48}
-                className="min-w-0 flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="min-w-0 flex-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 px-3 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
                 disabled={!scenarioName.trim()}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
               >
                 <Save className="w-3.5 h-3.5" />
                 Save
@@ -349,7 +350,7 @@ export const PolicySimulatorModal: React.FC = () => {
                           setSimulatedNewCentres(scenario.newCentres);
                           setSimulatedCourseReallocation(scenario.courseReallocation);
                         }}
-                        className="rounded-md px-2.5 py-1.5 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100 dark:text-indigo-300 dark:hover:bg-indigo-950/60"
+                        className="rounded-md px-2.5 py-1.5 text-[11px] font-semibold text-blue-700 hover:bg-blue-100 dark:text-blue-300 dark:hover:bg-blue-950/60 cursor-pointer"
                         title="Load these settings into the current simulation"
                       >
                         Load
@@ -357,7 +358,7 @@ export const PolicySimulatorModal: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => updateSavedScenarios(savedScenarios.filter((item) => item.id !== scenario.id))}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400"
+                        className="rounded-md p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 cursor-pointer"
                         aria-label={`Delete ${scenario.name}`}
                         title="Delete scenario"
                       >
@@ -380,7 +381,7 @@ export const PolicySimulatorModal: React.FC = () => {
               setSimulatedNewCentres(4);
               setSimulatedCourseReallocation(15);
             }}
-            className="flex items-center justify-center space-x-1.5 text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+            className="flex items-center justify-center space-x-1.5 text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Recommended Baseline</span>
@@ -388,7 +389,7 @@ export const PolicySimulatorModal: React.FC = () => {
 
           <button
             onClick={() => setIsPolicySimulatorOpen(false)}
-            className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition text-center"
+            className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs transition text-center cursor-pointer"
           >
             Apply &amp; Close Simulator
           </button>

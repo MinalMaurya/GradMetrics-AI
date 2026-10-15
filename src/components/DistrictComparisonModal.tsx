@@ -74,7 +74,7 @@ export const DistrictComparisonModal: React.FC = () => {
         {/* Header */}
         <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
               <Scale className="w-5 h-5" />
             </div>
             <div>
@@ -104,7 +104,7 @@ export const DistrictComparisonModal: React.FC = () => {
             <select
               value={district1}
               onChange={(e) => setDistrict1(e.target.value)}
-              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-indigo-500"
+              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-blue-500"
             >
               {allDistricts.map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -119,7 +119,7 @@ export const DistrictComparisonModal: React.FC = () => {
             <select
               value={district2}
               onChange={(e) => setDistrict2(e.target.value)}
-              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-indigo-500"
+              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-blue-500"
             >
               {allDistricts.map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -134,7 +134,7 @@ export const DistrictComparisonModal: React.FC = () => {
             <select
               value={district3}
               onChange={(e) => setDistrict3(e.target.value)}
-              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-indigo-500"
+              className="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-blue-500"
             >
               {allDistricts.map(d => (
                 <option key={d} value={d}>{d}</option>
@@ -155,12 +155,12 @@ export const DistrictComparisonModal: React.FC = () => {
                 <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
                   <div>
                     <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-indigo-500" />
+                      <MapPin className="w-3.5 h-3.5 text-blue-500" />
                       <span>{d.name}</span>
                     </h4>
                     <span className="text-[10px] text-slate-500">{d.state}</span>
                   </div>
-                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold">
+                  <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold">
                     Rank #{d.rank}
                   </span>
                 </div>
@@ -227,7 +227,7 @@ export const DistrictComparisonModal: React.FC = () => {
               {/* Action Button */}
               <button
                 onClick={() => handleSelectDistrictForDashboard(d.name, d.state)}
-                className="w-full mt-3 py-1.5 px-3 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900 transition flex items-center justify-center gap-1 cursor-pointer"
+                className="w-full mt-3 py-1.5 px-3 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900 transition flex items-center justify-center gap-1 cursor-pointer"
               >
                 <span>Drill-down on {d.name}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -237,13 +237,13 @@ export const DistrictComparisonModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
           <span className="text-[11px] text-slate-500">
             Comparisons derived dynamically from active micro-records in the dataset.
           </span>
           <button
             onClick={() => setIsDistrictCompareOpen(false)}
-            className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer text-center"
           >
             Close Comparison
           </button>

@@ -37,16 +37,16 @@ export const DataSourcesAndIndex: React.FC = () => {
         <div className="flex flex-col gap-4">
           
           {/* Top/Left: UNIFIED LABOUR DEMAND INDEX (Prompt Item 16) */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 text-white relative overflow-hidden shadow-md">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-blue-900 via-slate-900 to-slate-950 text-white relative overflow-hidden shadow-md">
             <div className="relative z-10">
               <div className="flex flex-wrap items-center justify-between gap-1.5">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-indigo-300 flex items-center gap-1.5">
-                  <Scale className="w-3.5 h-3.5 text-indigo-400" />
+                <span className="text-[10px] uppercase font-bold tracking-wider text-blue-300 flex items-center gap-1.5">
+                  <Scale className="w-3.5 h-3.5 text-blue-400" />
                   UNIFIED LABOUR DEMAND INDEX
                 </span>
                 <button
                   onClick={() => setIsMethodologyOpen(true)}
-                  className="text-[11px] text-indigo-300 hover:text-white underline font-semibold flex items-center gap-1"
+                  className="text-[11px] text-blue-300 hover:text-white underline font-semibold flex items-center gap-1 cursor-pointer"
                 >
                   <HelpCircle className="w-3 h-3" />
                   <span>How is this calculated?</span>
@@ -57,7 +57,7 @@ export const DataSourcesAndIndex: React.FC = () => {
                 <span className="text-3xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
                   78
                 </span>
-                <span className="text-lg sm:text-xl font-bold text-indigo-200">/ 100</span>
+                <span className="text-lg sm:text-xl font-bold text-blue-200">/ 100</span>
                 
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
                   <TrendingUp className="w-3.5 h-3.5 mr-1" />
@@ -65,12 +65,12 @@ export const DataSourcesAndIndex: React.FC = () => {
                 </span>
               </div>
 
-              <p className="text-xs text-indigo-200/90 mt-2 leading-relaxed">
+              <p className="text-xs text-slate-300 mt-2 leading-relaxed">
                 Single harmonized composite score consolidating job postings, industry surveys, e-Shram worker registrations, and PLFS survey indicators.
               </p>
 
               {/* Mini Source breakdown indicators */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-indigo-800/80 text-[11px] text-indigo-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800 text-[11px] text-blue-200">
                 <div>NCS &amp; Portals: <strong>50% Weight</strong></div>
                 <div>Surveys &amp; PLFS: <strong>30% Weight</strong></div>
                 <div>Industry Signals: <strong>20% Weight</strong></div>
@@ -83,7 +83,7 @@ export const DataSourcesAndIndex: React.FC = () => {
           <div className="space-y-3">
             <div>
               <div className="flex items-center space-x-2">
-                <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                   <Database className="w-4 h-4" />
                 </div>
                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
@@ -100,7 +100,7 @@ export const DataSourcesAndIndex: React.FC = () => {
               {sourcesList.map((src) => (
                 <div
                   key={src.code}
-                  className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex items-center space-x-2 shadow-2xs hover:border-indigo-300 dark:hover:border-indigo-700 transition"
+                  className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex items-center space-x-2 shadow-2xs hover:border-blue-400 dark:hover:border-blue-600 transition"
                 >
                   <span className="text-base">{src.icon}</span>
                   <div>
@@ -133,7 +133,7 @@ export const DataSourcesAndIndex: React.FC = () => {
             {/* Modal Header */}
             <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
                   <Scale className="w-4 h-4" />
                 </div>
                 <div>
@@ -148,7 +148,8 @@ export const DataSourcesAndIndex: React.FC = () => {
 
               <button
                 onClick={() => setIsMethodologyOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0 cursor-pointer"
+                aria-label="Close methodology modal"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -156,9 +157,9 @@ export const DataSourcesAndIndex: React.FC = () => {
 
             {/* Modal Body */}
             <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 text-xs overflow-y-auto">
-              <div className="p-3.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-200">
+              <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200">
                 <div className="font-bold text-[11px] uppercase tracking-wider mb-1">Mathematical Formula:</div>
-                <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-indigo-200 dark:border-indigo-900 break-words">
+                <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900 break-words">
                   Demand Index = &Sigma; (Normalized Source Score &times; Empirical Weight)
                 </div>
               </div>
@@ -178,7 +179,7 @@ export const DataSourcesAndIndex: React.FC = () => {
                         <div className="text-[10px] text-slate-400">{item.source}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                        <div className="font-mono font-bold text-blue-600 dark:text-blue-400">
                           {item.weight}% Weight
                         </div>
                         <div className="text-[10px] text-slate-400 font-mono">Score: {item.score}/100</div>
@@ -197,7 +198,7 @@ export const DataSourcesAndIndex: React.FC = () => {
             <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
               <button
                 onClick={() => setIsMethodologyOpen(false)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
               >
                 Got it
               </button>

@@ -15,7 +15,7 @@ export const HowItWorksBanner: React.FC = () => {
       title: 'Compare & Forecast Needs',
       description: 'Uses Holt-Winters and time-series models to compute skill gaps (Demand − Supply) and project 2026–2028 demand.',
       icon: TrendingUp,
-      accent: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-900'
+      accent: 'text-blue-700 dark:text-blue-300 bg-blue-50/80 dark:bg-blue-950/60 border-blue-200 dark:border-blue-900'
     },
     {
       step: '3',

@@ -100,7 +100,7 @@ export const FilterBar: React.FC = () => {
                 aria-label="State Selector"
                 value={filters.geography}
                 onChange={(e) => setGeography(e.target.value as GeographyState)}
-                className="w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
+                className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
               >
                 {stateList.map((st) => (
                   <option key={st} value={st}>
@@ -124,7 +124,7 @@ export const FilterBar: React.FC = () => {
                 value={filters.district}
                 onChange={(e) => setDistrict(e.target.value)}
                 disabled={filters.geography === 'All India'}
-                className={`w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer ${
+                className={`w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer ${
                   filters.geography === 'All India' ? 'opacity-60 cursor-not-allowed' : ''
                 }`}
               >
@@ -149,7 +149,7 @@ export const FilterBar: React.FC = () => {
                 aria-label="Industry Sector Selector"
                 value={filters.sector}
                 onChange={(e) => setSector(e.target.value as IndustrySector)}
-                className="w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
+                className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
               >
                 {sectorList.map((sec) => (
                   <option key={sec} value={sec}>
@@ -165,7 +165,7 @@ export const FilterBar: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-              className={`flex-1 flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg text-xs font-semibold border transition cursor-pointer min-h-[35px] ${
+              className={`flex-1 flex items-center justify-center space-x-1.5 py-2.5 sm:py-2 px-3 rounded-lg text-xs font-semibold border transition cursor-pointer min-h-[42px] sm:min-h-[38px] ${
                 isAdvancedOpen || hasAdvancedFilters
                   ? 'bg-blue-50 dark:bg-blue-950/60 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300'
                   : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -181,7 +181,7 @@ export const FilterBar: React.FC = () => {
             {activeFilterCount > 0 && (
               <button
                 onClick={resetFilters}
-                className="p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 transition cursor-pointer min-h-[35px] min-w-[35px] flex items-center justify-center"
+                className="p-2.5 sm:p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 transition cursor-pointer min-h-[42px] sm:min-h-[38px] min-w-[42px] sm:min-w-[38px] flex items-center justify-center"
                 title="Reset all filters to All India"
                 aria-label="Reset all filters"
               >
@@ -207,7 +207,7 @@ export const FilterBar: React.FC = () => {
                   aria-label="Trade Selector"
                   value={filters.trade}
                   onChange={(e) => setTrade(e.target.value as TradeOccupation)}
-                  className="w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
+                  className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
                 >
                   {availableTrades.map((tr) => (
                     <option key={tr} value={tr}>
@@ -230,7 +230,7 @@ export const FilterBar: React.FC = () => {
                   aria-label="NCO Selector"
                   value={filters.ncoNsqf}
                   onChange={(e) => setNcoNsqf(e.target.value)}
-                  className="w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
+                  className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
                 >
                   {ncoNsqfOptions.map((opt) => (
                     <option key={opt} value={opt}>
@@ -253,7 +253,7 @@ export const FilterBar: React.FC = () => {
                   aria-label="Planning Horizon Selector"
                   value={filters.timePeriod}
                   onChange={(e) => setTimePeriod(e.target.value as Year)}
-                  className="w-full appearance-none pl-3 pr-8 py-2 text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
+                  className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
                 >
                   {yearList.map((y) => (
                     <option key={y} value={y}>

@@ -30,6 +30,46 @@
     max-width: 100vw;
     overflow-x: hidden;
     position: relative;
+    background-color: var(--color-bg-primary);
+    color: var(--color-text-main);
+  }
+
+  /* Accessible focus indicators for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+/* Reduced motion accessibility support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Polished card depth and interactive hover utilities */
+@layer components {
+  .card-surface {
+    @apply bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-xs;
+  }
+
+  .card-interactive {
+    @apply transition-all duration-450 ease-out cursor-pointer;
+  }
+
+  .card-interactive:hover {
+    transform: translateY(-3px);
+    @apply shadow-md border-blue-400 dark:border-blue-600/70;
+  }
+
+  .card-interactive:focus-visible {
+    @apply ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-900 outline-none;
   }
 }
 

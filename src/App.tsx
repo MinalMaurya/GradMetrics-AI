@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AnalyticsProvider, useAnalytics } from './context/AnalyticsContext';
 import { Header } from './components/Header';
 import { DashboardNavigation } from './components/DashboardNavigation';
@@ -28,6 +28,7 @@ import { ApiLayerModal } from './components/ApiLayerModal';
 import { NotificationDrawer } from './components/NotificationDrawer';
 import { DataIngestionModal } from './components/DataIngestionModal';
 import { DistrictComparisonModal } from './components/DistrictComparisonModal';
+import { ScrollReveal } from './components/ScrollReveal';
 import {
   ShieldCheck,
   Building2,
@@ -41,6 +42,44 @@ import {
   FileText
 } from 'lucide-react';
 
+export const VALID_SECTIONS = ['overview', 'skill-gaps', 'forecasts', 'data-reports'] as const;
+export type SectionId = typeof VALID_SECTIONS[number];
+
+export function isValidSection(val: unknown): val is SectionId {
+  return typeof val === 'string' && VALID_SECTIONS.includes(val as SectionId);
+}
+
+export function getInitialSection(): SectionId {
+  if (typeof window === 'undefined') return 'overview';
+
+  // 1. Try URL Hash (e.g. #skill-gaps, #/skill-gaps)
+  try {
+    const rawHash = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
+    if (isValidSection(rawHash)) {
+      return rawHash;
+    }
+  } catch {}
+
+  // 2. Try URL Search Params (e.g. ?section=skill-gaps)
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const sectionParam = params.get('section')?.trim().toLowerCase();
+    if (isValidSection(sectionParam)) {
+      return sectionParam;
+    }
+  } catch {}
+
+  // 3. Try sessionStorage
+  try {
+    const stored = sessionStorage.getItem('gradmetrics_active_section')?.trim().toLowerCase();
+    if (isValidSection(stored)) {
+      return stored;
+    }
+  } catch {}
+
+  return 'overview';
+}
+
 const DashboardContent: React.FC = () => {
   const {
     filters,
@@ -50,7 +89,52 @@ const DashboardContent: React.FC = () => {
     setIsDataIngestionOpen,
     setIsDistrictCompareOpen
   } = useAnalytics();
-  const [activeSection, setActiveSection] = useState<string>('overview');
+
+  const [activeSection, setActiveSectionState] = useState<SectionId>(getInitialSection);
+
+  // Synchronize section changes with URL hash, browser history, and sessionStorage
+  const setActiveSection = useCallback((sec: string) => {
+    const target: SectionId = isValidSection(sec) ? sec : 'overview';
+    setActiveSectionState(target);
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('gradmetrics_active_section', target);
+        if (window.location.hash !== `#${target}`) {
+          window.history.pushState({ section: target }, '', `#${target}`);
+        }
+      } catch {}
+    }
+  }, []);
+
+  // Listen to browser Back and Forward navigation (popstate & hashchange)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleLocationChange = () => {
+      const current = getInitialSection();
+      setActiveSectionState(current);
+    };
+
+    // Ensure URL hash and sessionStorage reflect the current active section
+    try {
+      const currentHash = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
+      if (!isValidSection(currentHash) && activeSection !== 'overview') {
+        window.history.replaceState({ section: activeSection }, '', `#${activeSection}`);
+      } else if (isValidSection(currentHash) && currentHash !== activeSection) {
+        window.history.replaceState({ section: activeSection }, '', `#${activeSection}`);
+      }
+      sessionStorage.setItem('gradmetrics_active_section', activeSection);
+    } catch {}
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, [activeSection]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
@@ -72,43 +156,45 @@ const DashboardContent: React.FC = () => {
 
         {/* SECTION 1: OVERVIEW DASHBOARD */}
         {activeSection === 'overview' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
             
             {/* Clear Heading & Explanation */}
-            <div className="bg-white dark:bg-slate-900 rounded-xl p-5 sm:p-6 border border-slate-200 dark:border-slate-800 shadow-xs">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800 mb-2">
-                    <span>SIH 2026 &bull; PS 26246</span>
-                    <span>&bull;</span>
-                    <span>Government Planning Lens</span>
+            <ScrollReveal delay={0}>
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 sm:p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800 mb-2">
+                      <span>SIH 2026 &bull; PS 26246</span>
+                      <span>&bull;</span>
+                      <span>Government Planning Lens</span>
+                    </div>
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                      India's Skill Demand Overview
+                    </h1>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl leading-relaxed">
+                      See where employers need workers and whether current training capacity can meet future demand.
+                    </p>
                   </div>
-                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    India's Skill Demand Overview
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl leading-relaxed">
-                    See where employers need workers and whether current training capacity can meet future demand.
-                  </p>
-                </div>
 
-                <div className="flex items-center gap-2 self-start md:self-auto">
-                  <button
-                    onClick={() => setIsExportModalOpen(true)}
-                    className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
-                  >
-                    <FileCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    <span>Export Summary</span>
-                  </button>
-                  <button
-                    onClick={() => setIsPolicySimulatorOpen(true)}
-                    className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer shadow-xs"
-                  >
-                    <Sliders className="w-3.5 h-3.5" />
-                    <span>Policy Simulator</span>
-                  </button>
+                  <div className="flex items-center gap-2 self-start md:self-auto">
+                    <button
+                      onClick={() => setIsExportModalOpen(true)}
+                      className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
+                    >
+                      <FileCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      <span>Export Summary</span>
+                    </button>
+                    <button
+                      onClick={() => setIsPolicySimulatorOpen(true)}
+                      className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer shadow-xs"
+                    >
+                      <Sliders className="w-3.5 h-3.5" />
+                      <span>Policy Simulator</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* Exactly 4 Prominent KPI Cards */}
             <section aria-label="Executive Key Performance Indicators">
@@ -116,65 +202,81 @@ const DashboardContent: React.FC = () => {
             </section>
 
             {/* One Clear Chart: Job Demand vs Training Capacity */}
-            <section aria-label="Job Demand vs Training Capacity">
+            <ScrollReveal delay={100} as="section" aria-label="Job Demand vs Training Capacity">
               <OverviewDemandSupplyChart />
-            </section>
+            </ScrollReveal>
 
             {/* Simple Skills Needing Attention Table */}
-            <section aria-label="Skills Needing Attention">
+            <ScrollReveal delay={160} as="section" aria-label="Skills Needing Attention">
               <OverviewAttentionTable />
-            </section>
+            </ScrollReveal>
 
             {/* Clear Recommendation Explaining What Planners Should Consider Doing Next */}
-            <section aria-label="Recommended Next Steps for Planners">
+            <ScrollReveal delay={220} as="section" aria-label="Recommended Next Steps for Planners">
               <OverviewPlannerRecommendation />
-            </section>
+            </ScrollReveal>
 
             {/* 3-Step Simple Explanation of How the System Works */}
-            <section aria-label="How GradMetrics AI Works">
+            <ScrollReveal delay={280} as="section" aria-label="How GradMetrics AI Works">
               <HowItWorksBanner />
-            </section>
+            </ScrollReveal>
 
           </div>
         )}
 
         {/* SECTION 2: SKILL GAPS */}
         {activeSection === 'skill-gaps' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
             {/* Jurisdictional Breadcrumb */}
-            <DrillDownBreadcrumbs />
+            <ScrollReveal delay={0}>
+              <DrillDownBreadcrumbs />
+            </ScrollReveal>
 
             {/* District Comparison Quick Action Bar */}
-            <div className="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  District &amp; State Gap Analytics
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Compare labour market indicators, shortage severities, and training absorption across districts.
-                </p>
+            <ScrollReveal delay={100}>
+              <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                    District &amp; State Gap Analytics
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Compare labour market indicators, shortage severities, and training absorption across districts.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsDistrictCompareOpen(true)}
+                  className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition self-start sm:self-auto cursor-pointer"
+                >
+                  <Scale className="w-4 h-4" />
+                  <span>Open District Benchmarking</span>
+                </button>
               </div>
-              <button
-                onClick={() => setIsDistrictCompareOpen(true)}
-                className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-xs transition self-start sm:self-auto cursor-pointer"
-              >
-                <Scale className="w-4 h-4" />
-                <span>Open District Benchmarking</span>
-              </button>
-            </div>
+            </ScrollReveal>
 
             {/* Gap Analysis Matrix & Early Warnings */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              <div className="lg:col-span-7 flex flex-col gap-5">
-                <SkillGapMatrix />
-                <SupplyDemandChart />
-                <PlacementAnalytics />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+              <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
+                <ScrollReveal delay={100}>
+                  <SkillGapMatrix />
+                </ScrollReveal>
+                <ScrollReveal delay={280}>
+                  <SupplyDemandChart />
+                </ScrollReveal>
+                <ScrollReveal delay={460}>
+                  <PlacementAnalytics />
+                </ScrollReveal>
               </div>
 
-              <div className="lg:col-span-5 flex flex-col gap-5">
-                <EarlyWarningSystem />
-                <TrainingPriority />
-                <RegionalOverview />
+              <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-6">
+                <ScrollReveal delay={180}>
+                  <EarlyWarningSystem />
+                </ScrollReveal>
+                <ScrollReveal delay={360}>
+                  <TrainingPriority />
+                </ScrollReveal>
+                <ScrollReveal delay={540}>
+                  <RegionalOverview />
+                </ScrollReveal>
               </div>
             </div>
           </div>
@@ -182,22 +284,34 @@ const DashboardContent: React.FC = () => {
 
         {/* SECTION 3: FORECASTS */}
         {activeSection === 'forecasts' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
             {/* Jurisdictional Breadcrumb */}
-            <DrillDownBreadcrumbs />
+            <ScrollReveal delay={0}>
+              <DrillDownBreadcrumbs />
+            </ScrollReveal>
 
             {/* Forecasting Engine: Longitudinal Trajectories & Chronological Validation */}
-            <ForecastChart />
+            <ScrollReveal delay={100}>
+              <ForecastChart />
+            </ScrollReveal>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-              <div className="lg:col-span-7 flex flex-col gap-5">
-                <AIInsights />
-                <EmergingSkills />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+              <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
+                <ScrollReveal delay={120}>
+                  <AIInsights />
+                </ScrollReveal>
+                <ScrollReveal delay={300}>
+                  <EmergingSkills />
+                </ScrollReveal>
               </div>
 
-              <div className="lg:col-span-5 flex flex-col gap-5">
-                <MarketSignalSnapshot />
-                <TrainingPriority />
+              <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-6">
+                <ScrollReveal delay={200}>
+                  <MarketSignalSnapshot />
+                </ScrollReveal>
+                <ScrollReveal delay={380}>
+                  <TrainingPriority />
+                </ScrollReveal>
               </div>
             </div>
           </div>
@@ -205,99 +319,168 @@ const DashboardContent: React.FC = () => {
 
         {/* SECTION 4: DATA & REPORTS */}
         {activeSection === 'data-reports' && (
-          <div className="space-y-6 animate-in fade-in duration-150">
-            {/* Problem Statement Card for Hackathon Judges */}
-            <ProblemStatementCard />
-
-            {/* Ingestion & Export Quick Bar */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
-                    <UploadCloud className="w-5 h-5" />
+          <div className="space-y-8 animate-in fade-in duration-150">
+            {/* Group 1: Problem Statement & Challenge Context */}
+            <ScrollReveal delay={0}>
+              <section className="space-y-3" aria-labelledby="section-challenge-title">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                      Group 1
+                    </span>
+                    <h3 id="section-challenge-title" className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">
+                      Challenge Mandate &amp; Implementation Context
+                    </h3>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">Ingest Custom CSV</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Upload employer vacancy records, training seat quotas, or candidate supply datasets with automatic validation.
-                  </p>
+                  <span className="text-xs text-slate-400">SIH 2026 PS 26246</span>
                 </div>
-                <button
-                  onClick={() => setIsDataIngestionOpen(true)}
-                  className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition cursor-pointer"
-                >
-                  <UploadCloud className="w-3.5 h-3.5" />
-                  <span>Upload Dataset</span>
-                </button>
-              </div>
+                <ProblemStatementCard />
+              </section>
+            </ScrollReveal>
 
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
-                    <FileCheck className="w-5 h-5" />
+            {/* Group 2: Data Ingestion & Governance */}
+            <ScrollReveal delay={180}>
+              <section className="space-y-3" aria-labelledby="section-ingestion-title">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                      Group 2
+                    </span>
+                    <h3 id="section-ingestion-title" className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">
+                      Data Ingestion, Validation &amp; Provenance
+                    </h3>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">Export Intelligence Brief</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Generate an official planning dossier in CSV or text format for State Skill Development Missions.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsExportModalOpen(true)}
-                  className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer"
-                >
-                  <FileCheck className="w-3.5 h-3.5" />
-                  <span>Export Dossier</span>
-                </button>
-              </div>
-
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
-                <div>
-                  <div className="w-9 h-9 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
-                    <Code2 className="w-5 h-5" />
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">Public API Gateway</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                    Query skill-gap rankings, demand forecasts, and early warnings programmatically with OpenAPI 3.0 specs.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsApiModalOpen(true)}
-                  className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
-                >
-                  <Code2 className="w-3.5 h-3.5" />
-                  <span>Open API Console</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Taxonomy & Data Sources */}
-            <NcoNsqfMapping />
-            <DataSourcesAndIndex />
-
-            {/* Policy Decision Banner */}
-            <section className="rounded-xl p-5 sm:p-6 bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 text-white shadow-md border border-blue-800/80">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="max-w-2xl">
-                  <div className="flex items-center space-x-2 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span>Executive Decision Support Engine</span>
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold">
-                    Simulate Training Capacity Interventions for {filters.geography}
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Test shifting seat allocations from saturated trades to high-demand skills like Data Engineering, Solar, and EV before deploying state budgets.
-                  </p>
+                  <span className="text-xs text-slate-400">RFC-4180 CSV &bull; Telemetry Ingestion</span>
                 </div>
 
-                <button
-                  onClick={() => setIsPolicySimulatorOpen(true)}
-                  className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 shadow-md transition shrink-0"
-                >
-                  <Sliders className="w-4 h-4 text-blue-600" />
-                  <span>Launch Policy Simulator</span>
-                </button>
-              </div>
-            </section>
+                {/* Ingestion Trigger Card & Heterogeneous Pipeline */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-emerald-400 dark:hover:border-emerald-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                    <div>
+                      <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
+                        <UploadCloud className="w-5 h-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">Custom CSV Ingestion</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                        Upload employer vacancy records, training seat quotas, or candidate supply datasets with automatic NCO validation.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setIsDataIngestionOpen(true)}
+                      className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition duration-200 cursor-pointer"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>Upload &amp; Validate CSV</span>
+                    </button>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <DataSourcesAndIndex />
+                  </div>
+                </div>
+              </section>
+            </ScrollReveal>
+
+            {/* Group 3: Occupation & Skill Taxonomy Harmonization */}
+            <ScrollReveal delay={360}>
+              <section className="space-y-3" aria-labelledby="section-taxonomy-title">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                      Group 3
+                    </span>
+                    <h3 id="section-taxonomy-title" className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">
+                      Occupation &amp; Skill Taxonomy Harmonization
+                    </h3>
+                  </div>
+                  <span className="text-xs text-slate-400">NCO-2015 &bull; NSQF Alignment</span>
+                </div>
+                <NcoNsqfMapping />
+              </section>
+            </ScrollReveal>
+
+            {/* Group 4: Reports, Policy Simulation & API Gateway */}
+            <ScrollReveal delay={540}>
+              <section className="space-y-4" aria-labelledby="section-reports-tools-title">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                      Group 4
+                    </span>
+                    <h3 id="section-reports-tools-title" className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-tight">
+                      Intelligence Reports, Policy Simulation &amp; API Access
+                    </h3>
+                  </div>
+                  <span className="text-xs text-slate-400">Dossiers &bull; Simulations &bull; OpenAPI</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                    <div>
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
+                        <FileCheck className="w-5 h-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">Export Intelligence Dossier</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                        Generate official planning dossiers and datasets in CSV, JSON, or printable format for State Skill Development Missions.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setIsExportModalOpen(true)}
+                      className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 cursor-pointer"
+                    >
+                      <FileCheck className="w-3.5 h-3.5" />
+                      <span>Export Planning Dossier</span>
+                    </button>
+                  </div>
+
+                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                    <div>
+                      <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
+                        <Code2 className="w-5 h-5" />
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">Public API &amp; SDK Gateway</h4>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                        Query skill-gap rankings, demand forecasts, and early warnings programmatically with OpenAPI 3.1 specifications.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setIsApiModalOpen(true)}
+                      className="mt-4 inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 cursor-pointer"
+                    >
+                      <Code2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                      <span>Open API Console</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Policy Decision Banner */}
+                <section className="rounded-xl p-5 sm:p-6 bg-gradient-to-r from-blue-950 via-slate-900 to-slate-950 text-white shadow-md border border-blue-900/60 hover:border-blue-700/80 transition-all duration-450 ease-out">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="max-w-2xl">
+                      <div className="flex items-center space-x-2 text-blue-300 text-xs font-semibold uppercase tracking-wider mb-1">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span>Executive Decision Support Engine</span>
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold">
+                        Simulate Training Capacity Interventions for {filters.geography}
+                      </h3>
+                      <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                        Test shifting seat allocations from saturated trades to high-demand skills like Data Engineering, Solar, and EV before deploying state budgets.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setIsPolicySimulatorOpen(true)}
+                      className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-lg text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 shadow-md focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-slate-900 transition duration-200 shrink-0 cursor-pointer"
+                    >
+                      <Sliders className="w-4 h-4 text-blue-600" />
+                      <span>Launch Policy Simulator</span>
+                    </button>
+                  </div>
+                </section>
+              </section>
+            </ScrollReveal>
 
           </div>
         )}
