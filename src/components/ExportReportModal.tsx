@@ -22,7 +22,8 @@ export const ExportReportModal: React.FC = () => {
     kpis,
     tradeRecords,
     forecastData,
-    skillDomains
+    skillDomains,
+    datasetMetadata
   } = useAnalytics();
 
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
@@ -57,7 +58,13 @@ export const ExportReportModal: React.FC = () => {
         recommendedAction: r.recommendedAction
       })),
       forecastTimeline: forecastData,
-      sources: 'NCS, e-Shram, PLFS, Employer Job Portals, NCO-2015, NSQF'
+      provenance: datasetMetadata.provenance,
+      datasetName: datasetMetadata.datasetName,
+      reportingPeriod: datasetMetadata.reportingPeriod,
+      dataSources: datasetMetadata.dataSources,
+      lastUpdated: datasetMetadata.lastUpdated,
+      methodology: 'Pure Econometric Demand-Supply Engine with Holt Linear Exponential Smoothing & Chronological Holdout Validation',
+      disclaimer: 'Planning advisory based on econometric demand-capacity signals. Capacity recommendations are for institutional intake adjustments and do not guarantee individual employment outcomes.'
     };
 
     const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
@@ -73,6 +80,16 @@ export const ExportReportModal: React.FC = () => {
 
   // Export CSV (Prompt Item 23)
   const handleDownloadCSV = () => {
+    const metadataLines = [
+      `# Project: GradMetrics AI (Problem Statement ID 26246)`,
+      `# Dataset: ${datasetMetadata.datasetName}`,
+      `# Provenance: ${datasetMetadata.provenance}`,
+      `# Reporting Period: ${datasetMetadata.reportingPeriod}`,
+      `# Data Sources: ${datasetMetadata.dataSources.join('; ')}`,
+      `# Methodology: Econometric Demand-Supply Gap Engine with Holt Linear Exponential Smoothing`,
+      `# Disclaimer: Planning advisory based on econometric demand-capacity signals. Capacity recommendations are for institutional intake adjustments and do not guarantee individual employment outcomes.`
+    ];
+
     const headers = [
       'State',
       'District',
@@ -105,7 +122,7 @@ export const ExportReportModal: React.FC = () => {
       `"${r.recommendedAction.replace(/"/g, '""')}"`
     ]);
 
-    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const csvContent = [...metadataLines, headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -186,7 +203,8 @@ export const ExportReportModal: React.FC = () => {
               </div>
               <div className="sm:text-right text-[11px] text-slate-400 font-mono">
                 <div>Audit Cycle: FY {filters.timePeriod}</div>
-                <div>Status: Verified Official Telemetry</div>
+                <div>Provenance: {datasetMetadata.provenance}</div>
+                <div>Period: {datasetMetadata.reportingPeriod}</div>
               </div>
             </div>
 

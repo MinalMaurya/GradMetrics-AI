@@ -141,6 +141,13 @@ export interface TradeRecord {
   status: GapStatus;
   priorityScore: number;
   recommendedAction: string;
+  // Provenance & Metadata fields for PS 26246
+  provenance?: DataProvenance;
+  reportingPeriod?: string;
+  dataSource?: string;
+  candidateSupply?: number;
+  historicalDemand?: Record<string, number>;
+  historicalSupply?: Record<string, number>;
 }
 
 export interface RegionalData {
@@ -239,6 +246,11 @@ export interface EarlyWarningItem {
   forecast: string;
   recommendedAction: string;
   urgency: 'high' | 'medium' | 'info';
+  triggerReason?: string;
+  alertTypeDetail?: 'GROWING_SHORTAGE' | 'DECLINING_DEMAND' | 'POTENTIAL_OVERSUPPLY' | 'CRITICAL_VOLUME_DEFICIT' | 'BALANCED_STABILITY';
+  disclaimer?: string;
+  demandGrowth?: number;
+  supplyGrowth?: number;
 }
 
 export interface NcoNsqfMappingItem {
@@ -259,3 +271,138 @@ export interface IntelligenceAlert {
   severity: 'high' | 'medium' | 'info';
   category: string;
 }
+
+// ============================================================================
+// PROBLEM STATEMENT 26246 DOMAIN MODELS: INGESTION, PROVENANCE & ANALYTICS
+// ============================================================================
+
+export type DataProvenance =
+  | 'PILOT_BENCHMARK'
+  | 'SYNTHETIC_SAMPLE'
+  | 'USER_UPLOADED'
+  | 'FORECAST_PROJECTION';
+
+export interface DatasetMetadata {
+  datasetId: string;
+  datasetName: string;
+  provenance: DataProvenance;
+  provenanceLabel: string; // e.g. "Pilot Research Benchmark (Calibrated)"
+  reportingPeriod: string; // e.g. "FY 2022-2026 (Annualized)"
+  lastUpdated: string; // ISO timestamp or formatted date
+  recordCount: number;
+  dataSources: string[]; // e.g. ["NCS Job Vacancy Registrations", "DGT ITI Capacity", "e-Shram", "PLFS"]
+  assumptions: string[];
+  limitations: string[];
+}
+
+export interface IngestionValidationError {
+  rowNumber: number;
+  field: string;
+  errorType: 'MISSING_FIELD' | 'INVALID_NUMBER' | 'UNKNOWN_REGION' | 'SCHEMA_MISMATCH' | 'INVALID_DATE';
+  message: string;
+  rawValue?: string;
+}
+
+export interface IngestionValidationResult {
+  isValid: boolean;
+  fileName: string;
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  errors: IngestionValidationError[];
+  warnings: string[];
+  parsedRecords: TradeRecord[];
+  inferredProvenance: DataProvenance;
+  reportingPeriod: string;
+}
+
+export interface NcoTaxonomyEntry {
+  ncoCode: string;
+  occupationTitle: string;
+  alternativeTitles: string[];
+  nsqfLevel: string;
+  sector: IndustrySector;
+  defaultTrade: TradeOccupation;
+  description: string;
+  competencyFocus: string[];
+}
+
+export interface NcoMappingResult {
+  matched: boolean;
+  confidence: number; // 0 - 100
+  ncoCode: string;
+  occupation: string;
+  nsqfLevel: string;
+  sector: IndustrySector;
+  trade: TradeOccupation;
+  matchType: 'EXACT' | 'KEYWORD' | 'FUZZY' | 'FALLBACK';
+}
+
+export interface DemandSupplyGapCalculation {
+  labourDemand: number;
+  trainingCapacity: number;
+  netGap: number; // labourDemand - trainingCapacity
+  gapPercentage: number; // (gap / labourDemand) * 100
+  status: GapStatus;
+  isShortage: boolean;
+  isOversupply: boolean;
+  isBalanced: boolean;
+  explanation: string;
+}
+
+export interface DistrictGapRank {
+  rank: number;
+  district: string;
+  state: GeographyState;
+  region: Region;
+  labourDemand: number;
+  trainingCapacity: number;
+  gap: number;
+  gapPercentage: number;
+  status: GapStatus;
+  primaryShortageTrade: string;
+  primarySurplusTrade: string;
+  criticalTradesCount: number;
+  oversuppliedTradesCount: number;
+}
+
+export interface OccupationGapRank {
+  rank: number;
+  trade: TradeOccupation;
+  ncoCode: string;
+  nsqfLevel: string;
+  sector: IndustrySector;
+  labourDemand: number;
+  trainingCapacity: number;
+  gap: number;
+  gapPercentage: number;
+  growthYoY: number;
+  status: GapStatus;
+  priorityScore: number;
+  recommendedAction: string;
+  affectedDistricts: string[];
+}
+
+export interface ForecastingMetrics {
+  modelName: string;
+  baselineModelName: string;
+  mae: number; // Mean Absolute Error (in thousand seats)
+  rmse: number; // Root Mean Squared Error (in thousand seats)
+  mape: number; // Mean Absolute Percentage Error (%)
+  baselineMae: number;
+  baselineMape: number;
+  improvementOverBaselinePercent: number;
+  chronologicalSplit: {
+    trainingWindow: string; // e.g. "2022 - 2024"
+    validationWindow: string; // e.g. "2025"
+    forecastHorizon: string; // e.g. "2026 - 2028 (24 Months)"
+  };
+}
+
+export interface EarlyWarningThresholdConfig {
+  criticalShortagePercent: number; // default: 20%
+  emergingShortagePercent: number; // default: 5%
+  oversupplyPercent: number; // default: -5%
+  minVolumeThreshold: number; // default: 2000 seats
+}
+

@@ -17,17 +17,48 @@ import {
   IndustrySector,
   TradeOccupation,
   Year,
-  Language
+  Language,
+  DatasetMetadata,
+  EarlyWarningThresholdConfig,
+  ForecastingMetrics,
+  DistrictGapRank,
+  OccupationGapRank
 } from '../types/analytics';
 import {
-  getFilteredAnalytics,
+  pilotTradeRecords,
+  PILOT_DATASET_METADATA
+} from '../data/pilotDataset';
+import {
+  filterTradeRecords,
+  computeKPISummary,
+  computeSkillDomainsFromRecords,
+  computeRegionalDataFromRecords,
+  rankDistrictsByGapSeverity,
+  rankOccupationsByGapSeverity
+} from '../services/analytics/demandSupplyEngine';
+import {
+  generateForecastTimeline,
+  ModelComparisonResult
+} from '../services/forecasting/forecastingEngine';
+import {
+  generateEarlyWarningSignals,
+  DEFAULT_EARLY_WARNING_THRESHOLDS
+} from '../services/earlyWarning/earlyWarningEngine';
+import {
+  getTranslation,
+  translations,
+  TranslationDictionary,
+  SupportedLanguage
+} from '../i18n/translations';
+import {
   baselineAIPlannerRecommendations,
   mockNotifications,
   stateDistrictsMap,
-  sectorTradesMap
+  sectorTradesMap,
+  baselineNcoNsqfMappings
 } from '../data/mockData';
 
-interface AnalyticsContextType {
+export interface AnalyticsContextType {
   // Filters & Drill-down
   filters: FilterState;
   setGeography: (geo: GeographyState) => void;
@@ -46,15 +77,38 @@ interface AnalyticsContextType {
   availableDistricts: string[];
   availableTrades: TradeOccupation[];
 
-  // Analytics Computed Data
+  // Active Dataset & Ingestion State
+  activeRecords: TradeRecord[];
+  datasetMetadata: DatasetMetadata;
+  applyUploadedDataset: (records: TradeRecord[], metadata: DatasetMetadata) => void;
+  resetToPilotDataset: () => void;
+  isDataIngestionOpen: boolean;
+  setIsDataIngestionOpen: (open: boolean) => void;
+
+  // Threshold Configuration
+  thresholdConfig: EarlyWarningThresholdConfig;
+  setThresholdConfig: React.Dispatch<React.SetStateAction<EarlyWarningThresholdConfig>>;
+
+  // District Comparison
+  isDistrictCompareOpen: boolean;
+  setIsDistrictCompareOpen: (open: boolean) => void;
+  compareDistricts: string[];
+  setCompareDistricts: (districts: string[]) => void;
+
+  // Analytics Computed Data (Dynamic based on active dataset & filters)
   kpis: KPIData;
   supplyDemandTrends: SupplyDemandTrend[];
   skillDomains: SkillDomainGap[];
   regionalData: RegionalData[];
   tradeRecords: TradeRecord[];
+  districtRanks: DistrictGapRank[];
+  occupationRanks: OccupationGapRank[];
   earlyWarnings: EarlyWarningItem[];
   trainingPriorities: TrainingPriorityItem[];
   forecastData: ForecastPoint[];
+  forecastingMetrics: ForecastingMetrics;
+  modelComparisons: ModelComparisonResult[];
+  dataProvenanceNote: string;
   ncoNsqfMappings: NcoNsqfMappingItem[];
 
   // Early Warning Interactive Drill-down
@@ -67,13 +121,14 @@ interface AnalyticsContextType {
   isGeneratingAI: boolean;
   generateNewAIInsight: () => void;
 
-  // App UI State
+  // App UI State & i18n
   isDarkMode: boolean;
   toggleDarkMode: () => void;
   isFullscreen: boolean;
   toggleFullscreen: () => void;
   language: Language;
   setLanguage: (lang: Language) => void;
+  t: (key: keyof TranslationDictionary) => string;
   notifications: IntelligenceAlert[];
   unreadNotifsCount: number;
   markNotificationsAsRead: () => void;
@@ -113,13 +168,28 @@ const defaultFilters: FilterState = {
 const AnalyticsContext = createContext<AnalyticsContextType | undefined>(undefined);
 
 export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Datasets
+  const [activeRecords, setActiveRecords] = useState<TradeRecord[]>(pilotTradeRecords);
+  const [datasetMetadata, setDatasetMetadata] = useState<DatasetMetadata>(PILOT_DATASET_METADATA);
+
+  // Filters & UI State
   const [filters, setFilters] = useState<FilterState>(defaultFilters);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('gradmetrics_theme');
+      if (stored === 'dark') return true;
+      if (stored === 'light') return false;
+    }
+    return false; // Default to Light Mode
+  });
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [language, setLanguage] = useState<Language>('en');
-  const [aiInsights, setAiInsights] = useState<AIInsight[]>(baselineAIPlannerRecommendations);
-  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
-  const [notifications, setNotifications] = useState<IntelligenceAlert[]>(mockNotifications);
+
+  // Modals & Panels
+  const [isDataIngestionOpen, setIsDataIngestionOpen] = useState<boolean>(false);
+  const [isDistrictCompareOpen, setIsDistrictCompareOpen] = useState<boolean>(false);
+  const [compareDistricts, setCompareDistricts] = useState<string[]>(['Pune', 'Bengaluru Urban', 'Chennai']);
+  const [thresholdConfig, setThresholdConfig] = useState<EarlyWarningThresholdConfig>(DEFAULT_EARLY_WARNING_THRESHOLDS);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [isPolicySimulatorOpen, setIsPolicySimulatorOpen] = useState<boolean>(false);
@@ -127,11 +197,22 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isMethodologyOpen, setIsMethodologyOpen] = useState<boolean>(false);
   const [selectedEarlyWarning, setSelectedEarlyWarning] = useState<EarlyWarningItem | null>(null);
 
+  // Notifications & AI
+  const [aiInsights, setAiInsights] = useState<AIInsight[]>(baselineAIPlannerRecommendations);
+  const [isGeneratingAI, setIsGeneratingAI] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<IntelligenceAlert[]>(mockNotifications);
+
   // Policy Simulator variables
   const [simulatedSeatIncrease, setSimulatedSeatIncrease] = useState<number>(20);
   const [simulatedNewCentres, setSimulatedNewCentres] = useState<number>(4);
   const [simulatedCourseReallocation, setSimulatedCourseReallocation] = useState<number>(15);
   const [simulatedDistrictTarget, setSimulatedDistrictTarget] = useState<string>('Pune');
+
+  // Translation helper
+  const t = (key: keyof TranslationDictionary): string => {
+    const dict = getTranslation(language as SupportedLanguage);
+    return dict[key] || translations.en[key] || '';
+  };
 
   // Dark mode effect
   useEffect(() => {
@@ -142,7 +223,15 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, [isDarkMode]);
 
-  const toggleDarkMode = () => setIsDarkMode(prev => !prev);
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => {
+      const next = !prev;
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('gradmetrics_theme', next ? 'dark' : 'light');
+      }
+      return next;
+    });
+  };
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -152,6 +241,20 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
       }
     }
+  };
+
+  // Dataset ingestion handlers
+  const applyUploadedDataset = (records: TradeRecord[], metadata: DatasetMetadata) => {
+    setActiveRecords(records);
+    setDatasetMetadata(metadata);
+    // Reset filters to ensure clean view on new dataset
+    setFilters(defaultFilters);
+  };
+
+  const resetToPilotDataset = () => {
+    setActiveRecords(pilotTradeRecords);
+    setDatasetMetadata(PILOT_DATASET_METADATA);
+    setFilters(defaultFilters);
   };
 
   // Cascading Filter Handlers
@@ -207,6 +310,8 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Immediate 1-click End-to-End Demo Scenario:
   // State: Maharashtra -> District: Pune -> Sector: IT/ITeS -> Trade: Data Engineering
   const loadDemoScenario = () => {
+    setActiveRecords(pilotTradeRecords);
+    setDatasetMetadata(PILOT_DATASET_METADATA);
     setFilters({
       geography: 'Maharashtra',
       district: 'Pune',
@@ -217,6 +322,7 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       timePeriod: '2026',
       searchQuery: ''
     });
+    setSelectedEarlyWarning(null);
   };
 
   // Early warning drill-down click
@@ -233,12 +339,21 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Compute available cascading lists
   const availableDistricts = useMemo(() => {
-    return stateDistrictsMap[filters.geography] || ['All Districts'];
-  }, [filters.geography]);
+    if (filters.geography !== 'All India' && stateDistrictsMap[filters.geography]) {
+      return stateDistrictsMap[filters.geography];
+    }
+    // Extract unique districts from active records
+    const uniqueDistricts = Array.from(new Set(activeRecords.map(r => r.district))).sort();
+    return ['All Districts', ...uniqueDistricts];
+  }, [filters.geography, activeRecords]);
 
   const availableTrades = useMemo(() => {
-    return sectorTradesMap[filters.sector] || sectorTradesMap['All Sectors'];
-  }, [filters.sector]);
+    if (filters.sector !== 'All Sectors' && sectorTradesMap[filters.sector]) {
+      return sectorTradesMap[filters.sector];
+    }
+    const uniqueTrades = Array.from(new Set(activeRecords.map(r => r.trade))).sort() as TradeOccupation[];
+    return ['All Trades' as TradeOccupation, ...uniqueTrades];
+  }, [filters.sector, activeRecords]);
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -253,10 +368,83 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return count;
   }, [filters]);
 
-  // Compute filtered dataset
-  const computedData = useMemo(() => {
-    return getFilteredAnalytics(filters);
-  }, [filters]);
+  // Compute dynamic filtered dataset and analytics from pure engines
+  const filteredRecords = useMemo(() => {
+    return filterTradeRecords(activeRecords, filters);
+  }, [activeRecords, filters]);
+
+  const kpis = useMemo(() => {
+    return computeKPISummary(filteredRecords);
+  }, [filteredRecords]);
+
+  const skillDomains = useMemo(() => {
+    return computeSkillDomainsFromRecords(filteredRecords);
+  }, [filteredRecords]);
+
+  const regionalData = useMemo(() => {
+    return computeRegionalDataFromRecords(filteredRecords);
+  }, [filteredRecords]);
+
+  const districtRanks = useMemo(() => {
+    return rankDistrictsByGapSeverity(filteredRecords);
+  }, [filteredRecords]);
+
+  const occupationRanks = useMemo(() => {
+    return rankOccupationsByGapSeverity(filteredRecords);
+  }, [filteredRecords]);
+
+  const earlyWarnings = useMemo(() => {
+    return generateEarlyWarningSignals(filteredRecords, thresholdConfig);
+  }, [filteredRecords, thresholdConfig]);
+
+  const forecastResult = useMemo(() => {
+    return generateForecastTimeline(filteredRecords, filters);
+  }, [filteredRecords, filters]);
+
+  const forecastData = forecastResult.forecastPoints;
+  const forecastingMetrics = forecastResult.evaluationMetrics;
+  const modelComparisons = forecastResult.modelComparisons;
+  const dataProvenanceNote = forecastResult.dataProvenanceNote;
+
+  // Convert forecast points into SupplyDemandTrend items for backwards-compatibility
+  const supplyDemandTrends: SupplyDemandTrend[] = useMemo(() => {
+    return forecastData.map(fp => {
+      const d = fp.labourDemand * 1000;
+      const s = fp.trainingSupply * 1000;
+      const g = fp.projectedGap * 1000;
+      return {
+        year: fp.year,
+        labourDemand: d,
+        trainingCapacity: s,
+        projectedDemand: d,
+        gap: g,
+        gapPercentage: d > 0 ? Number(((g / d) * 100).toFixed(1)) : 0,
+        status: g > 0 ? 'SHORTAGE' : g < 0 ? 'OVERSUPPLY' : 'BALANCED',
+        jobOpenings: d,
+        graduates: s
+      };
+    });
+  }, [forecastData]);
+
+  // Dynamic training priorities based on occupation gap severity
+  const trainingPriorities: TrainingPriorityItem[] = useMemo(() => {
+    return occupationRanks.map((occ, idx) => ({
+      rank: idx + 1,
+      trade: occ.trade,
+      skill: occ.trade,
+      sector: occ.sector,
+      labourDemand: occ.labourDemand,
+      trainingCapacity: occ.trainingCapacity,
+      gap: occ.gap,
+      growth: occ.growthYoY,
+      priorityScore: occ.priorityScore,
+      recommendedAction: occ.recommendedAction,
+      badgeLevel: occ.status === 'CRITICAL SHORTAGE' ? 'Critical' : occ.status === 'EMERGING SHORTAGE' ? 'High' : occ.status === 'BALANCED' ? 'Stable' : 'Medium',
+      affectedCohort: Math.abs(occ.gap),
+      roiPotential: occ.gap > 0 ? '+32% High Placement Priority' : 'Intake Rationalization Recommended',
+      affectedGraduates: Math.abs(occ.gap)
+    }));
+  }, [occupationRanks]);
 
   const unreadNotifsCount = useMemo(() => {
     return notifications.filter(n => !n.read).length;
@@ -343,7 +531,32 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         activeFilterCount,
         availableDistricts,
         availableTrades,
-        ...computedData,
+        activeRecords,
+        datasetMetadata,
+        applyUploadedDataset,
+        resetToPilotDataset,
+        isDataIngestionOpen,
+        setIsDataIngestionOpen,
+        thresholdConfig,
+        setThresholdConfig,
+        isDistrictCompareOpen,
+        setIsDistrictCompareOpen,
+        compareDistricts,
+        setCompareDistricts,
+        kpis,
+        supplyDemandTrends,
+        skillDomains,
+        regionalData,
+        tradeRecords: filteredRecords,
+        districtRanks,
+        occupationRanks,
+        earlyWarnings,
+        trainingPriorities,
+        forecastData,
+        forecastingMetrics,
+        modelComparisons,
+        dataProvenanceNote,
+        ncoNsqfMappings: baselineNcoNsqfMappings,
         selectedEarlyWarning,
         setSelectedEarlyWarning,
         selectEarlyWarningAndFilter,
@@ -356,6 +569,7 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         toggleFullscreen,
         language,
         setLanguage,
+        t,
         notifications,
         unreadNotifsCount,
         markNotificationsAsRead,

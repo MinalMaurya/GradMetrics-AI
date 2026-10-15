@@ -18,17 +18,20 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { EarlyWarningItem } from '../types/analytics';
+import { ThresholdConfigModal } from './ThresholdConfigModal';
 
 export const EarlyWarningSystem: React.FC = () => {
   const {
     earlyWarnings,
     selectEarlyWarningAndFilter,
     setIsPolicySimulatorOpen,
-    filters
+    filters,
+    t
   } = useAnalytics();
 
   const [activeTab, setActiveTab] = useState<'shortage' | 'oversupply'>('shortage');
   const [isFullRadarModalOpen, setIsFullRadarModalOpen] = useState(false);
+  const [isThresholdModalOpen, setIsThresholdModalOpen] = useState(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
   const [detailModalItem, setDetailModalItem] = useState<EarlyWarningItem | null>(null);
 
@@ -80,13 +83,24 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
           </div>
 
-          <button
-            onClick={() => setIsFullRadarModalOpen(true)}
-            className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
-          >
-            <span>All ({earlyWarnings.length})</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsThresholdModalOpen(true)}
+              className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center gap-1 cursor-pointer px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              title="Tune Anomaly Sensitivity Thresholds"
+            >
+              <Sliders className="w-3 h-3 text-indigo-500" />
+              <span>{t('configureThresholdsBtn')}</span>
+            </button>
+
+            <button
+              onClick={() => setIsFullRadarModalOpen(true)}
+              className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
+            >
+              <span>All ({earlyWarnings.length})</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
 
         {/* 4 Mini Stat Pills (2x2 Grid) */}
@@ -108,7 +122,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </span>
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-              Data Eng (+31K)
+              {criticalShortages[0] ? `${criticalShortages[0].trade} (+${Math.round(criticalShortages[0].gap / 1000)}K)` : 'None'}
             </div>
           </button>
 
@@ -129,7 +143,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </span>
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-              Health (+14K)
+              {emergingGaps[0] ? `${emergingGaps[0].trade} (+${Math.round(emergingGaps[0].gap / 1000)}K)` : 'None'}
             </div>
           </button>
 
@@ -150,7 +164,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </span>
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-              Retail (-7K)
+              {oversupplies[0] ? `${oversupplies[0].trade} (${Math.round(oversupplies[0].gap / 1000)}K)` : 'None'}
             </div>
           </button>
 
@@ -171,7 +185,7 @@ export const EarlyWarningSystem: React.FC = () => {
               </span>
             </div>
             <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-              Electrician
+              {balancedTrades[0] ? balancedTrades[0].trade : 'None'}
             </div>
           </button>
         </div>
@@ -533,6 +547,19 @@ export const EarlyWarningSystem: React.FC = () => {
                 </div>
               </div>
 
+              {/* Causal Anomaly Explanation */}
+              {detailModalItem.triggerReason && (
+                <div className="p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+                  <div className="font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5 mb-1">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span>Causal Explanation (Why Alert Triggered):</span>
+                  </div>
+                  <p className="text-amber-950 dark:text-amber-300 font-medium leading-relaxed">
+                    {detailModalItem.triggerReason}
+                  </p>
+                </div>
+              )}
+
               <div>
                 <h4 className="font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
                   Projected 24-Month Trajectory
@@ -550,6 +577,11 @@ export const EarlyWarningSystem: React.FC = () => {
                 <p className="text-indigo-950 dark:text-indigo-300 font-medium">
                   {detailModalItem.recommendedAction}
                 </p>
+              </div>
+
+              {/* Statutory Planning Disclaimer */}
+              <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400">
+                <strong>Planning Advisory Note:</strong> {detailModalItem.disclaimer || 'Planning advisory based on econometric demand-capacity signals. Capacity recommendations are for institutional intake adjustments and do not guarantee individual employment outcomes.'}
               </div>
             </div>
 
@@ -578,6 +610,12 @@ export const EarlyWarningSystem: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Threshold Configuration Modal */}
+      <ThresholdConfigModal
+        isOpen={isThresholdModalOpen}
+        onClose={() => setIsThresholdModalOpen(false)}
+      />
     </>
   );
 };

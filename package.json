@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "esbuild tests/*.test.ts --bundle --platform=node --packages=external --format=esm --outdir=tests/.dist && node --test tests/.dist/*.test.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",
