@@ -13,7 +13,7 @@ import { useAnalytics } from '../context/AnalyticsContext';
 import { ScrollReveal } from './ScrollReveal';
 
 export const KPICards: React.FC = () => {
-  const { kpis, earlyWarnings, filters } = useAnalytics();
+  const { kpis, earlyWarnings, filters, datasetMetadata } = useAnalytics();
 
   const isShortage = kpis.demandSupplyGap > 0;
   const isOversupply = kpis.demandSupplyGap < 0;
@@ -26,53 +26,64 @@ export const KPICards: React.FC = () => {
   // Count trades needing attention from early warnings in the current scope
   const tradesNeedingAttentionCount = earlyWarnings.length;
 
+  const activeScopeLabel =
+    filters.district !== 'All Districts'
+      ? `${filters.district}, ${filters.geography}`
+      : filters.geography;
+
+  const reportingPeriod = datasetMetadata.reportingPeriod;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" role="region" aria-label="Key Performance Indicators">
       
       {/* CARD 1 — JOB DEMAND */}
       <ScrollReveal delay={0} className="h-full">
         <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs relative h-full flex flex-col justify-between">
-        <div className="flex items-start justify-between">
-          <div>
-            <div className="flex items-center space-x-1.5">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Job Demand
-              </span>
-              <div className="group relative cursor-help">
-                <button
-                  type="button"
-                  aria-label="Job Demand definition"
-                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
-                >
-                  <Info className="w-3.5 h-3.5" />
-                </button>
-                <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-60 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                  Estimated number of job openings across employers, industry surveys, and active vacancy registrations.
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center space-x-1.5">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Job Demand
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  (Openings)
+                </span>
+                <div className="group relative cursor-help">
+                  <button
+                    type="button"
+                    aria-label="Job Demand definition: Total estimated employer vacancies and active hiring requisitions"
+                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                  </button>
+                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
+                    <strong className="block text-blue-400 mb-1">Labour Demand (Unit: Openings)</strong>
+                    Estimated number of employer job vacancies compiled across National Career Service (NCS), industry surveys, and registered portal requisitions, normalized to standard NCO-2015 occupational codes.
+                  </div>
                 </div>
               </div>
+              
+              <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono">
+                {formatNumber(kpis.labourDemand)}
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                Annual vacancies across employers
+              </p>
             </div>
-            
-            <div className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
-              {formatNumber(kpis.labourDemand)}
+
+            <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <Briefcase className="w-5 h-5" />
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-              Expected job openings
-            </p>
           </div>
 
-          <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-            <Briefcase className="w-5 h-5" />
+          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center">
+              +{kpis.labourDemandYoY}% YoY Growth
+            </span>
+            <span className="text-[11px] text-slate-400 font-medium truncate max-w-[130px]" title={`${activeScopeLabel} • ${reportingPeriod}`}>
+              {activeScopeLabel}
+            </span>
           </div>
-        </div>
-
-        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-          <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center">
-            +{kpis.labourDemandYoY}% YoY Growth
-          </span>
-          <span className="text-[11px] text-slate-400 font-medium">
-            {filters.geography}
-          </span>
-        </div>
         </div>
       </ScrollReveal>
 
@@ -82,31 +93,38 @@ export const KPICards: React.FC = () => {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Training Supply
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  (Seats)
                 </span>
                 <div className="group relative cursor-help">
                   <button
                     type="button"
-                    aria-label="Training Supply definition"
+                    aria-label="Training Supply definition: Approved intake capacity across ITIs, PMKVY centres, and polytechnics"
                     className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
                   >
                     <Info className="w-3.5 h-3.5" />
                   </button>
-                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                    Approved institutional intake seats (ITI, PMKVY, polytechnics). Certified supply (~85.5%) accounts for the empirical 14.5% national completion dropout rate.
+                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-72 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
+                    <strong className="block text-slate-200 mb-1">Training Capacity (Unit: Seats)</strong>
+                    Sanctioned institutional student intake across DGT ITIs, PMKVY centres, and polytechnics.
+                    <div className="mt-1.5 pt-1.5 border-t border-slate-800 text-[11px] text-blue-300">
+                      <strong>Certified Supply:</strong> ~85.5% of approved seats enter the active workforce, reflecting an empirical 14.5% national completion dropout rate.
+                    </div>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
+              <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono">
                 {formatNumber(kpis.trainingCapacity)}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium flex flex-wrap items-center gap-1">
                 <span>Approved seats</span>
                 <span className="text-slate-400">&bull;</span>
-                <span className="text-blue-600 dark:text-blue-400 font-semibold" title="Estimated certified candidate supply after 14.5% dropout">
-                  ~{formatNumber(kpis.candidateSupply || Math.round(kpis.trainingCapacity * 0.855))} certified supply
+                <span className="text-blue-600 dark:text-blue-400 font-semibold" title="Estimated certified candidate supply after 14.5% completion dropout">
+                  ~{formatNumber(kpis.candidateSupply || Math.round(kpis.trainingCapacity * 0.855))} certified
                 </span>
               </p>
             </div>
@@ -121,7 +139,7 @@ export const KPICards: React.FC = () => {
               +{kpis.trainingCapacityYoY}% YoY Intake
             </span>
             <span className="text-[11px] text-slate-400 font-medium">
-              Current capacity
+              Sanctioned Capacity
             </span>
           </div>
         </div>
@@ -133,25 +151,30 @@ export const KPICards: React.FC = () => {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Skill Gap
+                </span>
+                <span className="text-[10px] font-mono text-slate-400">
+                  (Deficit / Surplus)
                 </span>
                 <div className="group relative cursor-help">
                   <button
                     type="button"
-                    aria-label="Skill Gap definition"
+                    aria-label="Skill Gap definition: Formula is Job Demand minus Training Supply"
                     className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
                   >
                     <Info className="w-3.5 h-3.5" />
                   </button>
-                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-60 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                    Net gap computed as Job Demand minus Training Supply. A positive gap indicates an unfulfilled worker shortage; a negative gap indicates excess seat capacity.
+                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
+                    <strong className="block text-amber-400 mb-1">Gap = Demand − Supply</strong>
+                    <strong>Positive (+) Gap:</strong> Unfulfilled worker shortage where employer demand exceeds trainee output.<br />
+                    <strong>Negative (−) Gap:</strong> Candidate oversupply where seat intake exceeds employer absorption capacity.
                   </div>
                 </div>
               </div>
               
               <div
-                className={`mt-2 text-2xl sm:text-3xl font-bold tracking-tight font-mono ${
+                className={`mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight font-mono ${
                   isShortage
                     ? 'text-amber-600 dark:text-amber-400'
                     : isOversupply
@@ -162,7 +185,7 @@ export const KPICards: React.FC = () => {
                 {isShortage ? `+${formatNumber(kpis.demandSupplyGap)}` : isOversupply ? `-${formatNumber(kpis.demandSupplyGap)}` : '0'}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                {isShortage ? 'Net worker shortage' : isOversupply ? 'Net candidate surplus' : 'Balanced equilibrium'}
+                {isShortage ? 'Net worker shortage (+deficit)' : isOversupply ? 'Net seat oversupply (-surplus)' : 'Balanced equilibrium'}
               </p>
             </div>
 
@@ -215,28 +238,29 @@ export const KPICards: React.FC = () => {
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Trades Needing Attention
                 </span>
                 <div className="group relative cursor-help">
                   <button
                     type="button"
-                    aria-label="Trades Needing Attention definition"
+                    aria-label="Trades Needing Attention definition: Occupations exceeding early-warning thresholds"
                     className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 rounded p-0.5"
                   >
                     <Info className="w-3.5 h-3.5" />
                   </button>
-                  <div role="tooltip" className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-60 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                    Number of occupations in current scope triggering early warning alerts for acute shortage or chronic oversupply.
+                  <div role="tooltip" className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
+                    <strong className="block text-rose-400 mb-1">Priority Policy Alerts</strong>
+                    Occupations triggering early warning flags due to either acute shortages (&gt;2,000 unfulfilled positions) or chronic oversupply (&gt;1,500 surplus training seats) requiring planning committee review.
                   </div>
                 </div>
               </div>
               
-              <div className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-rose-600 dark:text-rose-400 font-mono">
+              <div className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-rose-600 dark:text-rose-400 font-mono">
                 {tradesNeedingAttentionCount}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                Priority alerts in scope
+                Occupational alerts in active scope
               </p>
             </div>
 

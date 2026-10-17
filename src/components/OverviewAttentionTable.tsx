@@ -106,21 +106,22 @@ export const OverviewAttentionTable: React.FC = () => {
 
       {/* Responsive Table */}
       <div className="overflow-x-auto -mx-5 px-5">
-        <table className="w-full min-w-[640px] text-left text-xs border-collapse">
+        <table className="w-full min-w-[700px] text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/40">
-              <th className="py-2.5 px-3">District</th>
+              <th className="py-2.5 px-3">District &amp; State</th>
               <th className="py-2.5 px-3">Skill / Trade</th>
-              <th className="py-2.5 px-3 text-right">Job Demand</th>
-              <th className="py-2.5 px-3 text-right">Estimated Supply</th>
+              <th className="py-2.5 px-3 text-right">Demand (Openings)</th>
+              <th className="py-2.5 px-3 text-right">Supply (Seats)</th>
+              <th className="py-2.5 px-3 text-right">Net Gap</th>
               <th className="py-2.5 px-3 text-center">Status</th>
-              <th className="py-2.5 px-3">Suggested Action</th>
+              <th className="py-2.5 px-3">Evidence-Based Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {prioritizedRecords.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-slate-400">
+                <td colSpan={7} className="py-8 text-center text-slate-400">
                   No records match the active filter criteria.
                 </td>
               </tr>
@@ -149,7 +150,7 @@ export const OverviewAttentionTable: React.FC = () => {
                       {record.trade}
                     </div>
                     <div className="text-[10px] text-slate-400">
-                      {record.ncoCode} &bull; {record.nsqfLevel}
+                      NCO {record.ncoCode} &bull; {record.nsqfLevel}
                     </div>
                   </td>
                   <td className="py-3 px-3 text-right font-mono font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
@@ -157,6 +158,11 @@ export const OverviewAttentionTable: React.FC = () => {
                   </td>
                   <td className="py-3 px-3 text-right font-mono font-medium text-slate-800 dark:text-slate-200 whitespace-nowrap">
                     {record.trainingCapacity.toLocaleString('en-IN')}
+                  </td>
+                  <td className={`py-3 px-3 text-right font-mono font-bold whitespace-nowrap ${
+                    record.gap > 0 ? 'text-amber-600 dark:text-amber-400' : record.gap < 0 ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600'
+                  }`}>
+                    {record.gap > 0 ? `+${record.gap.toLocaleString('en-IN')}` : record.gap.toLocaleString('en-IN')}
                   </td>
                   <td className="py-3 px-3 text-center whitespace-nowrap">
                     {getStatusBadge(record.status, record.gap)}

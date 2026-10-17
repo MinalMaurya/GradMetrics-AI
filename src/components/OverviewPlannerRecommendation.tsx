@@ -175,6 +175,16 @@ export const OverviewPlannerRecommendation: React.FC = () => {
 
       </div>
 
+      {/* Advisory Planning Notice */}
+      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <div className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
+          <span>
+            Advisory Notice: These recommendations are data-driven decision-support suggestions for State Skill Development Missions (SSDMs) and District Skill Committees. They are intended for capacity scenario testing and require statutory review before budgetary reallocation.
+          </span>
+        </div>
+      </div>
+
     </div>
   );
 };

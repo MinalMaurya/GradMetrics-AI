@@ -460,16 +460,23 @@ export const ForecastChart: React.FC = () => {
       )}
 
       {/* Explanatory Callout & Provenance Footnote */}
-      <div className="mt-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
-        <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-300">
-          <Info className="w-4 h-4 text-blue-500 shrink-0" />
-          <span>
-            {dataProvenanceNote} &bull; <strong className="font-semibold text-slate-800 dark:text-slate-200">Statistical Planning Estimates</strong>: Projections are indicative econometric estimates, not guaranteed outcomes.
-          </span>
+      <div className="mt-4 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex flex-col space-y-2 text-xs">
+        <div className="flex items-start space-x-2 text-slate-700 dark:text-slate-300">
+          <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+          <div className="leading-relaxed">
+            <strong className="text-slate-900 dark:text-white font-semibold">Forecasting Assumptions &amp; Model Uncertainty: </strong>
+            Longitudinal projections (2027–2028) are computed via Holt&rsquo;s Linear Exponential Smoothing (&alpha;=0.65, &beta;=0.30) and validated out-of-time against 2025 holdouts with zero in-sample leakage.
+            80% confidence interval bands account for historical volatility across focus trades.
+            <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+              <strong className="text-amber-700 dark:text-amber-400">Statutory Planning Notice: </strong>
+              Forecasts are indicative statistical projections designed to assist institutional capacity calibration. They reflect historical trend persistence and cannot predict unexpected macroeconomic disruptions, sudden factory openings/closures, or unannounced policy mandates. They must not be interpreted as guaranteed future employment figures.
+            </div>
+          </div>
         </div>
-        <span className="text-[11px] text-slate-500 font-mono shrink-0">
-          Model: Holt's Linear (α=0.65, β=0.30)
-        </span>
+        <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60 flex flex-wrap items-center justify-between text-[11px] text-slate-400">
+          <span>{dataProvenanceNote}</span>
+          <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">Holdout Validation RMSE Grounded &bull; Out-of-Time Backtested</span>
+        </div>
       </div>
 
     </div>

@@ -13,7 +13,7 @@ import { Info, TrendingUp, AlertCircle } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 
 export const OverviewDemandSupplyChart: React.FC = () => {
-  const { tradeRecords, filters, isDarkMode } = useAnalytics();
+  const { tradeRecords, filters, isDarkMode, datasetMetadata } = useAnalytics();
 
   // Aggregate demand and supply by trade for trades in active scope
   const chartData = React.useMemo(() => {
@@ -32,11 +32,34 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       .slice(0, 6);
   }, [tradeRecords]);
 
+  // Evidence-based dynamic insights derived from chart data
+  const dynamicInsight = React.useMemo(() => {
+    if (chartData.length === 0) return null;
+
+    const sortedByDeficit = [...chartData].map(t => ({
+      ...t,
+      gap: t.demand - t.supply
+    })).sort((a, b) => b.gap - a.gap);
+
+    const highestShortage = sortedByDeficit.find(t => t.gap > 0);
+    const highestSurplus = [...sortedByDeficit].reverse().find(t => t.gap < 0);
+
+    return {
+      highestShortage,
+      highestSurplus
+    };
+  }, [chartData]);
+
   // Format Y-axis numbers
   const formatYAxis = (val: number) => {
     if (val >= 1000) return `${Math.round(val / 1000)}k`;
     return val.toString();
   };
+
+  const activeScopeLabel =
+    filters.district !== 'All Districts'
+      ? `${filters.district}, ${filters.geography}`
+      : filters.geography;
 
   // Custom polished tooltip
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -47,7 +70,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       const isShortage = gap > 0;
 
       return (
-        <div className="bg-slate-900 text-white p-3 rounded-lg shadow-xl text-xs min-w-[200px] border border-slate-700">
+        <div className="bg-slate-900 text-white p-3 rounded-lg shadow-xl text-xs min-w-[210px] border border-slate-700">
           <div className="font-bold text-slate-100 border-b border-slate-800 pb-1.5 mb-2">
             {label}
           </div>
@@ -55,7 +78,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
             <div className="flex justify-between items-center text-slate-300">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-sm bg-blue-500 inline-block" />
-                Job Demand:
+                Job Demand (Openings):
               </span>
               <span className="font-mono font-semibold text-white">
                 {demand.toLocaleString('en-IN')}
@@ -64,7 +87,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
             <div className="flex justify-between items-center text-slate-300">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-sm bg-slate-400 inline-block" />
-                Training Capacity:
+                Training Capacity (Seats):
               </span>
               <span className="font-mono font-semibold text-white">
                 {supply.toLocaleString('en-IN')}
@@ -89,11 +112,16 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-            Job Demand vs Training Supply
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+              Job Demand vs Training Supply
+            </h2>
+            <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+              Unit: Annual Positions
+            </span>
+          </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Comparing employer job openings against institutional training supply for key trades in {filters.geography}
+            Comparing employer job openings against institutional training supply for key trades in {activeScopeLabel} ({datasetMetadata.reportingPeriod})
           </p>
         </div>
 
@@ -165,14 +193,35 @@ export const OverviewDemandSupplyChart: React.FC = () => {
         )}
       </div>
 
+      {/* Evidence-Based Plain-Language Data Insights */}
+      {dynamicInsight && (dynamicInsight.highestShortage || dynamicInsight.highestSurplus) && (
+        <div className="mt-4 p-3.5 rounded-lg bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 text-xs space-y-1.5">
+          <div className="flex items-center gap-1.5 font-bold text-blue-900 dark:text-blue-200">
+            <TrendingUp className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span>Evidence-Based Planning Insight for {activeScopeLabel}:</span>
+          </div>
+          <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
+            {dynamicInsight.highestShortage && (
+              <>
+                Highest unfulfilled employer demand is in <strong className="text-slate-900 dark:text-white">{dynamicInsight.highestShortage.trade}</strong> (+{dynamicInsight.highestShortage.gap.toLocaleString('en-IN')} positions deficit), where employer vacancies outpace training seats by {Math.round((dynamicInsight.highestShortage.demand / (dynamicInsight.highestShortage.supply || 1)) * 10) / 10}x.{' '}
+              </>
+            )}
+            {dynamicInsight.highestSurplus && (
+              <>
+                Conversely, <strong className="text-slate-900 dark:text-white">{dynamicInsight.highestSurplus.trade}</strong> exhibits an estimated excess intake capacity of {Math.abs(dynamicInsight.highestSurplus.gap).toLocaleString('en-IN')} seats relative to current market absorption.
+              </>
+            )}
+          </p>
+        </div>
+      )}
+
       {/* Short explanation of what the chart means */}
-      <div className="mt-4 p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
+      <div className="mt-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
         <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-slate-900 dark:text-white font-semibold">How to read this chart: </strong>
-          Blue bars show employer vacancies; slate-grey bars show training seat capacity.
-          Where blue exceeds grey (such as Data Engineering or Solar Technician), there is a net worker shortage.
-          Where grey exceeds blue (such as Retail Sales), institutional training intake exceeds current market absorption.
+          <strong className="text-slate-900 dark:text-white font-semibold">How to interpret: </strong>
+          Blue bars represent expected employer vacancies (Demand); slate-grey bars represent sanctioned institutional training seats (Supply).
+          Where blue exceeds grey, industry faces recruitment shortages. Where grey exceeds blue, training capacity exceeds local placement demand.
         </div>
       </div>
 

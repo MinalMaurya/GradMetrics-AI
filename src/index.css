@@ -56,7 +56,7 @@
 /* Polished card depth and interactive hover utilities */
 @layer components {
   .card-surface {
-    @apply bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-xs;
+    @apply bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-sm;
   }
 
   /* Clean, restrained government-dashboard interactive card hover (no top lines or pseudo-elements) */

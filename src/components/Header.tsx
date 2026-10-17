@@ -12,12 +12,17 @@ import {
   Download,
   Code2,
   CheckCircle2,
-  RotateCcw
+  RotateCcw,
+  ArrowLeft
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { Language } from '../types/analytics';
 
-export const Header: React.FC = () => {
+export interface HeaderProps {
+  onNavigateHome?: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
   const {
     isDarkMode,
     toggleDarkMode,
@@ -55,16 +60,39 @@ export const Header: React.FC = () => {
           {/* Brand Identity & Subtitle */}
           <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
             {/* Logo */}
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-xs shrink-0 overflow-hidden p-1">
-              <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
-            </div>
+            {onNavigateHome ? (
+              <button
+                type="button"
+                onClick={onNavigateHome}
+                className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-xs shrink-0 overflow-hidden p-1 hover:border-blue-400 dark:hover:border-blue-500 transition cursor-pointer"
+                title="Return to Public Homepage"
+                aria-label="Return to Public Homepage"
+              >
+                <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
+              </button>
+            ) : (
+              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-xs shrink-0 overflow-hidden p-1">
+                <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
+              </div>
+            )}
 
             {/* Title, PS Badge & Subtitle */}
             <div className="flex flex-col justify-center min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-base sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
-                  GradMetrics <span className="text-blue-600 dark:text-blue-400">AI</span>
-                </span>
+                {onNavigateHome ? (
+                  <button
+                    type="button"
+                    onClick={onNavigateHome}
+                    className="text-base sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 transition text-left cursor-pointer"
+                    title="Return to Public Homepage"
+                  >
+                    GradMetrics <span className="text-blue-600 dark:text-blue-400">AI</span>
+                  </button>
+                ) : (
+                  <span className="text-base sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
+                    GradMetrics <span className="text-blue-600 dark:text-blue-400">AI</span>
+                  </span>
+                )}
                 <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800 shrink-0">
                   SIH 2026 &bull; PS 26246
                 </span>
@@ -75,9 +103,21 @@ export const Header: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Actions: Load Demo Data + Light/Dark Toggle + Secondary Tools Menu */}
+          {/* Right Actions: Public Home + Load Demo Data + Light/Dark Toggle + Secondary Tools Menu */}
           <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
             
+            {/* Back to Home Button */}
+            {onNavigateHome && (
+              <button
+                onClick={onNavigateHome}
+                className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition duration-200 cursor-pointer min-h-[40px]"
+                title="Return to Public Homepage"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="hidden sm:inline">Home</span>
+              </button>
+            )}
+
             {/* Primary Action Button: Load Demo Data */}
             <button
               onClick={loadDemoScenario}

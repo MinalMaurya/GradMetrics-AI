@@ -28,6 +28,7 @@ import { ApiLayerModal } from './components/ApiLayerModal';
 import { NotificationDrawer } from './components/NotificationDrawer';
 import { DataIngestionModal } from './components/DataIngestionModal';
 import { DistrictComparisonModal } from './components/DistrictComparisonModal';
+import { PublicHomepage } from './components/PublicHomepage';
 import { ScrollReveal } from './components/ScrollReveal';
 import {
   ShieldCheck,
@@ -47,6 +48,34 @@ export type SectionId = typeof VALID_SECTIONS[number];
 
 export function isValidSection(val: unknown): val is SectionId {
   return typeof val === 'string' && VALID_SECTIONS.includes(val as SectionId);
+}
+
+export type AppRoute = 'home' | 'dashboard';
+
+export function getInitialRoute(): AppRoute {
+  if (typeof window === 'undefined') return 'home';
+
+  try {
+    const pathname = window.location.pathname.toLowerCase();
+    // 1. Direct pathname: /dashboard, /dashboard/
+    if (pathname.startsWith('/dashboard')) {
+      return 'dashboard';
+    }
+
+    // 2. Hash-based dashboard or section indicator: e.g. #dashboard, #overview, #skill-gaps
+    const rawHash = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
+    if (rawHash === 'dashboard' || isValidSection(rawHash)) {
+      return 'dashboard';
+    }
+
+    // 3. Query params: e.g. ?view=dashboard or ?section=skill-gaps
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('view') === 'dashboard' || isValidSection(params.get('section'))) {
+      return 'dashboard';
+    }
+  } catch {}
+
+  return 'home';
 }
 
 export function getInitialSection(): SectionId {
@@ -80,9 +109,20 @@ export function getInitialSection(): SectionId {
   return 'overview';
 }
 
-const DashboardContent: React.FC = () => {
+interface DashboardContentProps {
+  onNavigateHome: () => void;
+  activeSection: SectionId;
+  setActiveSection: (sec: string) => void;
+}
+
+const DashboardContent: React.FC<DashboardContentProps> = ({
+  onNavigateHome,
+  activeSection,
+  setActiveSection
+}) => {
   const {
     filters,
+    datasetMetadata,
     setIsPolicySimulatorOpen,
     setIsExportModalOpen,
     setIsApiModalOpen,
@@ -90,57 +130,16 @@ const DashboardContent: React.FC = () => {
     setIsDistrictCompareOpen
   } = useAnalytics();
 
-  const [activeSection, setActiveSectionState] = useState<SectionId>(getInitialSection);
-
-  // Synchronize section changes with URL hash, browser history, and sessionStorage
-  const setActiveSection = useCallback((sec: string) => {
-    const target: SectionId = isValidSection(sec) ? sec : 'overview';
-    setActiveSectionState(target);
-
-    if (typeof window !== 'undefined') {
-      try {
-        sessionStorage.setItem('gradmetrics_active_section', target);
-        if (window.location.hash !== `#${target}`) {
-          window.history.pushState({ section: target }, '', `#${target}`);
-        }
-      } catch {}
-    }
-  }, []);
-
-  // Listen to browser Back and Forward navigation (popstate & hashchange)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleLocationChange = () => {
-      const current = getInitialSection();
-      setActiveSectionState(current);
-    };
-
-    // Ensure URL hash and sessionStorage reflect the current active section
-    try {
-      const currentHash = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
-      if (!isValidSection(currentHash) && activeSection !== 'overview') {
-        window.history.replaceState({ section: activeSection }, '', `#${activeSection}`);
-      } else if (isValidSection(currentHash) && currentHash !== activeSection) {
-        window.history.replaceState({ section: activeSection }, '', `#${activeSection}`);
-      }
-      sessionStorage.setItem('gradmetrics_active_section', activeSection);
-    } catch {}
-
-    window.addEventListener('popstate', handleLocationChange);
-    window.addEventListener('hashchange', handleLocationChange);
-
-    return () => {
-      window.removeEventListener('popstate', handleLocationChange);
-      window.removeEventListener('hashchange', handleLocationChange);
-    };
-  }, [activeSection]);
+  const activeScopeLabel =
+    filters.district !== 'All Districts'
+      ? `${filters.district}, ${filters.geography}`
+      : filters.geography;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       
-      {/* 1. Simplified Header (Logo, Subtitle, PS Badge, Load Demo Data, Dark/Light Toggle) */}
-      <Header />
+      {/* 1. Header with Home Link, Logo, Subtitle, PS Badge, Load Demo Data, Dark/Light Toggle */}
+      <Header onNavigateHome={onNavigateHome} />
 
       {/* 2. Simplified 4-Tab Navigation */}
       <DashboardNavigation
@@ -163,20 +162,37 @@ const DashboardContent: React.FC = () => {
               <div className="bg-white dark:bg-slate-900 rounded-xl p-5 sm:p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800 mb-2">
+                    <div className="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300 border border-blue-200 dark:border-blue-800 mb-2">
                       <span>SIH 2026 &bull; PS 26246</span>
                       <span>&bull;</span>
                       <span>Government Planning Lens</span>
+                      <span>&bull;</span>
+                      <span className="text-blue-800 dark:text-blue-200 font-mono">{datasetMetadata.provenance}</span>
                     </div>
                     <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                      India's Skill Demand Overview
+                      India's Skill Demand &amp; Training Supply Overview
                     </h1>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl leading-relaxed">
-                      See where employers need workers and whether current training capacity can meet future demand.
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-3xl leading-relaxed">
+                      GradMetrics AI evaluates employer vacancy demand against institutional training capacity to help government planners prevent critical shortages and reduce graduate underemployment.
                     </p>
+                    
+                    <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Current View:</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                        {activeScopeLabel}
+                      </span>
+                      <span>&bull;</span>
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                        {filters.sector}
+                      </span>
+                      <span>&bull;</span>
+                      <span className="text-[11px]">
+                        Horizon: <strong className="text-slate-700 dark:text-slate-300">{datasetMetadata.reportingPeriod}</strong>
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 self-start md:self-auto">
+                  <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
                     <button
                       onClick={() => setIsExportModalOpen(true)}
                       className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition cursor-pointer"
@@ -525,10 +541,89 @@ const DashboardContent: React.FC = () => {
   );
 };
 
+const MainApp: React.FC = () => {
+  const [currentRoute, setCurrentRoute] = useState<AppRoute>(getInitialRoute);
+  const [activeSection, setActiveSectionState] = useState<SectionId>(getInitialSection);
+
+  const navigateToDashboard = useCallback((section?: string) => {
+    const targetSection: SectionId = isValidSection(section) ? section : 'overview';
+    setActiveSectionState(targetSection);
+    setCurrentRoute('dashboard');
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('gradmetrics_active_section', targetSection);
+        const newUrl = `/dashboard#${targetSection}`;
+        if (window.location.pathname !== '/dashboard' || window.location.hash !== `#${targetSection}`) {
+          window.history.pushState({ route: 'dashboard', section: targetSection }, '', newUrl);
+        }
+      } catch {}
+    }
+  }, []);
+
+  const navigateToHome = useCallback(() => {
+    setCurrentRoute('home');
+    if (typeof window !== 'undefined') {
+      try {
+        if (window.location.pathname !== '/' || window.location.hash) {
+          window.history.pushState({ route: 'home' }, '', '/');
+        }
+      } catch {}
+    }
+  }, []);
+
+  const setActiveSection = useCallback((sec: string) => {
+    const target: SectionId = isValidSection(sec) ? sec : 'overview';
+    setActiveSectionState(target);
+
+    if (typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('gradmetrics_active_section', target);
+        const newUrl = `/dashboard#${target}`;
+        if (window.location.hash !== `#${target}` || window.location.pathname !== '/dashboard') {
+          window.history.pushState({ route: 'dashboard', section: target }, '', newUrl);
+        }
+      } catch {}
+    }
+  }, []);
+
+  // Listen to browser Back and Forward navigation (popstate & hashchange)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleLocationChange = () => {
+      const route = getInitialRoute();
+      const section = getInitialSection();
+      setCurrentRoute(route);
+      setActiveSectionState(section);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  if (currentRoute === 'home') {
+    return <PublicHomepage onExploreDashboard={navigateToDashboard} />;
+  }
+
+  return (
+    <DashboardContent
+      onNavigateHome={navigateToHome}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+    />
+  );
+};
+
 export const App: React.FC = () => {
   return (
     <AnalyticsProvider>
-      <DashboardContent />
+      <MainApp />
     </AnalyticsProvider>
   );
 };

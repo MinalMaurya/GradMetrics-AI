@@ -28,9 +28,14 @@ import { SkillDomainGap, GapStatus } from '../types/analytics';
 type ViewTab = 'chart' | 'matrix';
 
 export const SkillGapMatrix: React.FC = () => {
-  const { skillDomains, isDarkMode, setTrade } = useAnalytics();
+  const { skillDomains, isDarkMode, setTrade, filters } = useAnalytics();
   const [activeTab, setActiveTab] = useState<ViewTab>('chart');
   const [selectedDomain, setSelectedDomain] = useState<SkillDomainGap | null>(null);
+
+  const activeScopeLabel =
+    filters.district !== 'All Districts'
+      ? `${filters.district}, ${filters.geography}`
+      : filters.geography;
 
   const topCritical = React.useMemo(() => {
     const list = skillDomains.filter((d) => d.category === 'Critical' || d.gap > 25);
@@ -143,7 +148,7 @@ export const SkillGapMatrix: React.FC = () => {
             </span>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Normalized comparison: Labour Demand Index vs Training Capacity (0–100)
+            Normalized comparison: Labour Demand Index vs Training Capacity (0–100 Scale) for {activeScopeLabel}
           </p>
         </div>
 
