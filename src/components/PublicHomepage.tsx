@@ -378,6 +378,18 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
                 );
               })}
             </div>
+
+            {/* Direct How It Works CTA to Live Dashboard */}
+            <div className="mt-10 pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                onClick={() => onExploreDashboard('overview')}
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-500/20 hover:shadow-lg transition cursor-pointer"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Explore Live Dashboard</span>
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </button>
+            </div>
           </div>
         </section>
 

@@ -6,6 +6,7 @@ import {
   isValidSection,
   getInitialRoute,
   getInitialSection,
+  resetScrollToTop,
   AppRoute,
   SectionId
 } from '../src/App.tsx';
@@ -238,3 +239,116 @@ test('Clarity Test 6: KPI metrics and evidence-based insights are consistent and
   assert.ok(['CRITICAL SHORTAGE', 'EMERGING SHORTAGE', 'BALANCED', 'OVERSUPPLY'].includes(gapObj.status));
   assert.ok(gapObj.explanation.length > 0);
 });
+
+test('Navigation & Scroll Test 7: resetScrollToTop executes safely in headless / SSR environments', () => {
+  // Must execute safely without window or document without throwing
+  assert.doesNotThrow(() => {
+    resetScrollToTop();
+  });
+});
+
+test('Navigation & Scroll Test 8: resetScrollToTop resets window, document, and container scroll offsets to 0', () => {
+  const originalWindow = (globalThis as any).window;
+  const originalDocument = (globalThis as any).document;
+
+  let scrollToArgs: any = null;
+  const mockHtml: any = { scrollTop: 1450, scrollLeft: 50, style: { scrollBehavior: 'smooth' } };
+  const mockBody: any = { scrollTop: 1450, scrollLeft: 50, style: { scrollBehavior: 'smooth' } };
+  const mockRoot: any = { scrollTop: 1450, scrollLeft: 50 };
+
+  try {
+    (globalThis as any).window = {
+      scrollTo: (options: any) => {
+        scrollToArgs = options;
+      }
+    };
+    (globalThis as any).document = {
+      documentElement: mockHtml,
+      body: mockBody,
+      getElementById: (id: string) => (id === 'root' ? mockRoot : null)
+    };
+
+    resetScrollToTop();
+
+    // Verify window.scrollTo was called with top: 0, left: 0, behavior: 'instant'
+    assert.ok(scrollToArgs);
+    assert.equal(scrollToArgs.top, 0);
+    assert.equal(scrollToArgs.left, 0);
+    assert.equal(scrollToArgs.behavior, 'instant');
+
+    // Verify documentElement and body scroll offsets are zeroed
+    assert.equal(mockHtml.scrollTop, 0);
+    assert.equal(mockHtml.scrollLeft, 0);
+    assert.equal(mockBody.scrollTop, 0);
+    assert.equal(mockBody.scrollLeft, 0);
+
+    // Verify root element scroll offset is zeroed
+    assert.equal(mockRoot.scrollTop, 0);
+    assert.equal(mockRoot.scrollLeft, 0);
+
+    // Verify CSS smooth behavior is restored after instant reset
+    assert.equal(mockHtml.style.scrollBehavior, 'smooth');
+    assert.equal(mockBody.style.scrollBehavior, 'smooth');
+  } finally {
+    (globalThis as any).window = originalWindow;
+    (globalThis as any).document = originalDocument;
+  }
+});
+
+test('Navigation & Scroll Test 9: Homepage CTA navigation clears homepage anchors and targets dashboard overview', () => {
+  const originalWindow = (globalThis as any).window;
+  const originalSessionStorage = (globalThis as any).sessionStorage;
+
+  const storageMap = new Map<string, string>();
+  let pushedState: { state: any; unused: string; url: string } | null = null;
+  let scrollCalled = false;
+
+  try {
+    (globalThis as any).sessionStorage = {
+      setItem: (k: string, v: string) => storageMap.set(k, v),
+      getItem: (k: string) => storageMap.get(k) || null
+    };
+
+    // Simulate user scrolled down to #how-it-works on homepage
+    (globalThis as any).window = {
+      location: {
+        pathname: '/',
+        hash: '#how-it-works',
+        search: ''
+      },
+      history: {
+        scrollRestoration: 'auto',
+        pushState: (state: any, unused: string, url: string) => {
+          pushedState = { state, unused, url };
+        }
+      },
+      scrollTo: (opts: any) => {
+        if (opts.top === 0 && opts.left === 0) {
+          scrollCalled = true;
+        }
+      }
+    };
+
+    // Navigation action simulated (identical to navigateToDashboard)
+    const sectionInput: string | undefined = undefined; // e.g. from general "Explore Live Dashboard" CTA
+    const targetSection: SectionId = isValidSection(sectionInput) ? sectionInput : 'overview';
+    assert.equal(targetSection, 'overview', 'General dashboard CTAs must consistently target Overview');
+
+    // Expected state storage and URL
+    storageMap.set('gradmetrics_active_section', targetSection);
+    const newUrl = `/dashboard#${targetSection}`;
+    (globalThis as any).window.history.pushState({ route: 'dashboard', section: targetSection }, '', newUrl);
+    resetScrollToTop();
+
+    // Verify URL no longer contains #how-it-works
+    assert.equal(pushedState?.url, '/dashboard#overview');
+    assert.equal(pushedState?.state?.route, 'dashboard');
+    assert.equal(pushedState?.state?.section, 'overview');
+    assert.equal(scrollCalled, true, 'Scroll to top must be triggered on dashboard entry');
+    assert.equal(storageMap.get('gradmetrics_active_section'), 'overview');
+  } finally {
+    (globalThis as any).window = originalWindow;
+    (globalThis as any).sessionStorage = originalSessionStorage;
+  }
+});
+

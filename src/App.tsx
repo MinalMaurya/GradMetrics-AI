@@ -109,6 +109,50 @@ export function getInitialSection(): SectionId {
   return 'overview';
 }
 
+/**
+ * Reliably resets the viewport and all document-level scrolling containers to the very top (0, 0).
+ * Temporarily bypasses CSS smooth scrolling so that route transitions are never interrupted or halted midway.
+ */
+export function resetScrollToTop(): void {
+  if (typeof window === 'undefined') return;
+
+  const html = typeof document !== 'undefined' ? document.documentElement : null;
+  const body = typeof document !== 'undefined' ? document.body : null;
+
+  // Temporarily force instant scroll behavior to prevent CSS 'scroll-behavior: smooth'
+  // from delaying, interrupting, or halting programmatic scroll resets
+  const prevHtmlBehavior = html ? html.style.scrollBehavior : '';
+  const prevBodyBehavior = body ? body.style.scrollBehavior : '';
+
+  if (html) html.style.scrollBehavior = 'auto';
+  if (body) body.style.scrollBehavior = 'auto';
+
+  try {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  } catch {
+    window.scrollTo(0, 0);
+  }
+
+  if (html) {
+    html.scrollTop = 0;
+    html.scrollLeft = 0;
+  }
+  if (body) {
+    body.scrollTop = 0;
+    body.scrollLeft = 0;
+  }
+
+  const rootEl = typeof document !== 'undefined' ? document.getElementById('root') : null;
+  if (rootEl) {
+    rootEl.scrollTop = 0;
+    rootEl.scrollLeft = 0;
+  }
+
+  // Restore previous inline scrollBehavior styles
+  if (html) html.style.scrollBehavior = prevHtmlBehavior;
+  if (body) body.style.scrollBehavior = prevBodyBehavior;
+}
+
 interface DashboardContentProps {
   onNavigateHome: () => void;
   activeSection: SectionId;
@@ -129,6 +173,15 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
     setIsDataIngestionOpen,
     setIsDistrictCompareOpen
   } = useAnalytics();
+
+  // Reset scroll to the very top whenever DashboardContent mounts or when active section changes
+  useEffect(() => {
+    resetScrollToTop();
+    const rafId = requestAnimationFrame(() => {
+      resetScrollToTop();
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [activeSection]);
 
   const activeScopeLabel =
     filters.district !== 'All Districts'
@@ -545,6 +598,16 @@ const MainApp: React.FC = () => {
   const [currentRoute, setCurrentRoute] = useState<AppRoute>(getInitialRoute);
   const [activeSection, setActiveSectionState] = useState<SectionId>(getInitialSection);
 
+  // Configure browser scroll restoration to 'manual' so the browser engine
+  // does not automatically force old scroll positions during SPA route transitions
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      try {
+        window.history.scrollRestoration = 'manual';
+      } catch {}
+    }
+  }, []);
+
   const navigateToDashboard = useCallback((section?: string) => {
     const targetSection: SectionId = isValidSection(section) ? section : 'overview';
     setActiveSectionState(targetSection);
@@ -558,6 +621,10 @@ const MainApp: React.FC = () => {
           window.history.pushState({ route: 'dashboard', section: targetSection }, '', newUrl);
         }
       } catch {}
+      resetScrollToTop();
+      requestAnimationFrame(() => {
+        resetScrollToTop();
+      });
     }
   }, []);
 
@@ -569,6 +636,10 @@ const MainApp: React.FC = () => {
           window.history.pushState({ route: 'home' }, '', '/');
         }
       } catch {}
+      resetScrollToTop();
+      requestAnimationFrame(() => {
+        resetScrollToTop();
+      });
     }
   }, []);
 
@@ -584,6 +655,7 @@ const MainApp: React.FC = () => {
           window.history.pushState({ route: 'dashboard', section: target }, '', newUrl);
         }
       } catch {}
+      resetScrollToTop();
     }
   }, []);
 
@@ -596,6 +668,12 @@ const MainApp: React.FC = () => {
       const section = getInitialSection();
       setCurrentRoute(route);
       setActiveSectionState(section);
+      if (route === 'dashboard') {
+        resetScrollToTop();
+        requestAnimationFrame(() => {
+          resetScrollToTop();
+        });
+      }
     };
 
     window.addEventListener('popstate', handleLocationChange);
