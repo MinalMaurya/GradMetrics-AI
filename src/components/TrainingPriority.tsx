@@ -61,7 +61,7 @@ export const TrainingPriority: React.FC = () => {
               <div
                 key={item.trade}
                 onClick={() => setTrade(item.trade as any)}
-                className={`p-2.5 rounded-lg border transition cursor-pointer group ${
+                className={`card-interactive p-2.5 rounded-lg border shadow-xs cursor-pointer group ${
                   isSelected
                     ? 'bg-blue-50/80 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 ring-1 ring-blue-500'
                     : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800'

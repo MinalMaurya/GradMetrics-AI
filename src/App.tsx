@@ -234,7 +234,7 @@ const DashboardContent: React.FC = () => {
 
             {/* District Comparison Quick Action Bar */}
             <ScrollReveal delay={100}>
-              <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                     District &amp; State Gap Analytics
@@ -253,32 +253,36 @@ const DashboardContent: React.FC = () => {
               </div>
             </ScrollReveal>
 
-            {/* Gap Analysis Matrix & Early Warnings */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
-              <div className="lg:col-span-7 flex flex-col gap-5 sm:gap-6">
+            {/* Responsive Balanced Grid: Aligned Chart Panels and Telemetry Insights */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 items-start">
+              {/* Left Column (Balanced Desktop Width) */}
+              <div className="flex flex-col gap-5 sm:gap-6">
                 <ScrollReveal delay={100}>
                   <SkillGapMatrix />
                 </ScrollReveal>
                 <ScrollReveal delay={280}>
                   <SupplyDemandChart />
                 </ScrollReveal>
-                <ScrollReveal delay={460}>
-                  <PlacementAnalytics />
-                </ScrollReveal>
               </div>
 
-              <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-6">
+              {/* Right Column (Balanced Desktop Width) */}
+              <div className="flex flex-col gap-5 sm:gap-6">
                 <ScrollReveal delay={180}>
                   <EarlyWarningSystem />
                 </ScrollReveal>
                 <ScrollReveal delay={360}>
                   <TrainingPriority />
                 </ScrollReveal>
-                <ScrollReveal delay={540}>
-                  <RegionalOverview />
+                <ScrollReveal delay={460}>
+                  <PlacementAnalytics />
                 </ScrollReveal>
               </div>
             </div>
+
+            {/* District & State Demand-Supply Overview: Full-Width Panel below Chart Panels */}
+            <ScrollReveal delay={540} as="section" aria-label="District & State Demand-Supply Overview">
+              <RegionalOverview />
+            </ScrollReveal>
           </div>
         )}
 
@@ -355,7 +359,7 @@ const DashboardContent: React.FC = () => {
 
                 {/* Ingestion Trigger Card & Heterogeneous Pipeline */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-emerald-400 dark:hover:border-emerald-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                  <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col justify-between">
                     <div>
                       <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
                         <UploadCloud className="w-5 h-5" />
@@ -415,7 +419,7 @@ const DashboardContent: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                  <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col justify-between">
                     <div>
                       <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
                         <FileCheck className="w-5 h-5" />
@@ -434,7 +438,7 @@ const DashboardContent: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out flex flex-col justify-between">
+                  <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs flex flex-col justify-between">
                     <div>
                       <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
                         <Code2 className="w-5 h-5" />

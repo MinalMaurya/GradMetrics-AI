@@ -59,18 +59,65 @@
     @apply bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-xs;
   }
 
+  /* Clean, restrained government-dashboard interactive card hover (no top lines or pseudo-elements) */
   .card-interactive {
-    @apply transition-all duration-450 ease-out cursor-pointer;
+    position: relative;
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 450ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 450ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .card-interactive:hover {
-    transform: translateY(-3px);
-    @apply shadow-md border-blue-400 dark:border-blue-600/70;
+    transform: translateY(-2.5px);
+    border-color: #60a5fa;
+    box-shadow: 0 10px 22px -4px rgba(37, 99, 235, 0.09), 0 4px 6px -2px rgba(37, 99, 235, 0.05);
+  }
+
+  .dark .card-interactive:hover {
+    transform: translateY(-2.5px);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 22px -4px rgba(37, 99, 235, 0.22), 0 4px 6px -2px rgba(15, 23, 42, 0.45);
   }
 
   .card-interactive:focus-visible {
     @apply ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-900 outline-none;
   }
+
+  /* Make sure clickable cards display pointer, while non-button cards remain natural */
+  .card-interactive[role="button"],
+  button.card-interactive,
+  .card-interactive.cursor-pointer {
+    cursor: pointer;
+  }
+}
+
+/* Restrained interactive chart bar highlights without altering data or legends */
+.recharts-bar-rectangle {
+  transition: opacity 250ms ease;
+  cursor: pointer;
+}
+
+.recharts-bar-rectangle:hover path,
+.recharts-bar-rectangle:hover rect,
+.recharts-bar-rectangle:hover .recharts-rectangle {
+  filter: brightness(1.14) drop-shadow(0 2px 4px rgba(37, 99, 235, 0.18));
+  opacity: 0.96;
+  transition: filter 200ms ease, opacity 200ms ease;
+}
+
+.dark .recharts-bar-rectangle:hover path,
+.dark .recharts-bar-rectangle:hover rect,
+.dark .recharts-bar-rectangle:hover .recharts-rectangle {
+  filter: brightness(1.2) drop-shadow(0 2px 4px rgba(59, 130, 246, 0.28));
+}
+
+.recharts-tooltip-cursor {
+  fill: rgba(37, 99, 235, 0.05) !important;
+  transition: fill 200ms ease;
+}
+
+.dark .recharts-tooltip-cursor {
+  fill: rgba(59, 130, 246, 0.08) !important;
 }
 
 /* Custom subtle scrollbars */

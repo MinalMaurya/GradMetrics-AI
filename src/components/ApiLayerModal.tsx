@@ -198,6 +198,9 @@ export const ApiLayerModal: React.FC = () => {
                 <span className="font-mono text-xs text-emerald-400 font-bold">
                   {currentEndpointObj.method} {currentEndpointObj.path}{currentEndpointObj.sampleParams}
                 </span>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
+                  200 OK
+                </span>
               </div>
 
               <div className="flex items-center space-x-2">

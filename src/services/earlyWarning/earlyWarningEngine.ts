@@ -97,6 +97,18 @@ export function evaluateTradeEarlyWarning(
     forecast = `Stable equilibrium: Projected supply and demand expected to remain aligned within ±3% over the 24-month horizon.`;
   }
 
+  // Evidence basis distinction (Observed current condition vs Predicted growth risk)
+  let evidenceBasis: 'OBSERVED_SHORTFALL' | 'PREDICTED_HORIZON_RISK' = 'OBSERVED_SHORTFALL';
+  if (type === 'critical-shortage') {
+    evidenceBasis = gapPercent >= thresholds.criticalShortagePercent ? 'OBSERVED_SHORTFALL' : 'PREDICTED_HORIZON_RISK';
+  } else if (type === 'emerging-gap') {
+    evidenceBasis = 'PREDICTED_HORIZON_RISK';
+  } else if (type === 'oversupply') {
+    evidenceBasis = gapPercent <= thresholds.oversupplyPercent ? 'OBSERVED_SHORTFALL' : 'PREDICTED_HORIZON_RISK';
+  } else {
+    evidenceBasis = 'OBSERVED_SHORTFALL';
+  }
+
   return {
     id: `alert-${record.id}-${record.district.toLowerCase()}-${record.trade.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
     type,
@@ -113,6 +125,7 @@ export function evaluateTradeEarlyWarning(
     urgency,
     triggerReason,
     alertTypeDetail,
+    evidenceBasis,
     disclaimer: PLANNING_DISCLAIMER,
     demandGrowth,
     supplyGrowth
@@ -121,7 +134,7 @@ export function evaluateTradeEarlyWarning(
 
 /**
  * Generates and ranks early-warning signals across all provided trade records
- * according to configurable thresholds.
+ * according to configurable thresholds with automatic deduplication.
  */
 export function generateEarlyWarningSignals(
   records: TradeRecord[],
@@ -129,10 +142,21 @@ export function generateEarlyWarningSignals(
 ): EarlyWarningItem[] {
   const alerts = records.map(r => evaluateTradeEarlyWarning(r, thresholds));
 
+  // Deduplicate by trade-state-district key to avoid duplicate alerts
+  const seen = new Set<string>();
+  const uniqueAlerts: EarlyWarningItem[] = [];
+  for (const alert of alerts) {
+    const key = `${alert.state}-${alert.district}-${alert.trade}`.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueAlerts.push(alert);
+    }
+  }
+
   // Sort by urgency: high -> medium -> info, then by absolute gap magnitude
   const urgencyWeight = { high: 3, medium: 2, info: 1 };
 
-  return alerts.sort((a, b) => {
+  return uniqueAlerts.sort((a, b) => {
     const weightDiff = urgencyWeight[b.urgency] - urgencyWeight[a.urgency];
     if (weightDiff !== 0) return weightDiff;
     return Math.abs(b.gap) - Math.abs(a.gap);

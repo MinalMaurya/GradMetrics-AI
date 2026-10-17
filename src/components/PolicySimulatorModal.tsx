@@ -284,6 +284,20 @@ export const PolicySimulatorModal: React.FC = () => {
               </div>
 
             </div>
+
+            {/* Simulation Methodology & Disclaimer Note */}
+            <div className="mt-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300">
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-500" />
+                <span>Simulation Methodology &amp; Planning Elasticity Model</span>
+              </div>
+              <p>
+                Calculated using empirical MSDE planning parameters: +1% approved seat quota yields ~1.2% deficit closure; each standard ITI/PMKVY centre contributes ~1,800 annual training seats; course reallocation directly transfers underutilized seats from saturated vocations to high-shortage skills.
+              </p>
+              <p className="text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                *Simulated Decision Support: Scenario projections are analytical planning estimates for institutional resource allocation and do not guarantee private-sector hiring outcomes.
+              </p>
+            </div>
           </div>
 
           <section className="border-t border-slate-200 dark:border-slate-800 pt-5" aria-labelledby="saved-scenarios-title">

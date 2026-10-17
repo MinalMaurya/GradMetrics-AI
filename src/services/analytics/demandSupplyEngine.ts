@@ -175,11 +175,17 @@ export function computeKPISummary(
 
   const criticalGapSparkline = [22, 20, 18, 17, criticalGapRate];
 
+  const totalCandidateSupply = records.reduce(
+    (sum, r) => sum + (r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855)),
+    0
+  );
+
   return {
     labourDemand: totalDemand,
     labourDemandYoY: avgDemandGrowth,
     labourDemandSparkline: demandSparkline,
     trainingCapacity: totalSupply,
+    candidateSupply: totalCandidateSupply,
     trainingCapacityYoY: avgSupplyGrowth,
     trainingCapacitySparkline: supplySparkline,
     demandSupplyGap: netGap,

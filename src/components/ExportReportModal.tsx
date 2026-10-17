@@ -51,11 +51,14 @@ export const ExportReportModal: React.FC = () => {
         nsqfLevel: r.nsqfLevel,
         labourDemand: r.labourDemand,
         trainingCapacity: r.trainingCapacity,
+        candidateSupply: r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
         demandSupplyGap: r.gap,
         forecast2027: r.forecast2027,
         priorityScore: r.priorityScore,
         status: r.status,
-        recommendedAction: r.recommendedAction
+        recommendedAction: r.recommendedAction,
+        provenance: r.provenance || datasetMetadata.provenance,
+        reportingPeriod: r.reportingPeriod || datasetMetadata.reportingPeriod
       })),
       forecastTimeline: forecastData,
       provenance: datasetMetadata.provenance,
@@ -99,11 +102,14 @@ export const ExportReportModal: React.FC = () => {
       'NSQF Level',
       'Labour Demand',
       'Training Capacity',
+      'Estimated Certified Supply',
       'Demand-Supply Gap',
       'Forecast 2027',
       'Priority Score',
       'Status',
-      'Recommended Action'
+      'Recommended Action',
+      'Provenance',
+      'Reporting Period'
     ];
 
     const rows = tradeRecords.map(r => [
@@ -115,11 +121,14 @@ export const ExportReportModal: React.FC = () => {
       `"${r.nsqfLevel}"`,
       r.labourDemand,
       r.trainingCapacity,
+      r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
       r.gap,
       r.forecast2027,
       r.priorityScore,
       `"${r.status}"`,
-      `"${r.recommendedAction.replace(/"/g, '""')}"`
+      `"${r.recommendedAction.replace(/"/g, '""')}"`,
+      `"${r.provenance || datasetMetadata.provenance}"`,
+      `"${r.reportingPeriod || datasetMetadata.reportingPeriod}"`
     ]);
 
     const csvContent = [...metadataLines, headers.join(','), ...rows.map(r => r.join(','))].join('\n');

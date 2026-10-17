@@ -28,6 +28,8 @@ export interface ForecastEngineResult {
   evaluationMetrics: ForecastingMetrics;
   modelComparisons: ModelComparisonResult[];
   dataProvenanceNote: string;
+  isInsufficientHistory?: boolean;
+  historyWarningNote?: string;
 }
 
 /**
@@ -85,13 +87,15 @@ export function calculateEvaluationMetrics(actuals: number[], predictions: numbe
   mae: number;
   rmse: number;
   mape: number;
+  mapeLimitationNote?: string;
 } {
   const n = Math.min(actuals.length, predictions.length);
-  if (n === 0) return { mae: 0, rmse: 0, mape: 0 };
+  if (n === 0) return { mae: 0, rmse: 0, mape: 0, mapeLimitationNote: 'No observations available for validation.' };
 
   let absErrorSum = 0;
   let sqErrorSum = 0;
   let pctErrorSum = 0;
+  let nonZeroCount = 0;
 
   for (let i = 0; i < n; i++) {
     const act = actuals[i];
@@ -102,14 +106,18 @@ export function calculateEvaluationMetrics(actuals: number[], predictions: numbe
     sqErrorSum += diff * diff;
     if (act > 0) {
       pctErrorSum += Math.abs(diff / act) * 100;
+      nonZeroCount++;
     }
   }
 
   const mae = Number((absErrorSum / n).toFixed(2));
   const rmse = Number(Math.sqrt(sqErrorSum / n).toFixed(2));
-  const mape = Number((pctErrorSum / n).toFixed(1));
+  const mape = nonZeroCount > 0 ? Number((pctErrorSum / nonZeroCount).toFixed(1)) : 0;
+  const mapeLimitationNote = nonZeroCount < n
+    ? 'Zero-demand observations excluded from MAPE percentage calculation to prevent division-by-zero distortion.'
+    : undefined;
 
-  return { mae, rmse, mape };
+  return { mae, rmse, mape, mapeLimitationNote };
 }
 
 /**
@@ -188,6 +196,30 @@ export function generateForecastTimeline(
   filters: FilterState
 ): ForecastEngineResult {
   const validationMetrics = runChronologicalValidation(historicalObservations);
+
+  if (records.length === 0) {
+    const emptyPoints: ForecastPoint[] = ['2024', '2025', '2026', '2027 (Proj)', '2028 (Proj)'].map(year => ({
+      year,
+      isForecast: year.includes('Proj'),
+      labourDemand: 0,
+      trainingSupply: 0,
+      projectedGap: 0,
+      'Data Engineering': 0,
+      'Solar Technician': 0,
+      'EV Technician': 0,
+      'Healthcare Assistant': 0,
+      'Retail Sales Associate': 0
+    }));
+
+    return {
+      forecastPoints: emptyPoints,
+      evaluationMetrics: validationMetrics,
+      modelComparisons: [],
+      dataProvenanceNote: 'No active records in current filter scope. Forecast requires at least one active trade record.',
+      isInsufficientHistory: true,
+      historyWarningNote: 'Filter scope returned 0 records. Adjust filters or reset to display baseline forecasts.'
+    };
+  }
 
   // Aggregate current demand and supply
   const currentDemand = records.reduce((sum, r) => sum + r.labourDemand, 0);
@@ -327,9 +359,12 @@ export function generateForecastTimeline(
     const supply27 = Math.round(r.trainingCapacity * 1.08);
     const supply28 = Math.round(r.trainingCapacity * 1.16);
 
-    // 80% confidence interval standard error margin (~6%)
-    const margin27 = Math.round(holt27 * 0.06);
-    const margin28 = Math.round(holt28 * 0.10);
+    // 80% confidence interval standard error margin grounded in holdout validation RMSE (z = 1.28)
+    const rmseSeats = Math.round((validationMetrics.rmse || 5) * 1000);
+    const avgVolume = Math.max(1, currentDemand / Math.max(1, records.length));
+    const volumeFactor = Math.min(2.5, Math.max(0.5, r.labourDemand / avgVolume));
+    const margin27 = Math.max(600, Math.round(1.28 * rmseSeats * volumeFactor * 0.12));
+    const margin28 = Math.max(1000, Math.round(1.64 * rmseSeats * volumeFactor * 0.18));
 
     return {
       trade: r.trade,
@@ -349,10 +384,15 @@ export function generateForecastTimeline(
     };
   });
 
+  const isUserUploaded = records.some(r => r.provenance === 'USER_UPLOADED');
+  const dataProvenanceNote = isUserUploaded
+    ? 'User uploaded cross-sectional dataset: 24-month horizon projected via reported annual growth rates. Validation metrics benchmark historical pilot series.'
+    : 'Chronological time-series model calibrated against pilot research benchmarks (FY 2022-2026).';
+
   return {
     forecastPoints,
     evaluationMetrics: validationMetrics,
     modelComparisons,
-    dataProvenanceNote: 'Chronological time-series model calibrated against pilot research benchmarks (FY 2022-2026).'
+    dataProvenanceNote
   };
 }

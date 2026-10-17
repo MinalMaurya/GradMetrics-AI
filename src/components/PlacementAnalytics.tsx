@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ResponsiveContainer,
   BarChart,
@@ -50,6 +50,13 @@ export const PlacementAnalytics: React.FC = () => {
   // Compact version shows only top 5 trades
   const compactTradeList = fullTradeAbsorptionList.slice(0, 5);
 
+  // Dynamic average uptake calculated directly from displayed series
+  const displayedAvgUptake = useMemo(() => {
+    if (compactTradeList.length === 0) return 0;
+    const sum = compactTradeList.reduce((acc, item) => acc + item.absorptionRate, 0);
+    return Number((sum / compactTradeList.length).toFixed(1));
+  }, [compactTradeList]);
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       const data: TradeAbsorptionData = payload[0].payload;
@@ -96,28 +103,28 @@ export const PlacementAnalytics: React.FC = () => {
 
   return (
     <>
-      {/* Compact Dashboard Card (approximately 220-240px chart height) */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 flex flex-col">
+      {/* Compact Dashboard Card */}
+      <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200 flex flex-col justify-between">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
           <div>
-            <div className="flex items-center space-x-2">
-              <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+            <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+              <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                 Trade Absorption &amp; Market Uptake
-              </h3>
-              <span className="hidden sm:inline-flex text-[9px] px-1.5 py-0.5 font-bold rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              </h2>
+              <span className="text-[10px] sm:text-[11px] px-2.5 py-0.5 font-bold rounded-md bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 whitespace-nowrap">
                 Target: {nationalBenchmark}%
               </span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
-              Employment conversion within 180 days
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Employment conversion within 180 days &bull; Statutory Target: {nationalBenchmark}% (Scale: 0–100%)
             </p>
           </div>
 
           <button
             onClick={() => setIsFullModalOpen(true)}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 group cursor-pointer whitespace-nowrap"
+            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 group cursor-pointer whitespace-nowrap self-start sm:self-auto"
           >
             <span>View Full Analytics</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -125,20 +132,21 @@ export const PlacementAnalytics: React.FC = () => {
         </div>
 
         {/* Compact Chart Canvas */}
-        <div className="h-[200px] sm:h-[240px] w-full pt-1 sm:pt-2">
+        <div className="h-[260px] sm:h-[300px] w-full pt-2 sm:pt-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={compactTradeList}
               layout="vertical"
-              margin={{ top: 5, right: 25, left: -10, bottom: 0 }}
+              margin={{ top: 12, right: 30, left: 15, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} horizontal={false} />
               <XAxis
                 type="number"
                 domain={[0, 100]}
+                ticks={[0, 20, 40, 60, 80, 100]}
                 tickLine={false}
                 stroke={axisColor}
-                fontSize={10}
+                fontSize={11}
                 unit="%"
               />
               <YAxis
@@ -146,8 +154,8 @@ export const PlacementAnalytics: React.FC = () => {
                 dataKey="trade"
                 tickLine={false}
                 stroke={axisColor}
-                fontSize={10}
-                width={100}
+                fontSize={11}
+                width={125}
               />
               <Tooltip content={<CustomTooltip />} />
               
@@ -156,6 +164,13 @@ export const PlacementAnalytics: React.FC = () => {
                 stroke="#2563eb"
                 strokeDasharray="3 3"
                 strokeWidth={1.5}
+                label={{
+                  value: `Target: ${nationalBenchmark}%`,
+                  position: 'top',
+                  fill: isDarkMode ? '#93c5fd' : '#1d4ed8',
+                  fontSize: 10,
+                  fontWeight: 600
+                }}
               />
 
               <Bar
@@ -188,10 +203,10 @@ export const PlacementAnalytics: React.FC = () => {
         </div>
 
         {/* Micro-footer note */}
-        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
-          <span>Top 5 verified trades shown</span>
+        <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+          <span>Top {compactTradeList.length} verified technical trades shown</span>
           <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
-            Avg: 85.2% uptake
+            Avg: {displayedAvgUptake}% uptake
           </span>
         </div>
 

@@ -290,7 +290,7 @@ export const DataIngestionModal: React.FC = () => {
             <div className="space-y-3 pt-2">
               
               {/* Validation Scorecard */}
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
                   <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Rows</div>
                   <div className="text-base font-bold font-mono text-slate-900 dark:text-white mt-0.5">
@@ -308,17 +308,27 @@ export const DataIngestionModal: React.FC = () => {
                   </div>
                 </div>
 
+                <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    <span>Quality Index</span>
+                  </div>
+                  <div className="text-base font-bold font-mono text-blue-700 dark:text-blue-300 mt-0.5">
+                    {validationResult.dataQualityScore ?? 100}%
+                  </div>
+                </div>
+
                 <div className={`p-3 rounded-xl border ${
-                  validationResult.errors.length > 0
-                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300'
+                  validationResult.errors.length > 0 || (validationResult.duplicateCount || 0) > 0
+                    ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
                     : 'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-400'
                 }`}>
                   <div className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
-                    <span>{t('errorRows')}</span>
+                    <span>Issues / Flags</span>
                   </div>
                   <div className="text-base font-bold font-mono mt-0.5">
-                    {validationResult.errors.length}
+                    {validationResult.errors.length + (validationResult.duplicateCount || 0)}
                   </div>
                 </div>
               </div>
@@ -328,13 +338,28 @@ export const DataIngestionModal: React.FC = () => {
                 <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-300">
                   <div className="font-bold flex items-center gap-1 mb-1">
                     <AlertTriangle className="w-3.5 h-3.5" />
-                    <span>Data Validation Warnings Detected:</span>
+                    <span>Data Validation Errors (Row Ingestion Blocked):</span>
                   </div>
                   <ul className="list-disc list-inside space-y-0.5 text-[11px]">
                     {validationResult.errors.slice(0, 5).map((err, i) => (
                       <li key={i}>
                         Row {err.rowNumber}: <strong>{err.field}</strong> &mdash; {err.message}
                       </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Warnings / Duplicate segment list if any */}
+              {validationResult.warnings.length > 0 && (
+                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-800 dark:text-amber-300">
+                  <div className="font-bold flex items-center gap-1 mb-1">
+                    <Info className="w-3.5 h-3.5" />
+                    <span>Data Quality Observations &amp; Ingestion Notes:</span>
+                  </div>
+                  <ul className="list-disc list-inside space-y-0.5 text-[11px]">
+                    {validationResult.warnings.slice(0, 4).map((warn, i) => (
+                      <li key={i}>{warn}</li>
                     ))}
                   </ul>
                 </div>
@@ -355,7 +380,8 @@ export const DataIngestionModal: React.FC = () => {
                         <th className="p-2">NCO Code</th>
                         <th className="p-2">NSQF</th>
                         <th className="p-2 text-right">Demand</th>
-                        <th className="p-2 text-right">Supply</th>
+                        <th className="p-2 text-right">Intake Seats</th>
+                        <th className="p-2 text-right">Est. Certified</th>
                         <th className="p-2 text-right">Net Gap</th>
                       </tr>
                     </thead>
@@ -379,6 +405,9 @@ export const DataIngestionModal: React.FC = () => {
                           </td>
                           <td className="p-2 text-right text-slate-800 dark:text-slate-200">
                             {r.trainingCapacity.toLocaleString()}
+                          </td>
+                          <td className="p-2 text-right text-blue-600 dark:text-blue-400 font-semibold">
+                            {(r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855)).toLocaleString()}
                           </td>
                           <td className={`p-2 text-right font-bold ${
                             r.gap > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-purple-600 dark:text-purple-400'

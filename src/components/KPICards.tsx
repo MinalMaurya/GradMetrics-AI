@@ -31,7 +31,7 @@ export const KPICards: React.FC = () => {
       
       {/* CARD 1 — JOB DEMAND */}
       <ScrollReveal delay={0} className="h-full">
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out relative h-full flex flex-col justify-between">
+        <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs relative h-full flex flex-col justify-between">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center space-x-1.5">
@@ -78,7 +78,7 @@ export const KPICards: React.FC = () => {
 
       {/* CARD 2 — TRAINING SUPPLY */}
       <ScrollReveal delay={180} className="h-full">
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out relative h-full flex flex-col justify-between">
+        <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs relative h-full flex flex-col justify-between">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">
@@ -93,8 +93,8 @@ export const KPICards: React.FC = () => {
                   >
                     <Info className="w-3.5 h-3.5" />
                   </button>
-                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-60 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                    Total annual training seats and candidate supply available across ITIs, PMKVY centres, and accredited institutes.
+                  <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-2.5 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
+                    Approved institutional intake seats (ITI, PMKVY, polytechnics). Certified supply (~85.5%) accounts for the empirical 14.5% national completion dropout rate.
                   </div>
                 </div>
               </div>
@@ -102,8 +102,12 @@ export const KPICards: React.FC = () => {
               <div className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">
                 {formatNumber(kpis.trainingCapacity)}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                Available training seats
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium flex flex-wrap items-center gap-1">
+                <span>Approved seats</span>
+                <span className="text-slate-400">&bull;</span>
+                <span className="text-blue-600 dark:text-blue-400 font-semibold" title="Estimated certified candidate supply after 14.5% dropout">
+                  ~{formatNumber(kpis.candidateSupply || Math.round(kpis.trainingCapacity * 0.855))} certified supply
+                </span>
               </p>
             </div>
 
@@ -125,7 +129,7 @@ export const KPICards: React.FC = () => {
 
       {/* CARD 3 — SKILL GAP */}
       <ScrollReveal delay={360} className="h-full">
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out relative h-full flex flex-col justify-between">
+        <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs relative h-full flex flex-col justify-between">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">
@@ -207,7 +211,7 @@ export const KPICards: React.FC = () => {
 
       {/* CARD 4 — TRADES NEEDING ATTENTION */}
       <ScrollReveal delay={540} className="h-full">
-        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs hover:border-blue-400 dark:hover:border-blue-600/70 hover:-translate-y-1 hover:shadow-md transition-all duration-450 ease-out relative h-full flex flex-col justify-between">
+        <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs relative h-full flex flex-col justify-between">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center space-x-1.5">

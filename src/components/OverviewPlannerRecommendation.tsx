@@ -116,7 +116,7 @@ export const OverviewPlannerRecommendation: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
         
         {/* Step 1: Seat Reallocation */}
-        <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 hover:border-blue-300 dark:hover:border-blue-700/60 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-450 ease-out flex flex-col justify-between">
+        <div className="card-interactive p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 font-semibold mb-1 text-[11px] uppercase tracking-wider">
               <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 flex items-center justify-center font-bold text-[10px]">
@@ -136,7 +136,7 @@ export const OverviewPlannerRecommendation: React.FC = () => {
         </div>
 
         {/* Step 2: Course Intake Realignment */}
-        <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 hover:border-blue-300 dark:hover:border-blue-700/60 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-450 ease-out flex flex-col justify-between">
+        <div className="card-interactive p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 font-semibold mb-1 text-[11px] uppercase tracking-wider">
               <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 flex items-center justify-center font-bold text-[10px]">
@@ -156,7 +156,7 @@ export const OverviewPlannerRecommendation: React.FC = () => {
         </div>
 
         {/* Step 3: Industry Apprenticeship Links */}
-        <div className="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 hover:border-blue-300 dark:hover:border-blue-700/60 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-450 ease-out flex flex-col justify-between">
+        <div className="card-interactive p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center space-x-2 text-slate-500 dark:text-slate-400 font-semibold mb-1 text-[11px] uppercase tracking-wider">
               <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300 flex items-center justify-center font-bold text-[10px]">

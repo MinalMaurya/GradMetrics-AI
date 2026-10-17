@@ -83,7 +83,7 @@ export const OverviewAttentionTable: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs">
+    <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs">
       
       {/* Table Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">

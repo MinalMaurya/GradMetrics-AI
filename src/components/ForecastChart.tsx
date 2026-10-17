@@ -188,7 +188,7 @@ export const ForecastChart: React.FC = () => {
 
       {/* Dynamic Projected Horizon Milestones derived from active data */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 my-3 sm:my-3.5">
-        <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
+        <div className="card-interactive p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 shadow-xs">
           <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold uppercase">
             <span>2026 Baseline Actuals</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-700 font-normal">Observed</span>
@@ -201,7 +201,7 @@ export const ForecastChart: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60">
+        <div className="card-interactive p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 shadow-xs">
           <div className="flex items-center justify-between text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase">
             <span>2027 Projected Horizon</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-amber-200/60 dark:bg-amber-900/60 font-mono">Estimate</span>
@@ -214,7 +214,7 @@ export const ForecastChart: React.FC = () => {
           </div>
         </div>
 
-        <div className="p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60">
+        <div className="card-interactive p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 shadow-xs">
           <div className="flex items-center justify-between text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase">
             <span>2028 Full Projection</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-rose-200/60 dark:bg-rose-900/60 font-mono">Estimate</span>
@@ -233,7 +233,7 @@ export const ForecastChart: React.FC = () => {
         <div className="space-y-4 pt-1">
           {/* Validation Metrics Scorecard with Plain-Language Explanations */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('maeMetric')}</span>
@@ -248,7 +248,7 @@ export const ForecastChart: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('rmseMetric')}</span>
@@ -263,7 +263,7 @@ export const ForecastChart: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('mapeMetric')}</span>
@@ -274,11 +274,11 @@ export const ForecastChart: React.FC = () => {
                 </div>
               </div>
               <p className="text-[10px] text-slate-500 mt-1.5 leading-snug">
-                Mean Absolute Percentage Error: relative error margin across all regional skill nodes.
+                Mean Absolute Percentage Error: relative prediction margin. {forecastingMetrics.mapeLimitationNote ? `(${forecastingMetrics.mapeLimitationNote})` : 'Calculated on non-zero holdout actuals.'}
               </p>
             </div>
 
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 shadow-xs flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">{t('improvementMetric')}</span>

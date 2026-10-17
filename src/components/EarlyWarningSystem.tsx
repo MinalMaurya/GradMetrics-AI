@@ -110,7 +110,7 @@ export const EarlyWarningSystem: React.FC = () => {
               setActiveCategoryFilter('critical');
               setIsFullRadarModalOpen(true);
             }}
-            className="p-2 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/60 text-left hover:bg-rose-50 dark:hover:bg-rose-950/50 transition cursor-pointer"
+            className="card-interactive p-2 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/60 text-left shadow-xs transition cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-rose-700 dark:text-rose-300 flex items-center gap-1">
@@ -131,7 +131,7 @@ export const EarlyWarningSystem: React.FC = () => {
               setActiveCategoryFilter('emerging');
               setIsFullRadarModalOpen(true);
             }}
-            className="p-2 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/60 text-left hover:bg-amber-50 dark:hover:bg-amber-950/50 transition cursor-pointer"
+            className="card-interactive p-2 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-900/60 text-left shadow-xs transition cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 flex items-center gap-1">
@@ -152,7 +152,7 @@ export const EarlyWarningSystem: React.FC = () => {
               setActiveCategoryFilter('oversupply');
               setIsFullRadarModalOpen(true);
             }}
-            className="p-2 rounded-lg bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200/70 dark:border-purple-900/60 text-left hover:bg-purple-50 dark:hover:bg-purple-950/50 transition cursor-pointer"
+            className="card-interactive p-2 rounded-lg bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200/70 dark:border-purple-900/60 text-left shadow-xs transition cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-purple-700 dark:text-purple-300 flex items-center gap-1">
@@ -173,7 +173,7 @@ export const EarlyWarningSystem: React.FC = () => {
               setActiveCategoryFilter('balanced');
               setIsFullRadarModalOpen(true);
             }}
-            className="p-2 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/60 text-left hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition cursor-pointer"
+            className="card-interactive p-2 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/60 text-left shadow-xs transition cursor-pointer"
           >
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1">
@@ -222,15 +222,20 @@ export const EarlyWarningSystem: React.FC = () => {
 
         {/* Active Alert Highlight Card */}
         {activeTab === 'shortage' ? (
-          <div className="p-3 rounded-xl bg-gradient-to-br from-rose-50/80 to-amber-50/40 dark:from-rose-950/30 dark:to-slate-900 border border-rose-200/80 dark:border-rose-900/60 text-xs">
+          <div className="card-interactive p-3 rounded-xl bg-gradient-to-br from-rose-50/80 to-amber-50/40 dark:from-rose-950/30 dark:to-slate-900 border border-rose-200/80 dark:border-rose-900/60 shadow-xs text-xs">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
                 {shortageAlert.trade}
               </span>
-              <span className="font-mono font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-1.5 py-0.5 rounded text-[10px]">
-                +{shortageAlert ? Math.max(0, Math.round(shortageAlert.gap / 1000)) : 0}K Shortage
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  {shortageAlert.evidenceBasis === 'PREDICTED_HORIZON_RISK' ? 'Predicted Horizon Risk' : 'Observed Shortfall'}
+                </span>
+                <span className="font-mono font-bold text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-900/60 px-1.5 py-0.5 rounded text-[10px]">
+                  +{shortageAlert ? Math.max(0, Math.round(shortageAlert.gap / 1000)) : 0}K Shortage
+                </span>
+              </div>
             </div>
 
             <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -261,15 +266,20 @@ export const EarlyWarningSystem: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="p-3 rounded-xl bg-gradient-to-br from-purple-50/80 to-blue-50/40 dark:from-purple-950/30 dark:to-slate-900 border border-purple-200/80 dark:border-purple-900/60 text-xs">
+          <div className="card-interactive p-3 rounded-xl bg-gradient-to-br from-purple-50/80 to-blue-50/40 dark:from-purple-950/30 dark:to-slate-900 border border-purple-200/80 dark:border-purple-900/60 shadow-xs text-xs">
             <div className="flex items-center justify-between">
               <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-purple-500" />
                 {oversupplyAlert.trade}
               </span>
-              <span className="font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded text-[10px]">
-                {oversupplyAlert ? Math.round(oversupplyAlert.gap / 1000) : 0}K Surplus
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  {oversupplyAlert.evidenceBasis === 'PREDICTED_HORIZON_RISK' ? 'Predicted Horizon Risk' : 'Observed Condition'}
+                </span>
+                <span className="font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded text-[10px]">
+                  {oversupplyAlert ? Math.round(oversupplyAlert.gap / 1000) : 0}K Surplus
+                </span>
+              </div>
             </div>
 
             <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 mt-1">
@@ -420,6 +430,9 @@ export const EarlyWarningSystem: React.FC = () => {
                           }`}
                         >
                           {w.categoryLabel.toUpperCase()}
+                        </span>
+                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          {w.evidenceBasis === 'PREDICTED_HORIZON_RISK' ? 'Predicted Risk' : 'Observed Shortfall'}
                         </span>
                         <span className="font-bold text-sm text-slate-900 dark:text-white">
                           {w.trade}

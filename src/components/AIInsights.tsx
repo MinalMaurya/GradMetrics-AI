@@ -101,7 +101,7 @@ export const AIInsights: React.FC = () => {
   return (
     <>
       {/* Compact Natural Height Dashboard Card (~180-240px) */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 relative overflow-hidden flex flex-col">
+      <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col">
         
         {/* Subtle Decorative glow */}
         <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />

@@ -37,7 +37,7 @@ export const DataSourcesAndIndex: React.FC = () => {
         <div className="flex flex-col gap-4">
           
           {/* Top/Left: UNIFIED LABOUR DEMAND INDEX (Prompt Item 16) */}
-          <div className="p-4 rounded-xl bg-gradient-to-br from-blue-900 via-slate-900 to-slate-950 text-white relative overflow-hidden shadow-md">
+          <div className="card-interactive p-4 rounded-xl bg-gradient-to-br from-blue-900 via-slate-900 to-slate-950 text-white relative overflow-hidden shadow-md">
             <div className="relative z-10">
               <div className="flex flex-wrap items-center justify-between gap-1.5">
                 <span className="text-[10px] uppercase font-bold tracking-wider text-blue-300 flex items-center gap-1.5">
@@ -100,7 +100,7 @@ export const DataSourcesAndIndex: React.FC = () => {
               {sourcesList.map((src) => (
                 <div
                   key={src.code}
-                  className="px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex items-center space-x-2 shadow-2xs hover:border-blue-400 dark:hover:border-blue-600 transition"
+                  className="card-interactive px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex items-center space-x-2 shadow-2xs hover:border-blue-400 dark:hover:border-blue-600 transition"
                 >
                   <span className="text-base">{src.icon}</span>
                   <div>

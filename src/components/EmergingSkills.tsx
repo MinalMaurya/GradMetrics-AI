@@ -73,7 +73,7 @@ export const EmergingSkills: React.FC = () => {
                 setTrade(item.trade as any);
               }
             }}
-            className="p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-700/60 hover:-translate-y-0.5 hover:shadow-xs transition-all duration-450 ease-out group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="card-interactive p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800/80 shadow-xs group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             aria-label={`Filter by ${item.trade} in ${item.sector}`}
           >
             <div className="flex items-center justify-between">

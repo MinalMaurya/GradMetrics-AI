@@ -18,7 +18,7 @@ export const ProblemStatementCard: React.FC = () => {
   return (
     <>
       {/* Executive Problem Statement Section */}
-      <div className="rounded-xl p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white border border-blue-900/60 shadow-sm relative overflow-hidden">
+      <div className="card-interactive rounded-xl p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white border border-blue-900/60 shadow-sm relative overflow-hidden">
         {/* Subtle decorative glow */}
         <div className="absolute top-0 right-0 w-80 h-full bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 

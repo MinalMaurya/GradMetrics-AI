@@ -10,7 +10,9 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  Cell
+  Cell,
+  ReferenceArea,
+  ReferenceLine
 } from 'recharts';
 import {
   TrendingUp,
@@ -45,11 +47,17 @@ export const SupplyDemandChart: React.FC = () => {
       const data = payload[0].payload;
       const isShortage = data.gap > 0;
       const isOversupply = data.gap < 0;
+      const isProjected = label?.includes('Proj');
 
       return (
         <div className="bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur border border-slate-700/80 p-3.5 rounded-xl shadow-xl text-white text-xs min-w-[220px]">
           <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-            <span className="font-bold text-slate-200">Labour Audit FY {label}</span>
+            <div>
+              <span className="font-bold text-slate-200">Labour Audit FY {label}</span>
+              <span className="block text-[10px] text-slate-400">
+                {isProjected ? '24M Statistical Projection' : 'Audited Historical Actuals'}
+              </span>
+            </div>
             <span
               className={`text-[10px] px-2 py-0.5 rounded font-bold ${
                 isShortage
@@ -123,7 +131,7 @@ export const SupplyDemandChart: React.FC = () => {
   const isCurrentOversupply = kpis.demandSupplyGap < 0;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
+    <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
       
       {/* Header & View Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -152,7 +160,7 @@ export const SupplyDemandChart: React.FC = () => {
             </span>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Macroeconomic comparison: Active Labour Demand vs Certified Training Capacity
+            Macroeconomic audit: Labour Demand vs Certified Training Capacity &bull; Historical (FY 2024–2026) vs Projections (FY 2027–2028)
           </p>
         </div>
 
@@ -237,11 +245,11 @@ export const SupplyDemandChart: React.FC = () => {
       </div>
 
       {/* Main Chart Canvas */}
-      <div className="h-[260px] sm:h-[320px] w-full pt-2 sm:pt-4">
+      <div className="h-[260px] sm:h-[300px] w-full pt-2 sm:pt-4">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={supplyDemandTrends}
-            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+            margin={{ top: 12, right: 15, left: -10, bottom: 0 }}
           >
             <defs>
               <linearGradient id="demandAreaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -263,7 +271,7 @@ export const SupplyDemandChart: React.FC = () => {
               dataKey="year"
               tickLine={false}
               stroke={axisColor}
-              fontSize={12}
+              fontSize={11}
               dy={8}
             />
             <YAxis
@@ -281,6 +289,27 @@ export const SupplyDemandChart: React.FC = () => {
               iconType="circle"
               iconSize={8}
               wrapperStyle={{ paddingBottom: '12px', fontSize: '11px' }}
+            />
+
+            {/* Visual distinction for projected horizon */}
+            <ReferenceArea
+              x1="2026"
+              x2="2028 (Proj)"
+              fill="#3b82f6"
+              fillOpacity={isDarkMode ? 0.08 : 0.04}
+            />
+            <ReferenceLine
+              x="2026"
+              stroke="#3b82f6"
+              strokeDasharray="3 3"
+              strokeWidth={1.5}
+              label={{
+                value: 'Projections ➔',
+                position: 'insideTopLeft',
+                fill: isDarkMode ? '#93c5fd' : '#1d4ed8',
+                fontSize: 10,
+                fontWeight: 600
+              }}
             />
 
             {/* Labour Demand */}

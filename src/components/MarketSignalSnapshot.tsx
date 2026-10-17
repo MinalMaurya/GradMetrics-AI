@@ -70,7 +70,7 @@ export const MarketSignalSnapshot: React.FC = () => {
   }, [tradeRecords]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all duration-200 flex flex-col justify-between">
+    <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col justify-between">
       
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -111,7 +111,7 @@ export const MarketSignalSnapshot: React.FC = () => {
               setTrade(signals.highDemand.trade as any);
             }
           }}
-          className="p-2 sm:p-2.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/50 hover:border-blue-400 hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-450 ease-out cursor-pointer group"
+          className="card-interactive p-2 sm:p-2.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/60 dark:border-blue-900/50 shadow-xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer group"
           aria-label={`Filter by ${signals.highDemand.trade} with high demand`}
         >
           <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-blue-700 dark:text-blue-300 font-bold uppercase tracking-wider">
@@ -142,7 +142,7 @@ export const MarketSignalSnapshot: React.FC = () => {
               setTrade(signals.fastestGrowing.trade as any);
             }
           }}
-          className="p-2 sm:p-2.5 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/50 hover:border-emerald-400 hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-450 ease-out cursor-pointer group"
+          className="card-interactive p-2 sm:p-2.5 rounded-lg bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-900/50 shadow-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer group"
           aria-label={`Filter by ${signals.fastestGrowing.trade} with fastest growth`}
         >
           <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-emerald-700 dark:text-emerald-300 font-bold uppercase tracking-wider">
@@ -173,7 +173,7 @@ export const MarketSignalSnapshot: React.FC = () => {
               setTrade(signals.highestGap.trade as any);
             }
           }}
-          className="p-2 sm:p-2.5 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/50 hover:border-amber-400 hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all duration-450 ease-out cursor-pointer group"
+          className="card-interactive p-2 sm:p-2.5 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/50 shadow-xs focus:outline-none focus:ring-2 focus:ring-amber-500 cursor-pointer group"
           aria-label={`Filter by ${signals.highestGap.trade} in ${signals.highestGap.state} with highest deficit`}
         >
           <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-amber-700 dark:text-amber-300 font-bold uppercase tracking-wider">
@@ -204,7 +204,7 @@ export const MarketSignalSnapshot: React.FC = () => {
               setTrade(signals.oversupply.trade as any);
             }
           }}
-          className="p-2 sm:p-2.5 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/60 dark:border-purple-900/50 hover:border-purple-400 hover:-translate-y-1 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-450 ease-out cursor-pointer group"
+          className="card-interactive p-2 sm:p-2.5 rounded-lg bg-purple-50/50 dark:bg-purple-950/20 border border-purple-200/60 dark:border-purple-900/50 shadow-xs focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer group"
           aria-label={`Filter by ${signals.oversupply.trade} in ${signals.oversupply.state} with surplus`}
         >
           <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-purple-700 dark:text-purple-300 font-bold uppercase tracking-wider">

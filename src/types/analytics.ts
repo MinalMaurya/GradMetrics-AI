@@ -66,6 +66,7 @@ export interface KPIData {
 
   // Card 2: Training Capacity (342K)
   trainingCapacity: number;
+  candidateSupply?: number; // Estimated certified candidate supply (~85.5% after completion dropout)
   trainingCapacityYoY: number;
   trainingCapacitySparkline: number[];
 
@@ -251,6 +252,7 @@ export interface EarlyWarningItem {
   disclaimer?: string;
   demandGrowth?: number;
   supplyGrowth?: number;
+  evidenceBasis?: 'OBSERVED_SHORTFALL' | 'PREDICTED_HORIZON_RISK';
 }
 
 export interface NcoNsqfMappingItem {
@@ -298,7 +300,7 @@ export interface DatasetMetadata {
 export interface IngestionValidationError {
   rowNumber: number;
   field: string;
-  errorType: 'MISSING_FIELD' | 'INVALID_NUMBER' | 'UNKNOWN_REGION' | 'SCHEMA_MISMATCH' | 'INVALID_DATE';
+  errorType: 'MISSING_FIELD' | 'INVALID_NUMBER' | 'UNKNOWN_REGION' | 'SCHEMA_MISMATCH' | 'INVALID_DATE' | 'DUPLICATE_RECORD';
   message: string;
   rawValue?: string;
 }
@@ -309,6 +311,8 @@ export interface IngestionValidationResult {
   totalRows: number;
   validRows: number;
   invalidRows: number;
+  duplicateCount?: number;
+  dataQualityScore?: number;
   errors: IngestionValidationError[];
   warnings: string[];
   parsedRecords: TradeRecord[];
@@ -397,6 +401,8 @@ export interface ForecastingMetrics {
     validationWindow: string; // e.g. "2025"
     forecastHorizon: string; // e.g. "2026 - 2028 (24 Months)"
   };
+  mapeLimitationNote?: string;
+  isSufficientHistory?: boolean;
 }
 
 export interface EarlyWarningThresholdConfig {
