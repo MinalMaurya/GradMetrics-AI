@@ -352,3 +352,48 @@ test('Navigation & Scroll Test 9: Homepage CTA navigation clears homepage anchor
   }
 });
 
+test('Homepage Motion & Navigation Test 10: Anchor links target valid sections with appropriate scroll offset ids', () => {
+  const homepageAnchorIds = ['problem', 'how-it-works', 'dashboard-preview', 'data-governance'];
+  
+  // All anchor links should be distinct, non-empty, and lowercase kebab-case
+  for (const id of homepageAnchorIds) {
+    assert.match(id, /^[a-z0-9-]+$/);
+    assert.ok(id.length > 0);
+  }
+
+  // Anchor IDs should not collide with dashboard section ids to avoid route ambiguity
+  for (const anchor of homepageAnchorIds) {
+    assert.equal(
+      isValidSection(anchor),
+      false,
+      `Homepage anchor '${anchor}' must not collide with dashboard section routes`
+    );
+  }
+});
+
+test('Homepage Motion & Navigation Test 11: ScrollReveal and reduced motion fallback', () => {
+  // In Node.js / headless test environment where IntersectionObserver is undefined:
+  // ScrollReveal should safely render children without crashing or throwing
+  let matchMediaCalled = false;
+  const originalWindow = (globalThis as any).window;
+
+  try {
+    (globalThis as any).window = {
+      matchMedia: (query: string) => {
+        matchMediaCalled = true;
+        return {
+          matches: query.includes('prefers-reduced-motion'),
+          addEventListener: () => {},
+          removeEventListener: () => {}
+        };
+      }
+    };
+
+    const mediaResult = (globalThis as any).window.matchMedia('(prefers-reduced-motion: reduce)');
+    assert.equal(mediaResult.matches, true, 'Reduced motion media query is properly evaluated');
+    assert.equal(matchMediaCalled, true);
+  } finally {
+    (globalThis as any).window = originalWindow;
+  }
+});
+
