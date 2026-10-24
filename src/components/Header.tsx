@@ -53,25 +53,25 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
   const currentLang = languages.find((l) => l.code === language) || languages[0];
 
   return (
-    <header className="sticky top-0 z-30 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 transition-colors duration-200">
+    <header className="border-b border-slate-100 dark:border-slate-800/80 transition-colors duration-200">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-3 sm:gap-6">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-3 sm:gap-6">
           
           {/* Brand Identity & Subtitle */}
-          <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
             {/* Logo */}
             {onNavigateHome ? (
               <button
                 type="button"
                 onClick={onNavigateHome}
-                className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-xs shrink-0 overflow-hidden p-1 hover:border-blue-400 dark:hover:border-blue-500 transition cursor-pointer"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs shrink-0 overflow-hidden p-1 hover:border-blue-400 dark:hover:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500 transition cursor-pointer"
                 title="Return to Public Homepage"
                 aria-label="Return to Public Homepage"
               >
                 <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
               </button>
             ) : (
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-xs shrink-0 overflow-hidden p-1">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-2xs shrink-0 overflow-hidden p-1">
                 <img src="/logo.png" alt="GradMetrics AI Logo" className="w-full h-full object-contain" />
               </div>
             )}
@@ -83,13 +83,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
                   <button
                     type="button"
                     onClick={onNavigateHome}
-                    className="text-base sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 transition text-left cursor-pointer"
+                    className="text-base sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white truncate hover:text-blue-600 dark:hover:text-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500 rounded transition text-left cursor-pointer"
                     title="Return to Public Homepage"
                   >
                     GradMetrics <span className="text-blue-600 dark:text-blue-400">AI</span>
                   </button>
                 ) : (
-                  <span className="text-base sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
+                  <span className="text-base sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white truncate">
                     GradMetrics <span className="text-blue-600 dark:text-blue-400">AI</span>
                   </span>
                 )}
@@ -104,13 +104,13 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
           </div>
 
           {/* Right Actions: Public Home + Load Demo Data + Light/Dark Toggle + Secondary Tools Menu */}
-          <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
             
             {/* Back to Home Button */}
             {onNavigateHome && (
               <button
                 onClick={onNavigateHome}
-                className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition duration-200 cursor-pointer min-h-[40px]"
+                className="inline-flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500 transition duration-150 cursor-pointer min-h-[36px] sm:min-h-[38px]"
                 title="Return to Public Homepage"
               >
                 <ArrowLeft className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
@@ -121,7 +121,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
             {/* Primary Action Button: Load Demo Data */}
             <button
               onClick={loadDemoScenario}
-              className="inline-flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-sm transition duration-200 cursor-pointer min-h-[40px]"
+              className="inline-flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 shadow-2xs hover:shadow-xs focus-visible:ring-2 focus-visible:ring-blue-500 transition duration-150 cursor-pointer min-h-[36px] sm:min-h-[38px]"
               title="Load pre-calibrated labour market demo scenario"
             >
               <Sparkles className="w-3.5 h-3.5 text-blue-200" />
@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
             {/* Light / Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition duration-200 cursor-pointer flex items-center justify-center min-w-[40px] min-h-[40px]"
+              className="p-1.5 sm:p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500 transition duration-150 cursor-pointer flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-[38px] sm:min-h-[38px]"
               aria-label={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
@@ -147,7 +147,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
             <div className="relative">
               <button
                 onClick={() => setIsMoreOpen(!isMoreOpen)}
-                className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition duration-200 cursor-pointer flex items-center justify-center min-w-[40px] min-h-[40px]"
+                className="p-1.5 sm:p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500 transition duration-150 cursor-pointer flex items-center justify-center min-w-[36px] min-h-[36px] sm:min-w-[38px] sm:min-h-[38px]"
                 title="More tools and planning utilities"
                 aria-label="More tools and planning utilities"
               >
@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigateHome }) => {
               {isMoreOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsMoreOpen(false)} />
-                  <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-700 dark:text-slate-200">
+                  <div className="absolute right-0 mt-1.5 w-64 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-700 dark:text-slate-200">
                     <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                       Planning Tools &amp; Data
                     </div>

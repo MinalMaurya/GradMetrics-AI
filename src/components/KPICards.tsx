@@ -58,7 +58,7 @@ export const KPICards: React.FC = () => {
                   </button>
                   <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
                     <strong className="block text-blue-400 mb-1">Labour Demand (Unit: Openings)</strong>
-                    Estimated number of employer job vacancies compiled across National Career Service (NCS), industry surveys, and registered portal requisitions, normalized to standard NCO-2015 occupational codes.
+                    Total estimated employer hiring vacancies compiled across National Career Service (NCS), industry employer surveys, and registered job portals, categorized under standard NCO-2015 job titles.
                   </div>
                 </div>
               </div>
@@ -78,7 +78,7 @@ export const KPICards: React.FC = () => {
 
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center">
-              +{kpis.labourDemandYoY}% YoY Growth
+              +{kpis.labourDemandYoY}% Annual Growth
             </span>
             <span className="text-[11px] text-slate-400 font-medium truncate max-w-[130px]" title={`${activeScopeLabel} • ${reportingPeriod}`}>
               {activeScopeLabel}
@@ -136,7 +136,7 @@ export const KPICards: React.FC = () => {
 
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="text-slate-700 dark:text-slate-300 font-semibold">
-              +{kpis.trainingCapacityYoY}% YoY Intake
+              +{kpis.trainingCapacityYoY}% Annual Seat Growth
             </span>
             <span className="text-[11px] text-slate-400 font-medium">
               Sanctioned Capacity
@@ -167,8 +167,8 @@ export const KPICards: React.FC = () => {
                   </button>
                   <div role="tooltip" className="absolute left-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
                     <strong className="block text-amber-400 mb-1">Gap = Demand − Supply</strong>
-                    <strong>Positive (+) Gap:</strong> Unfulfilled worker shortage where employer demand exceeds trainee output.<br />
-                    <strong>Negative (−) Gap:</strong> Candidate oversupply where seat intake exceeds employer absorption capacity.
+                    <strong>Positive (+) Gap (Worker Shortage):</strong> Employer vacancies exceed certified trainee output. More graduates needed.<br />
+                    <strong>Negative (−) Gap (Seat Oversupply):</strong> Training intake exceeds local hiring capacity. Risk of graduate underemployment.
                   </div>
                 </div>
               </div>
@@ -250,8 +250,8 @@ export const KPICards: React.FC = () => {
                     <Info className="w-3.5 h-3.5" />
                   </button>
                   <div role="tooltip" className="absolute right-0 sm:left-1/2 sm:-translate-x-1/2 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-64 p-3 bg-slate-900 text-white text-xs rounded-lg shadow-xl z-30 pointer-events-none leading-relaxed border border-slate-700">
-                    <strong className="block text-rose-400 mb-1">Priority Policy Alerts</strong>
-                    Occupations triggering early warning flags due to either acute shortages (&gt;2,000 unfulfilled positions) or chronic oversupply (&gt;1,500 surplus training seats) requiring planning committee review.
+                    <strong className="block text-rose-400 mb-1">Trades Needing Attention</strong>
+                    Occupations flagged for review due to acute worker shortages (&gt;2,000 unfulfilled positions or &gt;15% deficit) or chronic oversupply (&gt;1,500 surplus seats), based on selected state and district filters.
                   </div>
                 </div>
               </div>
@@ -260,7 +260,7 @@ export const KPICards: React.FC = () => {
                 {tradesNeedingAttentionCount}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                Occupational alerts in active scope
+                Occupations requiring seat quota review
               </p>
             </div>
 

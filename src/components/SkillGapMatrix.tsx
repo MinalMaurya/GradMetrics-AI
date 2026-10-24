@@ -148,7 +148,7 @@ export const SkillGapMatrix: React.FC = () => {
             </span>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Normalized comparison: Labour Demand Index vs Training Capacity (0–100 Scale) for {activeScopeLabel}
+            Side-by-side comparison: Employer Hiring Demand vs Training Capacity on a standardized 0–100 scale for {activeScopeLabel}
           </p>
         </div>
 

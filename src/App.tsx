@@ -191,14 +191,14 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       
-      {/* 1. Header with Home Link, Logo, Subtitle, PS Badge, Load Demo Data, Dark/Light Toggle */}
-      <Header onNavigateHome={onNavigateHome} />
-
-      {/* 2. Simplified 4-Tab Navigation */}
-      <DashboardNavigation
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-      />
+      {/* 1 & 2. Persistent Navigation Container (Header + Section Navigation Tabs) */}
+      <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 shadow-2xs transition-colors duration-200">
+        <Header onNavigateHome={onNavigateHome} />
+        <DashboardNavigation
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+        />
+      </div>
 
       {/* 3. Compact Filter Bar (State, District, Sector + Advanced Filters) */}
       <FilterBar />

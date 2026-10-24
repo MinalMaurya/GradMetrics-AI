@@ -244,7 +244,7 @@ export const ForecastChart: React.FC = () => {
                 </div>
               </div>
               <p className="text-[10px] text-slate-500 mt-1.5 leading-snug">
-                Mean Absolute Error: average magnitude of prediction variance vs holdout observations.
+                Mean Absolute Error: average prediction miss in thousands of seats vs real 2025 records. Lower is better.
               </p>
             </div>
 
@@ -259,7 +259,7 @@ export const ForecastChart: React.FC = () => {
                 </div>
               </div>
               <p className="text-[10px] text-slate-500 mt-1.5 leading-snug">
-                Root Mean Squared Error: weights larger deviation anomalies across volatile sectors.
+                Root Mean Squared Error: measure of prediction variation; penalizes large forecasting misses across volatile trades.
               </p>
             </div>
 
@@ -274,7 +274,7 @@ export const ForecastChart: React.FC = () => {
                 </div>
               </div>
               <p className="text-[10px] text-slate-500 mt-1.5 leading-snug">
-                Mean Absolute Percentage Error: relative prediction margin. {forecastingMetrics.mapeLimitationNote ? `(${forecastingMetrics.mapeLimitationNote})` : 'Calculated on non-zero holdout actuals.'}
+                Mean Absolute Percentage Error: average percentage error margin. {forecastingMetrics.mapeLimitationNote ? `(${forecastingMetrics.mapeLimitationNote})` : 'Calculated on non-zero holdout actuals.'}
               </p>
             </div>
 
@@ -289,7 +289,7 @@ export const ForecastChart: React.FC = () => {
                 </div>
               </div>
               <p className="text-[10px] text-emerald-600/90 dark:text-emerald-400 mt-1.5 leading-snug">
-                Accuracy gain of Holt Linear model compared to zero-trend naive drift baseline.
+                Accuracy advantage of Holt's Linear Trend model compared to a simple zero-trend estimate.
               </p>
             </div>
           </div>
@@ -314,7 +314,7 @@ export const ForecastChart: React.FC = () => {
                   <th className="p-2.5 text-right">Baseline Drift</th>
                   <th className="p-2.5 text-right">Holt's Model</th>
                   <th className="p-2.5 text-right">2027 Proj</th>
-                  <th className="p-2.5 text-right">80% CI Interval</th>
+                  <th className="p-2.5 text-right">80% Confidence Range</th>
                   <th className="p-2.5 text-right">2027 Gap</th>
                 </tr>
               </thead>

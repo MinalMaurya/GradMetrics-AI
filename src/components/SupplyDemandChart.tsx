@@ -160,7 +160,7 @@ export const SupplyDemandChart: React.FC = () => {
             </span>
           </div>
           <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Macroeconomic audit: Labour Demand vs Certified Training Capacity &bull; Historical (FY 2024–2026) vs Projections (FY 2027–2028)
+            Annual job openings vs classroom training seats &bull; Comparing audited past records (FY 2024–2026) with projected trends (FY 2027–2028)
           </p>
         </div>
 

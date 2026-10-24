@@ -219,9 +219,9 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       <div className="mt-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
         <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">
-          <strong className="text-slate-900 dark:text-white font-semibold">How to interpret: </strong>
-          Blue bars represent expected employer vacancies (Demand); slate-grey bars represent sanctioned institutional training seats (Supply).
-          Where blue exceeds grey, industry faces recruitment shortages. Where grey exceeds blue, training capacity exceeds local placement demand.
+          <strong className="text-slate-900 dark:text-white font-semibold">How to read this chart: </strong>
+          Blue bars show expected employer vacancies (Job Demand); slate-grey bars show sanctioned classroom training seats (Training Supply).
+          Where a blue bar is higher than the grey bar, employers face recruitment shortages. Where a grey bar is higher than the blue bar, institutions are training more candidates than local businesses are currently hiring.
         </div>
       </div>
 

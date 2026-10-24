@@ -40,14 +40,14 @@
     outline-offset: 2px;
   }
 
-  /* Prevent section titles from being obscured by sticky/fixed navbar */
+  /* Prevent section titles from being obscured by sticky/fixed persistent navbar */
   section[id] {
-    scroll-margin-top: 5.5rem;
+    scroll-margin-top: 6.5rem;
   }
 
   @media (min-width: 640px) {
     section[id] {
-      scroll-margin-top: 6.5rem;
+      scroll-margin-top: 7.5rem;
     }
   }
 }
