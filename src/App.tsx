@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AnalyticsProvider, useAnalytics } from './context/AnalyticsContext';
 import { Header } from './components/Header';
-import { DashboardNavigation } from './components/DashboardNavigation';
 import { FilterBar } from './components/FilterBar';
 import { DrillDownBreadcrumbs } from './components/DrillDownBreadcrumbs';
 import { KPICards } from './components/KPICards';
@@ -191,14 +190,12 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-200">
       
-      {/* 1 & 2. Persistent Navigation Container (Header + Section Navigation Tabs) */}
-      <div className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 shadow-2xs transition-colors duration-200">
-        <Header onNavigateHome={onNavigateHome} />
-        <DashboardNavigation
-          activeSection={activeSection}
-          setActiveSection={setActiveSection}
-        />
-      </div>
+      {/* 1. Unified Single-Row Persistent Sticky Header */}
+      <Header
+        onNavigateHome={onNavigateHome}
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+      />
 
       {/* 3. Compact Filter Bar (State, District, Sector + Advanced Filters) */}
       <FilterBar />
@@ -208,7 +205,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
         {/* SECTION 1: OVERVIEW DASHBOARD */}
         {activeSection === 'overview' && (
-          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 dashboard-section-enter">
             
             {/* Clear Heading & Explanation */}
             <ScrollReveal delay={0}>
@@ -295,7 +292,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
         {/* SECTION 2: SKILL GAPS */}
         {activeSection === 'skill-gaps' && (
-          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 dashboard-section-enter">
             {/* Jurisdictional Breadcrumb */}
             <ScrollReveal delay={0}>
               <DrillDownBreadcrumbs />
@@ -357,7 +354,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
         {/* SECTION 3: FORECASTS */}
         {activeSection === 'forecasts' && (
-          <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-150">
+          <div className="space-y-6 sm:space-y-8 dashboard-section-enter">
             {/* Jurisdictional Breadcrumb */}
             <ScrollReveal delay={0}>
               <DrillDownBreadcrumbs />
@@ -392,7 +389,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
         {/* SECTION 4: DATA & REPORTS */}
         {activeSection === 'data-reports' && (
-          <div className="space-y-8 animate-in fade-in duration-150">
+          <div className="space-y-8 dashboard-section-enter">
             {/* Group 1: Problem Statement & Challenge Context */}
             <ScrollReveal delay={0}>
               <section className="space-y-3" aria-labelledby="section-challenge-title">
