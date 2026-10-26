@@ -76,17 +76,17 @@ export const EmergingSkills: React.FC = () => {
             className="card-interactive p-2.5 rounded-lg bg-slate-50/70 dark:bg-slate-800/40 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/60 dark:border-slate-800/80 shadow-xs group cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
             aria-label={`Filter by ${item.trade} in ${item.sector}`}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="w-5 h-5 rounded-full bg-white dark:bg-slate-700 font-mono text-[11px] font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200 dark:border-slate-600">
+            <div className="flex items-center justify-between gap-2 min-w-0">
+              <div className="flex items-center space-x-2 min-w-0 flex-1">
+                <span className="w-5 h-5 rounded-full bg-white dark:bg-slate-700 font-mono text-[11px] font-bold flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-xs border border-slate-200 dark:border-slate-600 shrink-0">
                   {item.rank}
                 </span>
-                <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">
+                <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition truncate">
                   {item.trade}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-1.5">
+              <div className="flex items-center space-x-1.5 shrink-0">
                 <span className="inline-flex items-center text-xs font-bold text-emerald-600 dark:text-emerald-400 font-mono">
                   <ArrowUpRight className="w-3.5 h-3.5 mr-0.5" />
                   +{item.growth}%
@@ -102,14 +102,14 @@ export const EmergingSkills: React.FC = () => {
                   style={{ width: `${(item.growth / 40) * 100}%` }}
                 />
               </div>
-              <span className="text-[10px] text-slate-400 font-mono">
+              <span className="text-[10px] text-slate-400 font-mono shrink-0">
                 Index: {item.demandIndex}
               </span>
             </div>
 
-            <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400">
-              <span className="text-blue-600 dark:text-blue-400 font-semibold">{item.sector}</span>
-              <span className="font-medium text-slate-500 dark:text-slate-400">{item.status}</span>
+            <div className="mt-1.5 flex items-center justify-between text-[10px] text-slate-400 min-w-0 gap-2">
+              <span className="text-blue-600 dark:text-blue-400 font-semibold truncate">{item.sector}</span>
+              <span className="font-medium text-slate-500 dark:text-slate-400 shrink-0">{item.status}</span>
             </div>
           </div>
         ))}

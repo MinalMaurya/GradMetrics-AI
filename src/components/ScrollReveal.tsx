@@ -3,9 +3,9 @@ import React, { useEffect, useRef, useState } from 'react';
 export interface ScrollRevealProps {
   children: React.ReactNode;
   className?: string;
-  delay?: number; // Delay in ms (e.g. 0, 180, 360, 540)
-  duration?: number; // Duration in ms (default 1400, range 1200-1500ms)
-  offset?: number; // Vertical offset in px (default 22, range 20-24px)
+  delay?: number; // Delay in ms (e.g. 0, 60, 120)
+  duration?: number; // Duration in ms (default 280ms, snappy and subtle)
+  offset?: number; // Vertical offset in px (default 10px, subtle)
   direction?: 'up' | 'none';
   once?: boolean;
   as?: keyof JSX.IntrinsicElements;
@@ -15,13 +15,14 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
   className = '',
   delay = 0,
-  duration = 1400,
-  offset = 22,
+  duration = 280,
+  offset = 10,
   direction = 'up',
   once = true,
   as: Component = 'div',
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isFullyRevealed, setIsFullyRevealed] = useState(false);
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (prefersReducedMotion) {
         setIsVisible(true);
+        setIsFullyRevealed(true);
         return;
       }
     }
@@ -37,12 +39,14 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     // 2. Safe fallback if IntersectionObserver is not available (e.g. SSR / Node.js test environment)
     if (typeof IntersectionObserver === 'undefined') {
       setIsVisible(true);
+      setIsFullyRevealed(true);
       return;
     }
 
     const currentEl = elementRef.current;
     if (!currentEl) {
       setIsVisible(true);
+      setIsFullyRevealed(true);
       return;
     }
 
@@ -56,12 +60,13 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
             }
           } else if (!once) {
             setIsVisible(false);
+            setIsFullyRevealed(false);
           }
         });
       },
       {
         threshold: 0.05,
-        rootMargin: '0px 0px -25px 0px',
+        rootMargin: '0px 0px 50px 0px',
       }
     );
 
@@ -72,7 +77,28 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     };
   }, [once]);
 
+  // Once the reveal animation completes, remove all transform and will-change styles
+  // so that descendant elements and stacking contexts behave naturally without trapping overlays!
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        setIsFullyRevealed(true);
+      }, (delay || 0) + (duration || 280) + 40);
+      return () => clearTimeout(timer);
+    } else {
+      setIsFullyRevealed(false);
+    }
+  }, [isVisible, delay, duration]);
+
   const Tag = Component as any;
+
+  if (isFullyRevealed) {
+    return (
+      <Tag ref={elementRef} className={`opacity-100 ${className}`}>
+        {children}
+      </Tag>
+    );
+  }
 
   return (
     <Tag
@@ -82,12 +108,12 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
         transitionDelay: isVisible ? `${delay}ms` : '0ms',
         transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
         transform: isVisible
-          ? 'translate3d(0, 0, 0)'
+          ? 'none'
           : direction === 'up'
           ? `translate3d(0, ${offset}px, 0)`
           : 'none',
       }}
-      className={`transition-all will-change-transform ${
+      className={`transition-all ${
         isVisible ? 'opacity-100' : 'opacity-0'
       } ${className}`}
     >

@@ -13,12 +13,12 @@ import {
   ChevronLeft,
   Sliders,
   Database,
-  X,
   FileCheck,
   Target
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { AIInsight } from '../types/analytics';
+import { Modal } from './Modal';
 
 export const AIInsights: React.FC = () => {
   const {
@@ -127,8 +127,9 @@ export const AIInsights: React.FC = () => {
           <div className="flex items-center space-x-1">
             <button
               onClick={() => setCurrentIndex((prev) => (prev > 0 ? prev - 1 : aiInsights.length - 1))}
-              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               title="Previous Recommendation"
+              aria-label="Previous Recommendation"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
             </button>
@@ -137,16 +138,18 @@ export const AIInsights: React.FC = () => {
             </span>
             <button
               onClick={() => setCurrentIndex((prev) => (prev < aiInsights.length - 1 ? prev + 1 : 0))}
-              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+              className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               title="Next Recommendation"
+              aria-label="Next Recommendation"
             >
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={generateNewAIInsight}
               disabled={isGeneratingAI}
-              className="p-1 rounded text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 ml-1 transition"
+              className="p-1 rounded text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 ml-1 transition cursor-pointer disabled:cursor-not-allowed"
               title="Synthesize Advice"
+              aria-label="Synthesize Advice"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isGeneratingAI ? 'animate-spin' : ''}`} />
             </button>
@@ -207,35 +210,40 @@ export const AIInsights: React.FC = () => {
 
       {/* Comprehensive Evidence & Action Modal (Prompt Section 4 Requirement) */}
       {selectedInsightModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            {/* Modal Header */}
-            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <BrainCircuit className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                    AI RECOMMENDATION
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                    Labour Market Intelligence &amp; Seat Allocation Advisory
-                  </p>
-                </div>
-              </div>
+        <Modal
+          isOpen={!!selectedInsightModal}
+          onClose={() => setSelectedInsightModal(null)}
+          maxWidth="max-w-lg"
+          title="AI RECOMMENDATION"
+          subtitle="Labour Market Intelligence & Seat Allocation Advisory"
+          icon={
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <BrainCircuit className="w-4 h-4" />
+            </div>
+          }
+          bodyClassName="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300"
+          footer={
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <button
+                onClick={() => {
+                  setSelectedInsightModal(null);
+                  setIsPolicySimulatorOpen(true);
+                }}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer transition"
+              >
+                <Sliders className="w-3.5 h-3.5 text-blue-600" />
+                <span>Simulate Policy</span>
+              </button>
 
               <button
                 onClick={() => setSelectedInsightModal(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                Close
               </button>
             </div>
-
-            {/* Modal Body */}
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
+          }
+        >
               
               {/* Context Summary Box */}
               <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
@@ -331,31 +339,7 @@ export const AIInsights: React.FC = () => {
                 </div>
               </div>
 
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2">
-              <button
-                onClick={() => {
-                  setSelectedInsightModal(null);
-                  setIsPolicySimulatorOpen(true);
-                }}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"
-              >
-                <Sliders className="w-3.5 h-3.5 text-blue-600" />
-                <span>Simulate Policy</span>
-              </button>
-
-              <button
-                onClick={() => setSelectedInsightModal(null)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition"
-              >
-                Close
-              </button>
-            </div>
-
-          </div>
-        </div>
+        </Modal>
       )}
     </>
   );

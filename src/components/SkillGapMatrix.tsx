@@ -20,15 +20,20 @@ import {
   SlidersHorizontal,
   Table as TableIcon,
   BarChart3,
-  Layers
+  Layers,
+  Info,
+  X,
+  Briefcase,
+  GraduationCap
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { SkillDomainGap, GapStatus } from '../types/analytics';
+import { Modal } from './Modal';
 
 type ViewTab = 'chart' | 'matrix';
 
 export const SkillGapMatrix: React.FC = () => {
-  const { skillDomains, isDarkMode, setTrade, filters } = useAnalytics();
+  const { skillDomains, tradeRecords, isDarkMode, setTrade, filters } = useAnalytics();
   const [activeTab, setActiveTab] = useState<ViewTab>('chart');
   const [selectedDomain, setSelectedDomain] = useState<SkillDomainGap | null>(null);
 
@@ -181,63 +186,72 @@ export const SkillGapMatrix: React.FC = () => {
         </div>
       </div>
 
+      {/* Standardized 0-100 Scale Explanatory Notice */}
+      <div className="my-3 p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-900/60 flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300">
+        <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+        <div className="leading-relaxed">
+          <strong className="text-blue-950 dark:text-blue-200 font-semibold">Standardized Index (0–100 Scale): </strong>
+          Values in this matrix represent relative demand and capacity intensity scores (where 100 = highest market intensity), not raw worker headcounts or seat volumes. This enables fair cross-occupational comparison between massive sectors (e.g., Software Development) and vital specialized trades (e.g., Solar Technician). Click any row to view raw headcounts and intervention details.
+        </div>
+      </div>
+
       {/* Prominent Category Badges Overview (Dynamic derivation from active data) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 my-3 sm:my-4">
         {/* Shortage 1 */}
-        <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-900/60">
+        <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-900/60 min-w-0">
           <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300 truncate">
             {topCritical?.domain || 'High Deficit Trade'}
           </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200">
+          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200 shrink-0">
               {topCritical ? `+${topCritical.gap} pts` : 'N/A'}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap">
+            <span className="text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap shrink-0">
               CRITICAL SHORTAGE
             </span>
           </div>
         </div>
 
         {/* Shortage 2 (Emerging) */}
-        <div className="p-2.5 rounded-lg bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-900/60">
+        <div className="p-2.5 rounded-lg bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-900/60 min-w-0">
           <div className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 truncate">
             {topEmerging?.domain || 'Moderate Deficit Trade'}
           </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-amber-800 dark:text-amber-200">
+          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-amber-800 dark:text-amber-200 shrink-0">
               {topEmerging ? `+${topEmerging.gap} pts` : 'N/A'}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase whitespace-nowrap">
+            <span className="text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase whitespace-nowrap shrink-0">
               EMERGING SHORTAGE
             </span>
           </div>
         </div>
 
         {/* Oversupply */}
-        <div className="p-2.5 rounded-lg bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/70 dark:border-purple-900/60">
+        <div className="p-2.5 rounded-lg bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/70 dark:border-purple-900/60 min-w-0">
           <div className="text-[11px] font-semibold text-purple-700 dark:text-purple-300 truncate">
             {topOversupply?.domain || 'No Oversupply Trade'}
           </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-purple-800 dark:text-purple-200">
+          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-purple-800 dark:text-purple-200 shrink-0">
               {topOversupply ? `${topOversupply.gap} pts` : '0 pts'}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase whitespace-nowrap">
+            <span className="text-[9px] sm:text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase whitespace-nowrap shrink-0">
               OVERSUPPLY
             </span>
           </div>
         </div>
 
         {/* Balanced */}
-        <div className="p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-900/60">
+        <div className="p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-900/60 min-w-0">
           <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 truncate">
             {topBalanced?.domain || 'Equilibrium Cohort'}
           </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200">
+          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
+            <span className="text-lg sm:text-xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200 shrink-0">
               {topBalanced ? `+${topBalanced.gap} pts` : '0 pts'}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase whitespace-nowrap">
+            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase whitespace-nowrap shrink-0">
               BALANCED
             </span>
           </div>
@@ -296,14 +310,14 @@ export const SkillGapMatrix: React.FC = () => {
         </div>
       ) : (
         /* Detailed Matrix Table */
-        <div className="overflow-x-auto mt-2 -mx-1 sm:mx-0">
+        <div className="overflow-x-auto mt-2 w-full">
           <table className="w-full text-left text-xs border-collapse min-w-[620px]">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider whitespace-nowrap">
                 <th className="py-2.5 px-3">Trade / Occupation</th>
-                <th className="py-2.5 px-3 text-right">Labour Demand</th>
-                <th className="py-2.5 px-3 text-right">Training Capacity</th>
-                <th className="py-2.5 px-3 text-right">Demand-Supply Gap</th>
+                <th className="py-2.5 px-3 text-right">Labour Demand (Score /100)</th>
+                <th className="py-2.5 px-3 text-right">Training Capacity (Score /100)</th>
+                <th className="py-2.5 px-3 text-right">Index Gap (pts)</th>
                 <th className="py-2.5 px-3">Status</th>
                 <th className="py-2.5 px-3">Hiring Velocity</th>
                 <th className="py-2.5 px-3 text-right">Avg Package</th>
@@ -313,11 +327,20 @@ export const SkillGapMatrix: React.FC = () => {
               {skillDomains.map((item) => (
                 <tr
                   key={item.domain}
+                  role="button"
+                  tabIndex={0}
                   onClick={() => {
                     setSelectedDomain(item);
                     if (item.trade) setTrade(item.trade as any);
                   }}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedDomain(item);
+                      if (item.trade) setTrade(item.trade as any);
+                    }
+                  }}
+                  className="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition focus:outline-hidden focus:bg-slate-100 dark:focus:bg-slate-800"
                 >
                   <td className="py-2.5 px-3 font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                     {item.domain}
@@ -356,8 +379,8 @@ export const SkillGapMatrix: React.FC = () => {
       {/* Legend & Formula Reference */}
       <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center space-x-3">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">Calculation:</span>
-          <span>Demand-Supply Gap = Labour Demand &minus; Training Supply</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-300">Scale Definition:</span>
+          <span>Index Gap = Normalized Demand &minus; Normalized Supply (0–100 relative scale)</span>
         </div>
         <div className="flex items-center space-x-3">
           <span className="flex items-center gap-1">
@@ -374,6 +397,101 @@ export const SkillGapMatrix: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* Selected Domain Detail Modal */}
+      {selectedDomain && (
+        <Modal
+          isOpen={!!selectedDomain}
+          onClose={() => setSelectedDomain(null)}
+          maxWidth="max-w-lg"
+          title={selectedDomain.domain}
+          subtitle={`Sector: ${selectedDomain.sector || 'Cross-Sector'} • Scope: ${activeScopeLabel}`}
+          bodyClassName="p-4 sm:p-5 space-y-4 overflow-y-auto"
+          footer={
+            <div className="flex items-center justify-between">
+              <div className="text-[11px] text-slate-500">
+                Avg Placement: <strong className="text-emerald-600 font-mono">₹{selectedDomain.avgPackageLPA} LPA</strong> &bull; Velocity: <strong>{selectedDomain.hiringVelocity}</strong>
+              </div>
+              <button
+                onClick={() => setSelectedDomain(null)}
+                className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          }
+        >
+          {/* Normalized Score vs Raw Volume Comparison Cards */}
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="p-3 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/60">
+              <span className="text-[10px] uppercase font-bold text-blue-800 dark:text-blue-300">
+                Normalized Index (0–100)
+              </span>
+              <div className="mt-2 space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-600 dark:text-slate-400">Demand:</span>
+                  <strong className="font-mono text-blue-600 dark:text-blue-400">{selectedDomain.marketDemand} pts</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600 dark:text-slate-400">Supply:</span>
+                  <strong className="font-mono text-slate-700 dark:text-slate-300">{selectedDomain.trainingCapacity} pts</strong>
+                </div>
+                <div className="flex justify-between pt-1 border-t border-blue-200/50 dark:border-blue-900/50 font-bold">
+                  <span>Index Gap:</span>
+                  <span className={selectedDomain.gap > 0 ? 'text-amber-600' : 'text-purple-600'}>
+                    {selectedDomain.gap > 0 ? `+${selectedDomain.gap} pts` : `${selectedDomain.gap} pts`}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Underlying Raw Headcounts */}
+            {(() => {
+              const matches = tradeRecords.filter(r => r.trade === selectedDomain.domain || r.trade === selectedDomain.trade);
+              const rawDemand = matches.reduce((sum, r) => sum + r.labourDemand, 0);
+              const rawSupply = matches.reduce((sum, r) => sum + r.trainingCapacity, 0);
+              const rawGap = rawDemand - rawSupply;
+              return (
+                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
+                  <span className="text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300">
+                    Active Scope Headcounts
+                  </span>
+                  <div className="mt-2 space-y-1">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-400">Openings:</span>
+                      <strong className="font-mono text-slate-900 dark:text-white">{rawDemand > 0 ? rawDemand.toLocaleString('en-IN') : 'N/A'}</strong>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-400">Seats:</span>
+                      <strong className="font-mono text-slate-900 dark:text-white">{rawSupply > 0 ? rawSupply.toLocaleString('en-IN') : 'N/A'}</strong>
+                    </div>
+                    <div className="flex justify-between pt-1 border-t border-slate-200 dark:border-slate-700 font-bold">
+                      <span>Net Volume:</span>
+                      <span className={rawGap > 0 ? 'text-amber-600' : 'text-purple-600'}>
+                        {rawGap > 0 ? `+${rawGap.toLocaleString('en-IN')}` : rawGap.toLocaleString('en-IN')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+
+          {/* Interpretation Guidance */}
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 text-xs space-y-1">
+            <strong className="text-slate-900 dark:text-white font-semibold">How to interpret this trade indicator:</strong>
+            <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+              {selectedDomain.gap > 25
+                ? `Critical Shortage (+${selectedDomain.gap} pts): High qualification bottleneck. Employer hiring pace (${selectedDomain.hiringVelocity}) exceeds regional training output. Expand ITI seat sanction quotas.`
+                : selectedDomain.gap > 5
+                ? `Emerging Shortage (+${selectedDomain.gap} pts): Moderate deficit. Pre-emptively approve additional PMKVY/ITI batches to avoid acute shortages.`
+                : selectedDomain.gap < 0
+                ? `Seat Oversupply (${selectedDomain.gap} pts): Training intake capacity exceeds local hiring demand. Shift instructor hours toward digital and high-growth vocations.`
+                : `Balanced Equilibrium (${selectedDomain.gap} pts): Training supply accurately matches current employer absorption. Maintain seat levels.`}
+            </p>
+          </div>
+        </Modal>
+      )}
 
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Sliders,
-  X,
   TrendingUp,
   AlertTriangle,
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
+import { Modal } from './Modal';
 
 interface SavedPolicyScenario {
   id: string;
@@ -110,38 +110,42 @@ export const PolicySimulatorModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        
-        {/* Header */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-              <Sliders className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                Training Policy Intervention Simulator
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                Calibrate training capacity, new centers, and seat reallocations to close regional deficits
-              </p>
-            </div>
-          </div>
+    <Modal
+      isOpen={isPolicySimulatorOpen}
+      onClose={() => setIsPolicySimulatorOpen(false)}
+      maxWidth="max-w-2xl"
+      title="Training Policy Intervention Simulator"
+      subtitle="Calibrate training capacity, new centers, and seat reallocations to close regional deficits"
+      icon={
+        <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+          <Sliders className="w-5 h-5" />
+        </div>
+      }
+      bodyClassName="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto"
+      footer={
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          <button
+            onClick={() => {
+              setSimulatedSeatIncrease(20);
+              setSimulatedNewCentres(4);
+              setSimulatedCourseReallocation(15);
+            }}
+            className="flex items-center justify-center space-x-1.5 text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset Recommended Baseline</span>
+          </button>
 
           <button
             onClick={() => setIsPolicySimulatorOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0 cursor-pointer"
-            aria-label="Close simulator modal"
+            className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs transition text-center cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            Apply &amp; Close Simulator
           </button>
         </div>
-
-        {/* Body */}
-        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto">
-          
-          {/* Target Scope Pill */}
+      }
+    >
+      {/* Target Scope Pill */}
           <div className="p-3 rounded-lg bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
             <span className="text-blue-800 dark:text-blue-300 font-medium">
               Simulation Target: <strong>{filters.district !== 'All Districts' ? filters.district + ', ' : ''}{filters.geography}</strong> &bull; <strong>{filters.trade}</strong>
@@ -384,32 +388,6 @@ export const PolicySimulatorModal: React.FC = () => {
               </div>
             )}
           </section>
-
-        </div>
-
-        {/* Footer */}
-        <div className="px-4 sm:px-6 py-3 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
-          <button
-            onClick={() => {
-              setSimulatedSeatIncrease(20);
-              setSimulatedNewCentres(4);
-              setSimulatedCourseReallocation(15);
-            }}
-            className="flex items-center justify-center space-x-1.5 text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset Recommended Baseline</span>
-          </button>
-
-          <button
-            onClick={() => setIsPolicySimulatorOpen(false)}
-            className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs transition text-center cursor-pointer"
-          >
-            Apply &amp; Close Simulator
-          </button>
-        </div>
-
-      </div>
-    </div>
+    </Modal>
   );
 };

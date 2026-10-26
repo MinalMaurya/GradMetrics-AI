@@ -188,41 +188,41 @@ export const ForecastChart: React.FC = () => {
 
       {/* Dynamic Projected Horizon Milestones derived from active data */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 my-3 sm:my-3.5">
-        <div className="card-interactive p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 shadow-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 shadow-xs min-w-0">
           <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold uppercase">
             <span>2026 Baseline Actuals</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-700 font-normal">Observed</span>
           </div>
-          <div className="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white mt-0.5 truncate">
             {p2026.projectedGap > 0 ? `+${p2026.projectedGap}K Shortage` : `${p2026.projectedGap}K Balanced`}
           </div>
-          <div className="text-[10px] text-slate-500 dark:text-slate-400">
+          <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
             Demand: {p2026.labourDemand}K &bull; Capacity: {p2026.trainingSupply}K
           </div>
         </div>
 
-        <div className="card-interactive p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 shadow-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 shadow-xs min-w-0">
           <div className="flex items-center justify-between text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase">
             <span>2027 Projected Horizon</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-amber-200/60 dark:bg-amber-900/60 font-mono">Estimate</span>
           </div>
-          <div className="text-sm sm:text-base font-extrabold font-mono text-amber-700 dark:text-amber-300 mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-amber-700 dark:text-amber-300 mt-0.5 truncate">
             {p2027.projectedGap > 0 ? `+${p2027.projectedGap}K Shortage` : `${p2027.projectedGap}K Surplus`}
           </div>
-          <div className="text-[10px] text-amber-600/80 dark:text-amber-400">
+          <div className="text-[10px] text-amber-600/80 dark:text-amber-400 truncate">
             Demand: {p2027.labourDemand}K &bull; Projected Supply: {p2027.trainingSupply}K
           </div>
         </div>
 
-        <div className="card-interactive p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 shadow-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 shadow-xs min-w-0">
           <div className="flex items-center justify-between text-[10px] text-rose-600 dark:text-rose-400 font-bold uppercase">
             <span>2028 Full Projection</span>
             <span className="text-[9px] px-1 py-0.2 rounded bg-rose-200/60 dark:bg-rose-900/60 font-mono">Estimate</span>
           </div>
-          <div className="text-sm sm:text-base font-extrabold font-mono text-rose-700 dark:text-rose-300 mt-0.5">
+          <div className="text-sm sm:text-base font-extrabold font-mono text-rose-700 dark:text-rose-300 mt-0.5 truncate">
             {p2028.projectedGap > 0 ? `+${p2028.projectedGap}K Shortage` : `${p2028.projectedGap}K Balanced`}
           </div>
-          <div className="text-[10px] text-rose-600/80 dark:text-rose-400">
+          <div className="text-[10px] text-rose-600/80 dark:text-rose-400 truncate">
             Demand: {p2028.labourDemand}K &bull; Projected Supply: {p2028.trainingSupply}K
           </div>
         </div>
@@ -233,7 +233,7 @@ export const ForecastChart: React.FC = () => {
         <div className="space-y-4 pt-1">
           {/* Validation Metrics Scorecard with Plain-Language Explanations */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('maeMetric')}</span>
@@ -248,7 +248,7 @@ export const ForecastChart: React.FC = () => {
               </p>
             </div>
 
-            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('rmseMetric')}</span>
@@ -263,7 +263,7 @@ export const ForecastChart: React.FC = () => {
               </p>
             </div>
 
-            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 shadow-xs flex flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">{t('mapeMetric')}</span>
@@ -278,7 +278,7 @@ export const ForecastChart: React.FC = () => {
               </p>
             </div>
 
-            <div className="card-interactive p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 shadow-xs flex flex-col justify-between">
+            <div className="card-interactive p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 shadow-xs flex flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">{t('improvementMetric')}</span>
@@ -351,12 +351,12 @@ export const ForecastChart: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="h-[250px] sm:h-[290px] w-full pt-1 sm:pt-2">
+        <div className="h-[250px] sm:h-[290px] w-full pt-1 sm:pt-2 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             {viewMode === 'aggregate' ? (
               <ComposedChart
                 data={forecastData}
-                margin={{ top: 10, right: 15, left: -20, bottom: 0 }}
+                margin={{ top: 10, right: 15, left: -5, bottom: 0 }}
               >
                 <defs>
                   <linearGradient id="forecastDemandArea" x1="0" y1="0" x2="0" y2="1">
@@ -366,7 +366,7 @@ export const ForecastChart: React.FC = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
                 <XAxis dataKey="year" tickLine={false} stroke={axisColor} fontSize={11} dy={8} />
-                <YAxis tickLine={false} axisLine={false} stroke={axisColor} fontSize={11} unit="K" />
+                <YAxis width={35} tickLine={false} axisLine={false} stroke={axisColor} fontSize={11} unit="K" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
                   verticalAlign="top"
@@ -420,11 +420,11 @@ export const ForecastChart: React.FC = () => {
             ) : (
               <ComposedChart
                 data={forecastData}
-                margin={{ top: 10, right: 25, left: -10, bottom: 0 }}
+                margin={{ top: 10, right: 25, left: -5, bottom: 0 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} vertical={false} />
                 <XAxis dataKey="year" tickLine={false} stroke={axisColor} fontSize={11} dy={8} />
-                <YAxis tickLine={false} axisLine={false} stroke={axisColor} fontSize={11} unit="K" />
+                <YAxis width={35} tickLine={false} axisLine={false} stroke={axisColor} fontSize={11} unit="K" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend
                   verticalAlign="top"

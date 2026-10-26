@@ -111,21 +111,21 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-        <div>
-          <div className="flex items-center gap-2">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
               Job Demand vs Training Supply
             </h2>
-            <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-              Unit: Annual Positions
+            <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800 shrink-0">
+              Unit: Openings &amp; Sanctioned Seats
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Comparing employer job openings against institutional training supply for key trades in {activeScopeLabel} ({datasetMetadata.reportingPeriod})
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+            Comparing employer job vacancies against sanctioned institutional training capacity for {activeScopeLabel} ({datasetMetadata.reportingPeriod})
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+        <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400 shrink-0">
           <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium">
             {chartData.length} Key Trades Analyzed
           </span>
@@ -133,7 +133,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
       </div>
 
       {/* Chart Canvas */}
-      <div className="h-80 w-full">
+      <div className="h-80 w-full min-w-0">
         {chartData.length === 0 ? (
           <div className="h-full flex items-center justify-center text-slate-400 text-xs">
             No trade data matches the selected filters.
@@ -142,7 +142,7 @@ export const OverviewDemandSupplyChart: React.FC = () => {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
-              margin={{ top: 10, right: 15, left: -5, bottom: 35 }}
+              margin={{ top: 10, right: 15, left: -5, bottom: 55 }}
               barGap={8}
             >
               <CartesianGrid
@@ -152,9 +152,9 @@ export const OverviewDemandSupplyChart: React.FC = () => {
               />
               <XAxis
                 dataKey="trade"
-                tick={{ fontSize: 11, fill: isDarkMode ? '#cbd5e1' : '#475569', fontWeight: 500 }}
+                tick={{ fontSize: 10, fill: isDarkMode ? '#cbd5e1' : '#475569', fontWeight: 500 }}
                 interval={0}
-                angle={-20}
+                angle={-22}
                 textAnchor="end"
                 tickLine={false}
                 dy={6}

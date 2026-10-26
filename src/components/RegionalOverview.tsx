@@ -136,29 +136,29 @@ export const RegionalOverview: React.FC = () => {
 
       {/* Regional Status Summary Badges (Dynamic counts) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 my-3 text-xs">
-        <div className="card-interactive p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 shadow-xs flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-rose-800 dark:text-rose-200 font-bold text-[11px] sm:text-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 shadow-xs flex items-center justify-between min-w-0">
+          <span className="flex items-center gap-1.5 text-rose-800 dark:text-rose-200 font-bold text-[11px] sm:text-xs min-w-0">
             <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
             <span className="truncate">Critical Shortage</span>
           </span>
           <span className="font-mono font-bold text-rose-700 dark:text-rose-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.critical} Regions</span>
         </div>
-        <div className="card-interactive p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 shadow-xs flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-amber-800 dark:text-amber-200 font-bold text-[11px] sm:text-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 shadow-xs flex items-center justify-between min-w-0">
+          <span className="flex items-center gap-1.5 text-amber-800 dark:text-amber-200 font-bold text-[11px] sm:text-xs min-w-0">
             <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
             <span className="truncate">Emerging Gap</span>
           </span>
           <span className="font-mono font-bold text-amber-700 dark:text-amber-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.emerging} Regions</span>
         </div>
-        <div className="card-interactive p-2.5 rounded-lg bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 shadow-xs flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-purple-800 dark:text-purple-200 font-bold text-[11px] sm:text-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900/60 shadow-xs flex items-center justify-between min-w-0">
+          <span className="flex items-center gap-1.5 text-purple-800 dark:text-purple-200 font-bold text-[11px] sm:text-xs min-w-0">
             <span className="w-2 h-2 rounded-full bg-purple-500 shrink-0" />
             <span className="truncate">Oversupply</span>
           </span>
           <span className="font-mono font-bold text-purple-700 dark:text-purple-300 ml-1 shrink-0 text-[11px] sm:text-xs">{regionalStats.oversupply} Regions</span>
         </div>
-        <div className="card-interactive p-2.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-center justify-between">
-          <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-200 font-bold text-[11px] sm:text-xs">
+        <div className="card-interactive p-2.5 rounded-lg bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/60 shadow-xs flex items-center justify-between min-w-0">
+          <span className="flex items-center gap-1.5 text-emerald-800 dark:text-emerald-200 font-bold text-[11px] sm:text-xs min-w-0">
             <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
             <span className="truncate">Balanced</span>
           </span>
@@ -167,7 +167,7 @@ export const RegionalOverview: React.FC = () => {
       </div>
 
       {/* Table Content */}
-      <div className="overflow-x-auto mt-2 -mx-1 sm:mx-0">
+      <div className="overflow-x-auto mt-2 w-full">
         {activeTab === 'states' ? (
           <table className="w-full text-left text-xs border-collapse">
             <thead>
@@ -216,8 +216,16 @@ export const RegionalOverview: React.FC = () => {
                 return (
                   <tr
                     key={item.state}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setGeography(item.state as GeographyState)}
-                    className={`cursor-pointer transition-colors duration-150 ${
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGeography(item.state as GeographyState);
+                      }
+                    }}
+                    className={`cursor-pointer transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-blue-500 ${
                       isSelected
                         ? 'bg-blue-50/80 dark:bg-blue-950/60 font-semibold'
                         : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
@@ -311,12 +319,22 @@ export const RegionalOverview: React.FC = () => {
                 return (
                   <tr
                     key={r.id}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => {
                       setGeography(r.state);
                       setDistrict(r.district);
                       setTrade(r.trade);
                     }}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setGeography(r.state);
+                        setDistrict(r.district);
+                        setTrade(r.trade);
+                      }
+                    }}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                     <td className="py-3 px-3.5 font-semibold text-slate-900 dark:text-white">
                       <div>{r.district}</div>

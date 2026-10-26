@@ -5,7 +5,6 @@ import {
   TrendingUp,
   Layers,
   CheckCircle2,
-  X,
   Building,
   Wrench,
   Hash,
@@ -14,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { TradeRecord, GapStatus } from '../types/analytics';
+import { Modal } from './Modal';
 
 export const OverviewAttentionTable: React.FC = () => {
   const { tradeRecords, datasetMetadata, setTrade, setDistrict, setGeography } = useAnalytics();
@@ -105,7 +105,7 @@ export const OverviewAttentionTable: React.FC = () => {
       </div>
 
       {/* Responsive Table */}
-      <div className="overflow-x-auto -mx-5 px-5">
+      <div className="overflow-x-auto w-full">
         <table className="w-full min-w-[700px] text-left text-xs border-collapse">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50/50 dark:bg-slate-800/40">
@@ -113,7 +113,7 @@ export const OverviewAttentionTable: React.FC = () => {
               <th className="py-2.5 px-3">Skill / Trade</th>
               <th className="py-2.5 px-3 text-right">Demand (Openings)</th>
               <th className="py-2.5 px-3 text-right">Supply (Seats)</th>
-              <th className="py-2.5 px-3 text-right">Net Gap</th>
+              <th className="py-2.5 px-3 text-right">Net Gap (Demand &minus; Supply)</th>
               <th className="py-2.5 px-3 text-center">Status</th>
               <th className="py-2.5 px-3">Evidence-Based Action</th>
             </tr>
@@ -195,62 +195,15 @@ export const OverviewAttentionTable: React.FC = () => {
 
       {/* Row Detail Modal */}
       {selectedTrade && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 relative animate-in zoom-in-95">
-            <button
-              onClick={() => setSelectedTrade(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                Labour Market Intelligence Card
-              </span>
-              <span>&bull;</span>
-              <span className="text-[10px] text-slate-400">NCO-2015 &amp; NSQF</span>
-            </div>
-
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-              {selectedTrade.trade}
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              {selectedTrade.district}, {selectedTrade.state} &bull; Sector: {selectedTrade.sector}
-            </p>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Job Demand (Openings)</span>
-                <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
-                  {selectedTrade.labourDemand.toLocaleString('en-IN')}
-                </div>
-                <span className="text-[10px] text-emerald-600 font-semibold">+{selectedTrade.demandGrowth}% Annual Growth</span>
-              </div>
-
-              <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Training Capacity (Seats)</span>
-                <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
-                  {selectedTrade.trainingCapacity.toLocaleString('en-IN')}
-                </div>
-                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">+{selectedTrade.supplyGrowth}% Seat Capacity</span>
-              </div>
-            </div>
-
-            <div className="mt-4 p-3.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/60">
-              <div className="text-xs font-semibold text-blue-900 dark:text-blue-200 mb-1 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                <span>Suggested Action for Skill Planners:</span>
-              </div>
-              <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                {getSuggestedAction(selectedTrade)}. Current gap stands at{' '}
-                <strong className={selectedTrade.gap > 0 ? 'text-amber-600' : 'text-purple-600'}>
-                  {selectedTrade.gap > 0 ? `+${selectedTrade.gap.toLocaleString()} worker shortage` : `${selectedTrade.gap.toLocaleString()} surplus capacity`}
-                </strong>.
-              </p>
-            </div>
-
-            <div className="mt-4 flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
+        <Modal
+          isOpen={!!selectedTrade}
+          onClose={() => setSelectedTrade(null)}
+          maxWidth="max-w-lg"
+          title={selectedTrade.trade}
+          subtitle={`${selectedTrade.district}, ${selectedTrade.state} • Sector: ${selectedTrade.sector}`}
+          bodyClassName="p-4 sm:p-5 space-y-4 overflow-y-auto"
+          footer={
+            <div className="flex items-center justify-between">
               <div className="text-[11px] text-slate-400">
                 Standard Code: <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">{selectedTrade.ncoCode}</span>
               </div>
@@ -266,9 +219,42 @@ export const OverviewAttentionTable: React.FC = () => {
                 Filter Dashboard to this Trade
               </button>
             </div>
+          }
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Job Demand (Openings)</span>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
+                {selectedTrade.labourDemand.toLocaleString('en-IN')}
+              </div>
+              <span className="text-[10px] text-emerald-600 font-semibold">+{selectedTrade.demandGrowth}% Annual Growth</span>
+            </div>
 
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Training Capacity (Seats)</span>
+              <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
+                {selectedTrade.trainingCapacity.toLocaleString('en-IN')}
+              </div>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">+{selectedTrade.supplyGrowth}% Seat Capacity</span>
+            </div>
           </div>
-        </div>
+
+          <div className="p-3.5 rounded-lg bg-blue-50/50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/60">
+            <div className="text-xs font-semibold text-blue-900 dark:text-blue-200 mb-1 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <span>Suggested Action for Skill Planners:</span>
+            </div>
+            <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+              {getSuggestedAction(selectedTrade)}. Current gap stands at{' '}
+              <strong className={selectedTrade.gap > 0 ? 'text-amber-600' : 'text-purple-600'}>
+                {selectedTrade.gap > 0 ? `+${selectedTrade.gap.toLocaleString('en-IN')} worker shortage` : `${selectedTrade.gap.toLocaleString('en-IN')} surplus capacity`}
+              </strong>.
+            </p>
+            <div className="mt-2 pt-2 border-t border-blue-200/40 dark:border-blue-900/40 text-[11px] font-mono text-slate-600 dark:text-slate-400">
+              Formula: {selectedTrade.labourDemand.toLocaleString('en-IN')} (Demand) &minus; {selectedTrade.trainingCapacity.toLocaleString('en-IN')} (Supply) = {selectedTrade.gap > 0 ? `+${selectedTrade.gap.toLocaleString('en-IN')} positions deficit` : `${selectedTrade.gap.toLocaleString('en-IN')} seats surplus`}
+            </div>
+          </div>
+        </Modal>
       )}
 
     </div>

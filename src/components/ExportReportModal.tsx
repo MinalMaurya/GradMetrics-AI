@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   Download,
-  X,
   Printer,
   FileText,
   FileSpreadsheet,
@@ -13,6 +12,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
+import { Modal } from './Modal';
 
 export const ExportReportModal: React.FC = () => {
   const {
@@ -166,38 +166,38 @@ export const ExportReportModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        
-        {/* Header */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                Labour Market Intelligence Dossier &amp; Data Export
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                Official MSDE &bull; NCVET Skill Demand-Supply Planning Brief (PS 26246)
-              </p>
-            </div>
-          </div>
-
+    <Modal
+      isOpen={isExportModalOpen}
+      onClose={() => setIsExportModalOpen(false)}
+      maxWidth="max-w-2xl"
+      title="Labour Market Intelligence Dossier & Data Export"
+      subtitle="Official MSDE • NCVET Skill Demand-Supply Planning Brief (PS 26246)"
+      icon={
+        <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+          <FileText className="w-5 h-5" />
+        </div>
+      }
+      bodyClassName="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto print:p-0"
+      footer={
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
           <button
             onClick={() => setIsExportModalOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0"
-            aria-label="Close export modal"
+            className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 transition text-center cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            Cancel
+          </button>
+
+          <button
+            onClick={handlePrint}
+            className="flex items-center justify-center space-x-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs transition cursor-pointer"
+          >
+            <Printer className="w-3.5 h-3.5" />
+            <span>Print Dossier / Export PDF</span>
           </button>
         </div>
-
-        {/* Printable Content Preview */}
-        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto print:p-0">
-          
-          {/* Document Header in Brief */}
+      }
+    >
+      {/* Document Header in Brief */}
           <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
             <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
               <div>
@@ -234,40 +234,40 @@ export const ExportReportModal: React.FC = () => {
 
           {/* Key Metric Summary */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-              <div className="text-[10px] uppercase font-semibold text-slate-500">Labour Demand</div>
-              <div className="text-lg font-bold font-mono text-blue-600 dark:text-blue-400">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 min-w-0">
+              <div className="text-[10px] uppercase font-semibold text-slate-500 truncate">Labour Demand</div>
+              <div className="text-lg font-bold font-mono text-blue-600 dark:text-blue-400 truncate">
                 {kpis.labourDemand.toLocaleString()}
               </div>
-              <div className="text-[10px] text-emerald-600 font-medium">+{kpis.labourDemandYoY}% YoY</div>
+              <div className="text-[10px] text-emerald-600 font-medium truncate">+{kpis.labourDemandYoY}% YoY</div>
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-              <div className="text-[10px] uppercase font-semibold text-slate-500">Training Capacity</div>
-              <div className="text-lg font-bold font-mono text-slate-800 dark:text-slate-200">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 min-w-0">
+              <div className="text-[10px] uppercase font-semibold text-slate-500 truncate">Training Capacity</div>
+              <div className="text-lg font-bold font-mono text-slate-800 dark:text-slate-200 truncate">
                 {kpis.trainingCapacity.toLocaleString()}
               </div>
-              <div className="text-[10px] text-slate-500 font-medium">+{kpis.trainingCapacityYoY}% YoY</div>
+              <div className="text-[10px] text-slate-500 font-medium truncate">+{kpis.trainingCapacityYoY}% YoY</div>
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-              <div className="text-[10px] uppercase font-semibold text-slate-500">Demand-Supply Gap</div>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 min-w-0">
+              <div className="text-[10px] uppercase font-semibold text-slate-500 truncate">Demand-Supply Gap</div>
               <div
-                className={`text-lg font-bold font-mono ${
+                className={`text-lg font-bold font-mono truncate ${
                   kpis.demandSupplyGap > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-purple-600 dark:text-purple-400'
                 }`}
               >
                 {kpis.demandSupplyGap > 0 ? `+${kpis.demandSupplyGap.toLocaleString()}` : `${kpis.demandSupplyGap.toLocaleString()}`}
               </div>
-              <div className="text-[10px] font-bold text-amber-600 uppercase">{kpis.gapStatus}</div>
+              <div className="text-[10px] font-bold text-amber-600 uppercase truncate">{kpis.gapStatus}</div>
             </div>
 
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800">
-              <div className="text-[10px] uppercase font-semibold text-slate-500">Critical Gap Rate</div>
-              <div className="text-lg font-bold font-mono text-rose-600 dark:text-rose-400">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 min-w-0">
+              <div className="text-[10px] uppercase font-semibold text-slate-500 truncate">Critical Gap Rate</div>
+              <div className="text-lg font-bold font-mono text-rose-600 dark:text-rose-400 truncate">
                 {kpis.criticalGapRate}%
               </div>
-              <div className="text-[10px] text-rose-600 font-medium">Trades Action Req.</div>
+              <div className="text-[10px] text-rose-600 font-medium truncate">Trades Action Req.</div>
             </div>
           </div>
 
@@ -280,40 +280,40 @@ export const ExportReportModal: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <button
                 onClick={handleDownloadCSV}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer min-w-0"
               >
-                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 shrink-0">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="font-bold text-xs text-slate-900 dark:text-white">Export CSV</div>
-                  <div className="text-[10px] text-slate-400">All columns &amp; trade rows</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-xs text-slate-900 dark:text-white truncate">Export CSV</div>
+                  <div className="text-[10px] text-slate-400 truncate">All columns &amp; trade rows</div>
                 </div>
               </button>
 
               <button
                 onClick={handleDownloadJSON}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer min-w-0"
               >
-                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 shrink-0">
                   <FileCode className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="font-bold text-xs text-slate-900 dark:text-white">Export JSON</div>
-                  <div className="text-[10px] text-slate-400">Complete API schema</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-xs text-slate-900 dark:text-white truncate">Export JSON</div>
+                  <div className="text-[10px] text-slate-400 truncate">Complete API schema</div>
                 </div>
               </button>
 
               <button
                 onClick={handleDownloadForecast}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-left transition flex items-center space-x-3 cursor-pointer min-w-0"
               >
-                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0">
                   <Download className="w-5 h-5" />
                 </div>
-                <div>
-                  <div className="font-bold text-xs text-slate-900 dark:text-white">Download Forecast</div>
-                  <div className="text-[10px] text-slate-400">24-Month trajectory CSV</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold text-xs text-slate-900 dark:text-white truncate">Download Forecast</div>
+                  <div className="text-[10px] text-slate-400 truncate">24-Month trajectory CSV</div>
                 </div>
               </button>
             </div>
@@ -340,28 +340,6 @@ export const ExportReportModal: React.FC = () => {
               <div>&bull; 24-Month Forecast &amp; Priorities</div>
             </div>
           </div>
-
-        </div>
-
-        {/* Footer Actions */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 shrink-0">
-          <button
-            onClick={() => setIsExportModalOpen(false)}
-            className="px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 transition text-center cursor-pointer"
-          >
-            Cancel
-          </button>
-
-          <button
-            onClick={handlePrint}
-            className="flex items-center justify-center space-x-1.5 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs transition cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Dossier / Export PDF</span>
-          </button>
-        </div>
-
-      </div>
-    </div>
+    </Modal>
   );
 };

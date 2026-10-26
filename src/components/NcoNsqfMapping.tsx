@@ -51,7 +51,7 @@ export const NcoNsqfMapping: React.FC = () => {
       </div>
 
       {/* Interactive Taxonomy Table */}
-      <div className="overflow-x-auto mt-3">
+      <div className="overflow-x-auto mt-3 w-full">
         <table className="w-full min-w-[700px] text-left text-xs border-collapse whitespace-nowrap">
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider">
@@ -68,11 +68,20 @@ export const NcoNsqfMapping: React.FC = () => {
             {ncoNsqfMappings.map((item) => (
               <tr
                 key={item.ncoCode + item.trade}
+                role="button"
+                tabIndex={0}
                 onClick={() => {
                   setSector(item.sector);
                   setTrade(item.trade);
                 }}
-                className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSector(item.sector);
+                    setTrade(item.trade);
+                  }
+                }}
+                className="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition focus:outline-hidden focus:bg-slate-100 dark:focus:bg-slate-800"
               >
                 <td className="py-3 px-3 font-mono font-bold text-blue-600 dark:text-blue-400">
                   {item.ncoCode}

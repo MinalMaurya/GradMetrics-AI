@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  X,
   UploadCloud,
   FileSpreadsheet,
   CheckCircle2,
@@ -16,6 +15,7 @@ import {
 import { useAnalytics } from '../context/AnalyticsContext';
 import { validateAndParseLmiCsv } from '../services/ingestion/validator';
 import { IngestionValidationResult, DatasetMetadata } from '../types/analytics';
+import { Modal } from './Modal';
 
 const SAMPLE_CSV_VACANCIES = `state,district,sector,trade,labourDemand,trainingCapacity,demandGrowth,supplyGrowth,reportingPeriod,dataSource
 Maharashtra,Pune,IT/ITeS,Data Engineering,38000,4200,29.5,8.1,2026-Q3,State Industry Association Job Board
@@ -116,36 +116,64 @@ export const DataIngestionModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-4xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        
-        {/* Header */}
-        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
-              <UploadCloud className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                {t('ingestionModalTitle')}
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                {t('ingestionModalSubtitle')}
-              </p>
-            </div>
+    <Modal
+      isOpen={isDataIngestionOpen}
+      onClose={() => setIsDataIngestionOpen(false)}
+      maxWidth="max-w-4xl"
+      title={t('ingestionModalTitle')}
+      subtitle={t('ingestionModalSubtitle')}
+      icon={
+        <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <UploadCloud className="w-5 h-5" />
+        </div>
+      }
+      bodyClassName="p-0 flex flex-col overflow-hidden max-h-[calc(90vh-140px)]"
+      footer={
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-[11px] text-slate-500">
+            {validationResult
+              ? `${validationResult.validRows} valid records ready for pipeline ingestion.`
+              : 'Select or paste a CSV file to begin validation.'}
           </div>
 
-          <button
-            onClick={() => setIsDataIngestionOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
-            aria-label="Close ingestion modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setIsDataIngestionOpen(false)}
+              className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
+            >
+              Cancel
+            </button>
 
+            <button
+              disabled={!validationResult || validationResult.validRows === 0 || isApplied}
+              onClick={handleApplyToDashboard}
+              className={`px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition cursor-pointer ${
+                isApplied
+                  ? 'bg-emerald-600 text-white'
+                  : !validationResult || validationResult.validRows === 0
+                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+              }`}
+            >
+              {isApplied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  <span>Applied Successfully!</span>
+                </>
+              ) : (
+                <>
+                  <span>{t('applyDatasetBtn')}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-col h-full overflow-hidden">
         {/* Current Dataset Provenance Banner */}
-        <div className="px-4 sm:px-6 py-2.5 bg-blue-50/60 dark:bg-blue-950/30 border-b border-blue-100 dark:border-blue-900/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="px-4 sm:px-6 py-2.5 bg-blue-50/60 dark:bg-blue-950/30 border-b border-blue-100 dark:border-blue-900/40 flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
           <div className="flex items-center space-x-2 text-blue-900 dark:text-blue-200">
             <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>
@@ -167,7 +195,7 @@ export const DataIngestionModal: React.FC = () => {
         </div>
 
         {/* Body Content */}
-        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto text-xs">
+        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto text-xs flex-1">
           
           {/* Quick-load Sample Buttons */}
           <div>
@@ -371,8 +399,8 @@ export const DataIngestionModal: React.FC = () => {
                   <Sparkles className="w-3.5 h-3.5 text-blue-500" />
                   <span>Automatic NCO-2015 &amp; NSQF Taxonomy Normalisation Preview</span>
                 </div>
-                <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden max-h-48 overflow-y-auto">
-                  <table className="w-full text-left text-[11px]">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-x-auto max-h-48 overflow-y-auto w-full">
+                  <table className="w-full text-left text-[11px] min-w-[560px]">
                     <thead className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 uppercase tracking-wider text-[9px] sticky top-0">
                       <tr>
                         <th className="p-2">Jurisdiction</th>
@@ -425,50 +453,7 @@ export const DataIngestionModal: React.FC = () => {
           )}
 
         </div>
-
-        {/* Footer Actions */}
-        <div className="px-4 sm:px-6 py-3.5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-wrap items-center justify-between gap-2">
-          <div className="text-[11px] text-slate-500">
-            {validationResult
-              ? `${validationResult.validRows} valid records ready for pipeline ingestion.`
-              : 'Select or paste a CSV file to begin validation.'}
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => setIsDataIngestionOpen(false)}
-              className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition cursor-pointer"
-            >
-              Cancel
-            </button>
-
-            <button
-              disabled={!validationResult || validationResult.validRows === 0 || isApplied}
-              onClick={handleApplyToDashboard}
-              className={`px-4 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition cursor-pointer ${
-                isApplied
-                  ? 'bg-emerald-600 text-white'
-                  : !validationResult || validationResult.validRows === 0
-                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
-              }`}
-            >
-              {isApplied ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  <span>Applied Successfully!</span>
-                </>
-              ) : (
-                <>
-                  <span>{t('applyDatasetBtn')}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
       </div>
-    </div>
+    </Modal>
   );
 };

@@ -3,7 +3,6 @@ import {
   FileText,
   Building2,
   ExternalLink,
-  X,
   CheckCircle2,
   ShieldCheck,
   Target,
@@ -11,6 +10,7 @@ import {
   Layers,
   ArrowRight
 } from 'lucide-react';
+import { Modal } from './Modal';
 
 export const ProblemStatementCard: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,41 +64,42 @@ export const ProblemStatementCard: React.FC = () => {
 
       {/* Comprehensive Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            {/* Modal Header */}
-            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <FileText className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
-                      PS ID: 26246
-                    </span>
-                    <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
-                      SIH 2026
-                    </span>
-                  </div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">
-                    AI-Enabled Labour Market Intelligence and Skill Demand-Supply Forecasting Engine
-                  </h3>
-                </div>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          maxWidth="max-w-2xl"
+          title={
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800">
+                  PS ID: 26246
+                </span>
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+                  SIH 2026
+                </span>
               </div>
-
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">
+                AI-Enabled Labour Market Intelligence and Skill Demand-Supply Forecasting Engine
+              </h3>
+            </div>
+          }
+          icon={
+            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <FileText className="w-5 h-5" />
+            </div>
+          }
+          bodyClassName="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300"
+          footer={
+            <div className="flex justify-end">
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 cursor-pointer"
-                aria-label="Close problem statement modal"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                Close Brief
               </button>
             </div>
-
-            {/* Modal Body */}
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto text-xs text-slate-700 dark:text-slate-300">
+          }
+        >
               
               {/* Meta Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
@@ -164,21 +165,7 @@ export const ProblemStatementCard: React.FC = () => {
                   Ministry of Skill Development and Entrepreneurship (MSDE), National Council for Vocational Education and Training (NCVET), Directorate General of Training (DGT), Sector Skill Councils (SSCs), State Skill Missions (SSDMs), and District Skill Committees (DSCs).
                 </p>
               </div>
-
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-              >
-                Close Brief
-              </button>
-            </div>
-
-          </div>
-        </div>
+        </Modal>
       )}
     </>
   );

@@ -7,13 +7,13 @@ import {
   ShieldCheck,
   CheckCircle2,
   FileSpreadsheet,
-  X,
   ExternalLink,
   Sliders,
   Scale
 } from 'lucide-react';
 import { unifiedDemandSources } from '../data/mockData';
 import { useAnalytics } from '../context/AnalyticsContext';
+import { Modal } from './Modal';
 
 export const DataSourcesAndIndex: React.FC = () => {
   const { isMethodologyOpen, setIsMethodologyOpen } = useAnalytics();
@@ -107,7 +107,7 @@ export const DataSourcesAndIndex: React.FC = () => {
                     <div className="font-bold text-xs text-slate-900 dark:text-white font-mono flex items-center gap-1">
                       <span>[{src.code}]</span>
                     </div>
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[130px]">
+                    <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[160px] sm:max-w-none">
                       {src.name}
                     </div>
                   </div>
@@ -127,75 +127,20 @@ export const DataSourcesAndIndex: React.FC = () => {
 
       {/* 2. "How is this calculated?" Methodology Modal (Item 16) */}
       {isMethodologyOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            {/* Modal Header */}
-            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
-                  <Scale className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                    Unified Labour Demand Index: Methodology
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                    Formula and statistical normalization framework
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => setIsMethodologyOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 shrink-0 cursor-pointer"
-                aria-label="Close methodology modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
+        <Modal
+          isOpen={isMethodologyOpen}
+          onClose={() => setIsMethodologyOpen(false)}
+          maxWidth="max-w-xl"
+          title="Unified Labour Demand Index: Methodology"
+          subtitle="Formula and statistical normalization framework"
+          icon={
+            <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+              <Scale className="w-4 h-4" />
             </div>
-
-            {/* Modal Body */}
-            <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 text-xs overflow-y-auto">
-              <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200">
-                <div className="font-bold text-[11px] uppercase tracking-wider mb-1">Mathematical Formula:</div>
-                <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900 break-words">
-                  Demand Index = &Sigma; (Normalized Source Score &times; Empirical Weight)
-                </div>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-2">
-                  Source Normalization &amp; Weights:
-                </h4>
-                <div className="space-y-2">
-                  {unifiedDemandSources.map((item) => (
-                    <div
-                      key={item.name}
-                      className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between"
-                    >
-                      <div>
-                        <div className="font-semibold text-slate-900 dark:text-white">{item.name}</div>
-                        <div className="text-[10px] text-slate-400">{item.source}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono font-bold text-blue-600 dark:text-blue-400">
-                          {item.weight}% Weight
-                        </div>
-                        <div className="text-[10px] text-slate-400 font-mono">Score: {item.score}/100</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]">
-                <strong>Cross-Validation:</strong> All raw job postings and registration records undergo automated deduplication, salary normalization, and occupational cross-walk mapping using the <strong>NCO-2015 4-digit code hierarchy</strong>.
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="px-4 sm:px-6 py-2.5 sm:py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex justify-end">
+          }
+          bodyClassName="p-4 sm:p-6 space-y-3 sm:space-y-4 text-xs overflow-y-auto"
+          footer={
+            <div className="flex justify-end">
               <button
                 onClick={() => setIsMethodologyOpen(false)}
                 className="px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
@@ -203,9 +148,44 @@ export const DataSourcesAndIndex: React.FC = () => {
                 Got it
               </button>
             </div>
-
+          }
+        >
+          <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200">
+            <div className="font-bold text-[11px] uppercase tracking-wider mb-1">Mathematical Formula:</div>
+            <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900 break-words">
+              Demand Index = &Sigma; (Normalized Source Score &times; Empirical Weight)
+            </div>
           </div>
-        </div>
+
+          <div>
+            <h4 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-2">
+              Source Normalization &amp; Weights:
+            </h4>
+            <div className="space-y-2">
+              {unifiedDemandSources.map((item) => (
+                <div
+                  key={item.name}
+                  className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between"
+                >
+                  <div>
+                    <div className="font-semibold text-slate-900 dark:text-white">{item.name}</div>
+                    <div className="text-[10px] text-slate-400">{item.source}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-mono font-bold text-blue-600 dark:text-blue-400">
+                      {item.weight}% Weight
+                    </div>
+                    <div className="text-[10px] text-slate-400 font-mono">Score: {item.score}/100</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]">
+            <strong>Cross-Validation:</strong> All raw job postings and registration records undergo automated deduplication, salary normalization, and occupational cross-walk mapping using the <strong>NCO-2015 4-digit code hierarchy</strong>.
+          </div>
+        </Modal>
       )}
 
     </div>

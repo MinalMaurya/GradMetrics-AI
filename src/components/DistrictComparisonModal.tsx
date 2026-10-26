@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  X,
   MapPin,
   TrendingUp,
   AlertOctagon,
@@ -11,6 +10,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
+import { Modal } from './Modal';
 
 export const DistrictComparisonModal: React.FC = () => {
   const {
@@ -19,6 +19,8 @@ export const DistrictComparisonModal: React.FC = () => {
     districtRanks,
     setDistrict,
     setGeography,
+    setSector,
+    setTrade,
     activeRecords
   } = useAnalytics();
 
@@ -28,8 +30,6 @@ export const DistrictComparisonModal: React.FC = () => {
   const [district1, setDistrict1] = useState<string>(districtRanks[0]?.district || 'Pune');
   const [district2, setDistrict2] = useState<string>(districtRanks[1]?.district || 'Bengaluru Urban');
   const [district3, setDistrict3] = useState<string>(districtRanks[2]?.district || 'Chennai');
-
-  if (!isDistrictCompareOpen) return null;
 
   const getDistrictStats = (districtName: string) => {
     const rankEntry = districtRanks.find(d => d.district === districtName);
@@ -64,39 +64,41 @@ export const DistrictComparisonModal: React.FC = () => {
   const handleSelectDistrictForDashboard = (distName: string, stateName: any) => {
     setGeography(stateName);
     setDistrict(distName);
+    setSector('All Sectors');
+    setTrade('All Trades');
     setIsDistrictCompareOpen(false);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-5xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-        
-        {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/40">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
-              <Scale className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
-                District Labour Market Comparative Intelligence
-              </h3>
-              <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
-                Cross-jurisdictional benchmarking of job demand, institutional training capacity and deficit severity
-              </p>
-            </div>
-          </div>
-
+    <Modal
+      isOpen={isDistrictCompareOpen}
+      onClose={() => setIsDistrictCompareOpen(false)}
+      maxWidth="max-w-5xl"
+      title="District Labour Market Comparative Intelligence"
+      subtitle="Cross-jurisdictional benchmarking of job demand, institutional training capacity and deficit severity"
+      icon={
+        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+          <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
+        </div>
+      }
+      bodyClassName="p-0 flex flex-col flex-1 min-h-0 overflow-hidden"
+      footer={
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            Comparisons derived dynamically from active micro-records in the dataset.
+          </span>
           <button
             onClick={() => setIsDistrictCompareOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer text-center"
           >
-            <X className="w-5 h-5" />
+            Close Comparison
           </button>
         </div>
-
+      }
+    >
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Selection Bar */}
-        <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-800/20 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20 grid grid-cols-1 sm:grid-cols-3 gap-3 shrink-0">
           <div>
             <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
               District A (Benchmark 1)
@@ -144,11 +146,14 @@ export const DistrictComparisonModal: React.FC = () => {
         </div>
 
         {/* 3-Column Comparative Grid */}
-        <div className="p-5 overflow-y-auto text-xs grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div
+          className="p-4 sm:p-5 overflow-y-auto flex-1 min-h-0 text-xs grid grid-cols-1 md:grid-cols-3 gap-4"
+          style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+        >
           {[d1, d2, d3].map((d, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 flex flex-col justify-between space-y-3"
+              className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 p-4 flex flex-col justify-between space-y-3 min-w-0"
             >
               <div>
                 {/* District Header */}
@@ -203,14 +208,14 @@ export const DistrictComparisonModal: React.FC = () => {
                 <div className="mt-3 space-y-1.5 text-[11px]">
                   <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700/60">
                     <span className="text-slate-500">Top Shortage:</span>
-                    <span className="font-semibold text-rose-600 dark:text-rose-400 truncate max-w-[140px] text-right">
+                    <span className="font-semibold text-rose-600 dark:text-rose-400 truncate max-w-[140px] sm:max-w-[180px] text-right">
                       {d.primaryShortage}
                     </span>
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-slate-200/60 dark:border-slate-700/60">
                     <span className="text-slate-500">Top Surplus:</span>
-                    <span className="font-semibold text-purple-600 dark:text-purple-400 truncate max-w-[140px] text-right">
+                    <span className="font-semibold text-purple-600 dark:text-purple-400 truncate max-w-[140px] sm:max-w-[180px] text-right">
                       {d.primarySurplus}
                     </span>
                   </div>
@@ -235,21 +240,7 @@ export const DistrictComparisonModal: React.FC = () => {
             </div>
           ))}
         </div>
-
-        {/* Footer */}
-        <div className="px-4 sm:px-5 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-          <span className="text-[11px] text-slate-500">
-            Comparisons derived dynamically from active micro-records in the dataset.
-          </span>
-          <button
-            onClick={() => setIsDistrictCompareOpen(false)}
-            className="w-full sm:w-auto px-4 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 transition cursor-pointer text-center"
-          >
-            Close Comparison
-          </button>
-        </div>
-
       </div>
-    </div>
+    </Modal>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Scale,
@@ -27,6 +27,17 @@ export const DashboardNavigation: React.FC<DashboardNavProps> = ({
 }) => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
+  useEffect(() => {
+    if (!isMobileNavOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileNavOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isMobileNavOpen]);
+
   const activeTab = navTabs.find((t) => t.id === activeSection) || navTabs[0];
   const ActiveIcon = activeTab.icon;
 
@@ -35,7 +46,7 @@ export const DashboardNavigation: React.FC<DashboardNavProps> = ({
       {/* Desktop / Tablet Navigation Tabs */}
       <nav
         aria-label="Dashboard Sections"
-        className="hidden md:flex items-center gap-1 lg:gap-1.5 p-1 bg-slate-100/80 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-2xs"
+        className="hidden md:flex items-center gap-0.5 lg:gap-1.5 p-1 bg-slate-100/80 dark:bg-slate-800/60 rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-2xs"
       >
         {navTabs.map((tab) => {
           const Icon = tab.icon;
@@ -47,7 +58,7 @@ export const DashboardNavigation: React.FC<DashboardNavProps> = ({
               type="button"
               onClick={() => setActiveSection(tab.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`group relative flex items-center space-x-1.5 px-2.5 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 ease-smooth-out cursor-pointer h-9 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
+              className={`group relative flex items-center space-x-1.5 px-2 md:px-2.5 lg:px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 ease-smooth-out cursor-pointer h-9 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none ${
                 isActive
                   ? 'bg-blue-50 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200/90 dark:border-blue-800 font-bold shadow-2xs'
                   : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/80 dark:hover:bg-slate-800/80 border border-transparent'
@@ -94,7 +105,7 @@ export const DashboardNavigation: React.FC<DashboardNavProps> = ({
             <div
               role="menu"
               aria-label="Dashboard Sections"
-              className="absolute left-1/2 -translate-x-1/2 mt-1.5 w-52 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-700 dark:text-slate-200"
+              className="absolute left-1/2 -translate-x-1/2 mt-1.5 w-52 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in zoom-in-95 text-xs text-slate-700 dark:text-slate-200"
             >
               <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Dashboard Sections

@@ -245,11 +245,11 @@ export const SupplyDemandChart: React.FC = () => {
       </div>
 
       {/* Main Chart Canvas */}
-      <div className="h-[260px] sm:h-[300px] w-full pt-2 sm:pt-4">
+      <div className="h-[260px] sm:h-[300px] w-full pt-2 sm:pt-4 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={supplyDemandTrends}
-            margin={{ top: 12, right: 15, left: -10, bottom: 0 }}
+            margin={{ top: 12, right: 15, left: -5, bottom: 0 }}
           >
             <defs>
               <linearGradient id="demandAreaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -275,6 +275,7 @@ export const SupplyDemandChart: React.FC = () => {
               dy={8}
             />
             <YAxis
+              width={38}
               tickLine={false}
               axisLine={false}
               stroke={axisColor}
