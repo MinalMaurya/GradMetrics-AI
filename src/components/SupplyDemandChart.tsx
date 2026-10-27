@@ -134,8 +134,8 @@ export const SupplyDemandChart: React.FC = () => {
     <div className="card-interactive bg-white dark:bg-slate-900 rounded-xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xs sm:shadow-sm transition-all duration-200">
       
       {/* Header & View Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 sm:pb-4 border-b border-slate-100 dark:border-slate-800">
-        <div>
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 sm:pb-3.5 border-b border-slate-100 dark:border-slate-800">
+        <div className="min-w-0">
           <div className="flex items-center space-x-2 flex-wrap gap-y-1">
             <h2 className="text-sm sm:text-base lg:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               Labour Demand vs Training Capacity
@@ -159,13 +159,13 @@ export const SupplyDemandChart: React.FC = () => {
               {isCurrentShortage ? 'Worker Shortage' : isCurrentOversupply ? 'Capacity Surplus' : 'Equilibrium'}
             </span>
           </div>
-          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Annual job openings vs classroom training seats &bull; Comparing audited past records (FY 2024–2026) with projected trends (FY 2027–2028)
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-normal max-w-2xl">
+            Annual job openings vs. training seats, using audited FY 2024–2026 data and FY 2027–2028 projections.
           </p>
         </div>
 
         {/* Toggle Filters & Chart Style */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 self-start lg:self-center">
           
           {/* Metric Selector Buttons */}
           <div className="inline-flex p-0.5 sm:p-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 text-[11px] sm:text-xs font-medium max-w-full overflow-x-auto no-scrollbar">

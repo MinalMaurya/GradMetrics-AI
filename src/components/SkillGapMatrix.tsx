@@ -196,62 +196,70 @@ export const SkillGapMatrix: React.FC = () => {
       </div>
 
       {/* Prominent Category Badges Overview (Dynamic derivation from active data) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 my-3 sm:my-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-3 my-3 sm:my-4">
         {/* Shortage 1 */}
-        <div className="p-2.5 rounded-lg bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/70 dark:border-rose-900/60 min-w-0">
-          <div className="text-[11px] font-semibold text-rose-700 dark:text-rose-300 truncate">
-            {topCritical?.domain || 'High Deficit Trade'}
-          </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-rose-800 dark:text-rose-200 shrink-0">
+        <div className="p-3 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/70 flex flex-col justify-between h-full min-w-0">
+          <div>
+            <div className="text-xs font-semibold text-rose-700 dark:text-rose-300 truncate" title={topCritical?.domain || 'High Deficit Trade'}>
+              {topCritical?.domain || 'High Deficit Trade'}
+            </div>
+            <div className="mt-1 text-xl sm:text-2xl font-mono font-extrabold text-rose-800 dark:text-rose-200 tracking-tight">
               {topCritical ? `+${topCritical.gap} pts` : 'N/A'}
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-rose-600 dark:text-rose-400 uppercase whitespace-nowrap shrink-0">
+            </div>
+          </div>
+          <div className="mt-2.5 flex items-center">
+            <span className="text-[9px] sm:text-[10px] font-bold text-rose-700 dark:text-rose-300 bg-rose-100/90 dark:bg-rose-900/60 border border-rose-200/90 dark:border-rose-800 px-2 py-0.5 rounded uppercase tracking-wider inline-flex items-center">
               CRITICAL SHORTAGE
             </span>
           </div>
         </div>
 
         {/* Shortage 2 (Emerging) */}
-        <div className="p-2.5 rounded-lg bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-900/60 min-w-0">
-          <div className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 truncate">
-            {topEmerging?.domain || 'Moderate Deficit Trade'}
-          </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-amber-800 dark:text-amber-200 shrink-0">
+        <div className="p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/70 flex flex-col justify-between h-full min-w-0">
+          <div>
+            <div className="text-xs font-semibold text-amber-700 dark:text-amber-300 truncate" title={topEmerging?.domain || 'Moderate Deficit Trade'}>
+              {topEmerging?.domain || 'Moderate Deficit Trade'}
+            </div>
+            <div className="mt-1 text-xl sm:text-2xl font-mono font-extrabold text-amber-800 dark:text-amber-200 tracking-tight">
               {topEmerging ? `+${topEmerging.gap} pts` : 'N/A'}
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase whitespace-nowrap shrink-0">
+            </div>
+          </div>
+          <div className="mt-2.5 flex items-center">
+            <span className="text-[9px] sm:text-[10px] font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-900/60 border border-amber-200/90 dark:border-amber-800 px-2 py-0.5 rounded uppercase tracking-wider inline-flex items-center">
               EMERGING SHORTAGE
             </span>
           </div>
         </div>
 
         {/* Oversupply */}
-        <div className="p-2.5 rounded-lg bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/70 dark:border-purple-900/60 min-w-0">
-          <div className="text-[11px] font-semibold text-purple-700 dark:text-purple-300 truncate">
-            {topOversupply?.domain || 'No Oversupply Trade'}
-          </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-purple-800 dark:text-purple-200 shrink-0">
+        <div className="p-3 rounded-xl bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200/80 dark:border-purple-900/70 flex flex-col justify-between h-full min-w-0">
+          <div>
+            <div className="text-xs font-semibold text-purple-700 dark:text-purple-300 truncate" title={topOversupply?.domain || 'No Oversupply Trade'}>
+              {topOversupply?.domain || 'No Oversupply Trade'}
+            </div>
+            <div className="mt-1 text-xl sm:text-2xl font-mono font-extrabold text-purple-800 dark:text-purple-200 tracking-tight">
               {topOversupply ? `${topOversupply.gap} pts` : '0 pts'}
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase whitespace-nowrap shrink-0">
+            </div>
+          </div>
+          <div className="mt-2.5 flex items-center">
+            <span className="text-[9px] sm:text-[10px] font-bold text-purple-700 dark:text-purple-300 bg-purple-100/90 dark:bg-purple-900/60 border border-purple-200/90 dark:border-purple-800 px-2 py-0.5 rounded uppercase tracking-wider inline-flex items-center">
               OVERSUPPLY
             </span>
           </div>
         </div>
 
         {/* Balanced */}
-        <div className="p-2.5 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-900/60 min-w-0">
-          <div className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 truncate">
-            {topBalanced?.domain || 'Equilibrium Cohort'}
-          </div>
-          <div className="flex items-baseline justify-between mt-1 gap-1 min-w-0">
-            <span className="text-lg sm:text-xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200 shrink-0">
+        <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-900/70 flex flex-col justify-between h-full min-w-0">
+          <div>
+            <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-300 truncate" title={topBalanced?.domain || 'Equilibrium Cohort'}>
+              {topBalanced?.domain || 'Equilibrium Cohort'}
+            </div>
+            <div className="mt-1 text-xl sm:text-2xl font-mono font-extrabold text-emerald-800 dark:text-emerald-200 tracking-tight">
               {topBalanced ? `+${topBalanced.gap} pts` : '0 pts'}
-            </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase whitespace-nowrap shrink-0">
+            </div>
+          </div>
+          <div className="mt-2.5 flex items-center">
+            <span className="text-[9px] sm:text-[10px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100/90 dark:bg-emerald-900/60 border border-emerald-200/90 dark:border-emerald-800 px-2 py-0.5 rounded uppercase tracking-wider inline-flex items-center">
               BALANCED
             </span>
           </div>

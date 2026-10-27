@@ -129,13 +129,21 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Smooth scroll handler for anchor links that preserves clean URLs and closes mobile menu
+  // Smooth scroll handler for anchor links that accurately accounts for fixed navbar height and respects reduced motion
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
     const targetEl = document.getElementById(targetId);
     if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth' });
+      const headerEl = document.querySelector('header');
+      const headerHeight = headerEl ? headerEl.offsetHeight : 64;
+      const elementPosition = targetEl.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - headerHeight - 16;
+
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: prefersReducedMotion ? 'auto' : 'smooth'
+      });
       try {
         window.history.replaceState(null, '', `#${targetId}`);
       } catch {}
@@ -483,7 +491,7 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
         </section>
 
         {/* 3. The Workforce Planning Problem */}
-        <section id="problem" className="scroll-mt-24 sm:scroll-mt-28 py-14 sm:py-20 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+        <section id="problem" className="scroll-mt-20 py-10 sm:py-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal offset={20}>
               <div className="max-w-3xl mx-auto text-center mb-12">
@@ -566,7 +574,7 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
         </section>
 
         {/* 4. Four-Step Workflow Explanation */}
-        <section id="how-it-works" className="scroll-mt-24 sm:scroll-mt-28 py-14 sm:py-20 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+        <section id="how-it-works" className="scroll-mt-20 py-10 sm:py-16 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal offset={20}>
               <div className="max-w-3xl mx-auto text-center mb-12">
@@ -640,7 +648,7 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
         </section>
 
         {/* 5. Live Interactive Dashboard Preview */}
-        <section id="dashboard-preview" className="scroll-mt-24 sm:scroll-mt-28 py-14 sm:py-20 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+        <section id="dashboard-preview" className="scroll-mt-20 py-10 sm:py-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal offset={20}>
               <div className="max-w-3xl mx-auto text-center mb-10">
@@ -846,7 +854,7 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
         </section>
 
         {/* 6. Dashboard Sections Tour */}
-        <section className="py-14 sm:py-20 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+        <section className="py-10 sm:py-16 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal offset={20}>
               <div className="max-w-3xl mx-auto text-center mb-12">
@@ -910,7 +918,7 @@ export const PublicHomepage: React.FC<PublicHomepageProps> = ({ onExploreDashboa
         </section>
 
         {/* 7. Transparent Data Sources, Coverage & Limitations */}
-        <section id="data-governance" className="scroll-mt-24 sm:scroll-mt-28 py-14 sm:py-20 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
+        <section id="data-governance" className="scroll-mt-20 py-10 sm:py-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <ScrollReveal offset={20}>
               <div className="max-w-3xl mx-auto text-center mb-12">

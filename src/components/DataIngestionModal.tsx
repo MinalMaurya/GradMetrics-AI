@@ -127,7 +127,7 @@ export const DataIngestionModal: React.FC = () => {
           <UploadCloud className="w-5 h-5" />
         </div>
       }
-      bodyClassName="p-0 flex flex-col overflow-hidden max-h-[calc(90vh-140px)]"
+      bodyClassName="p-0 flex flex-col flex-1 min-h-0 overflow-hidden"
       footer={
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-[11px] text-slate-500">
@@ -171,7 +171,7 @@ export const DataIngestionModal: React.FC = () => {
         </div>
       }
     >
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
         {/* Current Dataset Provenance Banner */}
         <div className="px-4 sm:px-6 py-2.5 bg-blue-50/60 dark:bg-blue-950/30 border-b border-blue-100 dark:border-blue-900/40 flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
           <div className="flex items-center space-x-2 text-blue-900 dark:text-blue-200">
@@ -195,7 +195,10 @@ export const DataIngestionModal: React.FC = () => {
         </div>
 
         {/* Body Content */}
-        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto text-xs flex-1">
+        <div
+          className="p-4 sm:p-6 space-y-4 overflow-y-auto text-xs flex-1 min-h-0"
+          style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+        >
           
           {/* Quick-load Sample Buttons */}
           <div>

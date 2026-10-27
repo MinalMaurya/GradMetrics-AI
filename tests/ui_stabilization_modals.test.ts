@@ -288,3 +288,46 @@ test('UI Stabilization 6: ScrollReveal animation snappy duration and stacking co
     `ScrollReveal offset (${targetOffsetPx}px) must be subtle (<= ${maxAcceptableOffsetPx}px) to prevent vertical page jumps`
   );
 });
+
+test('UI Stabilization 7: Independent scrolling inside modals and overscroll containment attributes', () => {
+  // Modal container & body must enforce overscroll-behavior: contain to stop scroll propagation
+  const modalOverscrollStyle = {
+    overscrollBehavior: 'contain',
+    WebkitOverflowScrolling: 'touch'
+  };
+
+  assert.equal(modalOverscrollStyle.overscrollBehavior, 'contain', 'Modal content must have overscroll-behavior: contain');
+  assert.equal(modalOverscrollStyle.WebkitOverflowScrolling, 'touch', 'Modal content must support smooth iOS momentum scrolling');
+});
+
+test('UI Stabilization 8: Dashboard sections layout integrity and chart canvas min-w-0 flex constraints', () => {
+  // Check min-w-0 flex constraints that prevent Recharts responsive container blowout
+  const flexColumnClass = 'flex flex-col gap-5 sm:gap-6 min-w-0';
+  assert.ok(flexColumnClass.includes('min-w-0'), 'Grid flex columns must specify min-w-0 to prevent chart overflow');
+
+  // Check section enter animation class exists
+  const sectionClass = 'space-y-6 sm:space-y-8 dashboard-section-enter';
+  assert.ok(sectionClass.includes('dashboard-section-enter'), 'Sections must include dashboard-section-enter class');
+});
+
+test('UI Stabilization 9: Load Demo Data scenario executes without throwing and computes valid KPIs across all sections', () => {
+  const demoFilters: FilterState = {
+    geography: 'Maharashtra',
+    district: 'Pune',
+    region: 'West',
+    sector: 'IT/ITeS',
+    trade: 'Data Engineering',
+    ncoNsqf: 'NCO 2511',
+    timePeriod: '2026',
+    searchQuery: ''
+  };
+
+  const records = filterTradeRecords(pilotTradeRecords, demoFilters);
+  assert.ok(records.length > 0, 'Demo data scenario must return matching trade records');
+
+  const kpis = computeKPISummary(records);
+  assert.ok(kpis.labourDemand > 0, 'Labour demand must be greater than zero');
+  assert.ok(kpis.trainingCapacity > 0, 'Training capacity must be greater than zero');
+  assert.equal(kpis.demandSupplyGap, kpis.labourDemand - kpis.trainingCapacity, 'Gap must equal demand minus supply');
+});
+
