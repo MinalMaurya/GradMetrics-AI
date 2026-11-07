@@ -10,6 +10,7 @@ import { SupplyDemandChart } from './components/SupplyDemandChart';
 import { SkillGapMatrix } from './components/SkillGapMatrix';
 import { AIInsights } from './components/AIInsights';
 import { RegionalOverview } from './components/RegionalOverview';
+import { ComparisonPanel } from './components/ComparisonPanel';
 import { PlacementAnalytics } from './components/PlacementAnalytics';
 import { EmergingSkills } from './components/EmergingSkills';
 import { TrainingPriority } from './components/TrainingPriority';
@@ -140,6 +141,10 @@ const DashboardContent: React.FC = () => {
 
           </div>
 
+        </section>
+
+        <section id="comparison" aria-label="Region and skill comparison">
+          <ComparisonPanel />
         </section>
 
         {/* 7. Occupation & Skill Taxonomy Mapping (NCO / NSQF) - Full Width Below Analytics Area (Prompt Item 11) */}

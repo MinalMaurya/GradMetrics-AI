@@ -54,6 +54,7 @@ GradMetrics AI is a modern, executive-level AI-powered analytics platform design
 - Cross-state ranking table with interactive click-to-filter capabilities.
 - Measures graduate production, job openings, placement rates, skill deficit percentages, and dominant hiring skills.
 - Multi-column sortable by Placement Rate, Graduates, Job Openings, or Skill Deficit.
+- **Region & Skill Comparison**: Select two regions and two skills to compare demand, training capacity, gaps, growth, hiring velocity, and recommended actions side by side.
 
 ### 8. Placement Performance by Stream
 - Horizontal stream conversion comparison with a visual reference line at the **National Benchmark (74%)**.
