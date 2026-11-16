@@ -177,6 +177,8 @@ export interface RegionalData {
   tier1Institutes?: number;
 }
 
+export type GrowthTelemetryStatus = 'Measured' | 'Missing Demand Growth' | 'Missing Supply Growth' | 'Missing Both';
+
 export interface TrainingPriorityItem {
   rank: number;
   trade: string;
@@ -191,6 +193,8 @@ export interface TrainingPriorityItem {
   badgeLevel: 'Critical' | 'High' | 'Medium' | 'Stable';
   affectedCohort: number;
   roiPotential: string;
+  isGrowthTelemetryMissing?: boolean;
+  growthTelemetryStatus?: GrowthTelemetryStatus;
   // Backwards compatibility
   affectedGraduates?: number;
 }
@@ -446,7 +450,7 @@ export interface PrioritizationMetrics {
   supplyGrowth: number;
   growthDivergence: number; // demandGrowth - supplyGrowth
   isGrowthTelemetryMissing?: boolean; // True if demand or supply growth was not provided
-  growthTelemetryStatus?: 'Measured' | 'Missing Demand Growth' | 'Missing Supply Growth' | 'Missing Both';
+  growthTelemetryStatus?: GrowthTelemetryStatus;
   vacancyToSupplyRatio: number;
   districtSeverityWeight: number; // relative concentration in district (0 - 1)
   districtShortageShare?: number; // Share of district's total shortage (0 - 1)

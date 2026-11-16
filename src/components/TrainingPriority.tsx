@@ -114,7 +114,9 @@ export const TrainingPriority: React.FC = () => {
                     />
                   </div>
                   <span className="text-[9px] text-slate-400 font-medium shrink-0">
-                    +{item.growth}% Growth
+                    {item.isGrowthTelemetryMissing
+                      ? 'Unobserved Growth'
+                      : `${item.growth >= 0 ? '+' : ''}${item.growth}% Growth`}
                   </span>
                 </div>
               </div>
@@ -270,8 +272,19 @@ export const TrainingPriority: React.FC = () => {
                         {item.gap > 0 ? `+${(item.gap / 1000).toFixed(0)}K` : `${(item.gap / 1000).toFixed(0)}K`}
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono font-semibold text-emerald-600 dark:text-emerald-400">
-                        +{item.growth}%
+                      <td className="py-3 px-3 text-right font-mono font-semibold text-xs">
+                        {item.isGrowthTelemetryMissing ? (
+                          <span
+                            title="Growth telemetry is unobserved for this trade"
+                            className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+                          >
+                            Unobserved
+                          </span>
+                        ) : (
+                          <span className={item.growth >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}>
+                            {item.growth >= 0 ? `+${item.growth}%` : `${item.growth}%`}
+                          </span>
+                        )}
                       </td>
 
                       <td className="py-3 px-3 text-center">

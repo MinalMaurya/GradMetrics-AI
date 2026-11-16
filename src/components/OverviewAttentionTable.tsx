@@ -230,7 +230,11 @@ export const OverviewAttentionTable: React.FC = () => {
               <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
                 {selectedTrade.labourDemand.toLocaleString('en-IN')}
               </div>
-              <span className="text-[10px] text-emerald-600 font-semibold">+{selectedTrade.demandGrowth}% Annual Growth</span>
+              <span className="text-[10px] text-emerald-600 font-semibold">
+                {typeof selectedTrade.demandGrowth === 'number' && !isNaN(selectedTrade.demandGrowth)
+                  ? `${selectedTrade.demandGrowth >= 0 ? '+' : ''}${selectedTrade.demandGrowth}% Annual Growth`
+                  : 'Growth unobserved'}
+              </span>
             </div>
 
             <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
@@ -238,7 +242,11 @@ export const OverviewAttentionTable: React.FC = () => {
               <div className="text-xl font-bold font-mono text-slate-900 dark:text-white mt-0.5">
                 {selectedTrade.trainingCapacity.toLocaleString('en-IN')}
               </div>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">+{selectedTrade.supplyGrowth}% Seat Capacity</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">
+                {typeof selectedTrade.supplyGrowth === 'number' && !isNaN(selectedTrade.supplyGrowth)
+                  ? `${selectedTrade.supplyGrowth >= 0 ? '+' : ''}${selectedTrade.supplyGrowth}% Seat Capacity`
+                  : 'Capacity growth unobserved'}
+              </span>
             </div>
           </div>
 

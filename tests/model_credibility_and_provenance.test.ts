@@ -447,3 +447,51 @@ test('Credibility 9: Lazy-loaded chart error boundary fallback and navigation cy
   assert.equal(isValidSection('data-reports'), true);
   assert.equal(isValidSection('invalid-section'), false);
 });
+
+test('Credibility 10: Training Priority Item missing telemetry visible disclosure and non-downgrade property', () => {
+  // Case A: High deficit trade with completely missing growth telemetry
+  const tradeWithMissingGrowth: TradeRecord = {
+    id: 'test-missing-growth',
+    state: 'Karnataka',
+    district: 'Bengaluru Urban',
+    sector: 'IT-ITeS',
+    trade: 'Cloud Architect',
+    ncoCode: '2511',
+    nsqfLevel: 'Level 7',
+    labourDemand: 25000,
+    trainingCapacity: 3000,
+    demandGrowth: undefined as any,
+    supplyGrowth: undefined as any,
+    reportingPeriod: 'FY 2025-26',
+    dataSource: 'Pilot',
+    gap: 22000,
+    gapPercentage: 88.0,
+    status: 'CRITICAL SHORTAGE',
+    growthYoY: undefined as any,
+    forecast2027: 35000,
+    recommendedAction: 'Expand capacity'
+  };
+
+  const metrics = evaluateSkillGapPrioritization(tradeWithMissingGrowth, [tradeWithMissingGrowth]);
+
+  // Telemetry must be marked missing
+  assert.equal(metrics.isGrowthTelemetryMissing, true);
+  assert.equal(metrics.growthTelemetryStatus, 'Missing Both');
+  assert.equal(metrics.componentScores?.growthDivergence, 0);
+  assert.equal(metrics.weightedContributions?.growthDivergence, 0);
+
+  // Missing telemetry must NOT drag a massive shortage into 'Low' or 'Balanced' priority!
+  // Relative Deficit (35) + Volume Score (~24) still achieves Critical/High classification!
+  assert.ok(
+    metrics.priorityClassification === 'Critical' || metrics.priorityClassification === 'High',
+    `High-deficit trade must remain Critical/High priority even with missing growth telemetry, got ${metrics.priorityClassification}`
+  );
+  assert.ok(
+    metrics.econometricPriorityIndex >= 55,
+    `SGPI must reflect substantial non-growth components (got ${metrics.econometricPriorityIndex})`
+  );
+  assert.ok(
+    metrics.methodologySummary.includes('[Telemetry Missing — Unobserved Growth]'),
+    'Methodology summary must visibly disclose unobserved growth'
+  );
+});

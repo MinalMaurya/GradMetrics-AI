@@ -460,6 +460,8 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const classification = metrics ? metrics.priorityClassification : (
         occ.status === 'CRITICAL SHORTAGE' ? 'Critical' : occ.status === 'EMERGING SHORTAGE' ? 'High' : 'Balanced'
       );
+      const isGrowthTelemetryMissing = Boolean(metrics?.isGrowthTelemetryMissing);
+      const growthTelemetryStatus = metrics?.growthTelemetryStatus;
 
       return {
         rank: idx + 1,
@@ -475,7 +477,9 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         badgeLevel: (classification === 'Critical' ? 'Critical' : classification === 'High' ? 'High' : classification === 'Moderate' ? 'Medium' : 'Stable') as any,
         affectedCohort: Math.abs(occ.gap),
         roiPotential: occ.gap > 0 ? '+32% High Placement Priority' : 'Intake Rationalization Recommended',
-        affectedGraduates: Math.abs(occ.gap)
+        affectedGraduates: Math.abs(occ.gap),
+        isGrowthTelemetryMissing,
+        growthTelemetryStatus
       };
     });
   }, [occupationRanks, filteredRecords]);
