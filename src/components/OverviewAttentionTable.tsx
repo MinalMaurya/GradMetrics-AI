@@ -30,7 +30,7 @@ export const OverviewAttentionTable: React.FC = () => {
   }, [tradeRecords]);
 
   const getStatusBadge = (status: GapStatus, gap: number) => {
-    if (status === 'CRITICAL SHORTAGE' || gap > 2000) {
+    if (status === 'CRITICAL SHORTAGE' || gap > 15000) {
       return (
         <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
           <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5" />
@@ -38,7 +38,7 @@ export const OverviewAttentionTable: React.FC = () => {
         </span>
       );
     }
-    if (status === 'EMERGING SHORTAGE' || gap > 0) {
+    if (status === 'EMERGING SHORTAGE' || gap > 3000) {
       return (
         <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-900">
           <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5" />
@@ -46,7 +46,7 @@ export const OverviewAttentionTable: React.FC = () => {
         </span>
       );
     }
-    if (status === 'OVERSUPPLY' || gap < 0) {
+    if (status === 'OVERSUPPLY' || gap < -3000) {
       return (
         <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-900">
           <span className="w-1.5 h-1.5 rounded-full bg-purple-500 mr-1.5" />
@@ -63,19 +63,16 @@ export const OverviewAttentionTable: React.FC = () => {
   };
 
   const getSuggestedAction = (record: TradeRecord) => {
-    if (record.gap > 2000) {
-      return 'Review whether additional training seats are needed';
+    if (record.status === 'CRITICAL SHORTAGE' || record.gap > 15000) {
+      return 'Immediate capacity expansion: sanction new PMKVY & ITI batches';
     }
-    if (record.gap > 0) {
-      return 'Investigate emerging shortages & expand PMKVY batches';
+    if (record.status === 'EMERGING SHORTAGE' || record.gap > 3000) {
+      return 'Proactive upskilling: introduce specialized modular certificates';
     }
-    if (record.gap < -1500) {
-      return 'Review course intake where supply exceeds projected demand';
+    if (record.status === 'OVERSUPPLY' || record.gap < -3000) {
+      return 'Rationalize intake quota and redirect training seats to shortage trades';
     }
-    if (record.gap < 0) {
-      return 'Reallocate marginal intake towards higher-demand trades';
-    }
-    return 'Maintain balanced capacity and monitor quarterly uptake';
+    return 'Maintain equilibrium: focus on curriculum quality and industry linkages';
   };
 
   const handleRowClick = (record: TradeRecord) => {
@@ -100,7 +97,13 @@ export const OverviewAttentionTable: React.FC = () => {
         </div>
 
         <div className="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
-          Dataset: <span className="font-semibold text-slate-700 dark:text-slate-300">{datasetMetadata.provenance}</span>
+          Dataset: <span className="font-semibold text-slate-700 dark:text-slate-300">
+            {datasetMetadata.provenance === 'PILOT_BENCHMARK'
+              ? 'Synthetic Pilot Benchmark'
+              : datasetMetadata.provenance === 'USER_UPLOADED'
+              ? 'User-Uploaded CSV'
+              : datasetMetadata.provenance}
+          </span>
         </div>
       </div>
 

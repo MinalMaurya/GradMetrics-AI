@@ -15,8 +15,9 @@ import { ScrollReveal } from './ScrollReveal';
 export const KPICards: React.FC = () => {
   const { kpis, earlyWarnings, filters, datasetMetadata } = useAnalytics();
 
-  const isShortage = kpis.demandSupplyGap > 0;
-  const isOversupply = kpis.demandSupplyGap < 0;
+  const isInsufficientData = kpis.labourDemand === 0 && kpis.trainingCapacity === 0;
+  const isShortage = !isInsufficientData && kpis.demandSupplyGap > 0;
+  const isOversupply = !isInsufficientData && kpis.demandSupplyGap < 0;
 
   // Format numbers to clean readable format (e.g. 395,000 or 53,000)
   const formatNumber = (num: number) => {
@@ -158,7 +159,7 @@ export const KPICards: React.FC = () => {
                   Skill Gap
                 </span>
                 <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-50 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 font-semibold border border-amber-200 dark:border-amber-800 shrink-0">
-                  {isShortage ? 'Deficit' : isOversupply ? 'Surplus' : 'Balanced'}
+                  {isInsufficientData ? 'No Telemetry' : isShortage ? 'Deficit' : isOversupply ? 'Surplus' : 'Balanced'}
                 </span>
                 <div className="group relative cursor-help">
                   <button
@@ -184,30 +185,36 @@ export const KPICards: React.FC = () => {
               
               <div
                 className={`mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight font-mono ${
-                  isShortage
+                  isInsufficientData
+                    ? 'text-slate-400 dark:text-slate-500'
+                    : isShortage
                     ? 'text-amber-600 dark:text-amber-400'
                     : isOversupply
                     ? 'text-purple-600 dark:text-purple-400'
                     : 'text-emerald-600 dark:text-emerald-400'
                 }`}
               >
-                {isShortage ? `+${formatNumber(kpis.demandSupplyGap)}` : isOversupply ? `-${formatNumber(kpis.demandSupplyGap)}` : '0'}
+                {isInsufficientData ? '0' : isShortage ? `+${formatNumber(kpis.demandSupplyGap)}` : isOversupply ? `-${formatNumber(kpis.demandSupplyGap)}` : '0'}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                {isShortage ? 'Net worker shortage (+deficit)' : isOversupply ? 'Net seat oversupply (-surplus)' : 'Balanced equilibrium'}
+                {isInsufficientData ? 'No active records or telemetry' : isShortage ? 'Net worker shortage (+deficit)' : isOversupply ? 'Net seat oversupply (-surplus)' : 'Balanced equilibrium'}
               </p>
             </div>
 
             <div
               className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border ${
-                isShortage
+                isInsufficientData
+                  ? 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
+                  : isShortage
                   ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-200 dark:border-amber-900 text-amber-600 dark:text-amber-400'
                   : isOversupply
                   ? 'bg-purple-50 dark:bg-purple-950/60 border-purple-200 dark:border-purple-900 text-purple-600 dark:text-purple-400'
                   : 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-900 text-emerald-600 dark:text-emerald-400'
               }`}
             >
-              {isShortage ? (
+              {isInsufficientData ? (
+                <Info className="w-5 h-5" aria-hidden="true" />
+              ) : isShortage ? (
                 <TrendingUp className="w-5 h-5" aria-hidden="true" />
               ) : isOversupply ? (
                 <Layers className="w-5 h-5" aria-hidden="true" />
@@ -220,7 +227,9 @@ export const KPICards: React.FC = () => {
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-1.5 text-xs">
             <span
               className={`font-semibold px-2 py-0.5 rounded text-[11px] border inline-flex items-center gap-1 shrink-0 ${
-                isShortage
+                isInsufficientData
+                  ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                  : isShortage
                   ? 'bg-amber-50 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-800'
                   : isOversupply
                   ? 'bg-purple-50 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-200 dark:border-purple-800'
@@ -229,10 +238,10 @@ export const KPICards: React.FC = () => {
             >
               <span
                 className={`w-1.5 h-1.5 rounded-full ${
-                  isShortage ? 'bg-amber-500' : isOversupply ? 'bg-purple-500' : 'bg-emerald-500'
+                  isInsufficientData ? 'bg-slate-400' : isShortage ? 'bg-amber-500' : isOversupply ? 'bg-purple-500' : 'bg-emerald-500'
                 }`}
               />
-              {isShortage ? 'SHORTAGE (+DEFICIT)' : isOversupply ? 'OVERSUPPLY (-SURPLUS)' : 'BALANCED'}
+              {isInsufficientData ? 'INSUFFICIENT DATA' : isShortage ? 'SHORTAGE (+DEFICIT)' : isOversupply ? 'OVERSUPPLY (-SURPLUS)' : 'BALANCED'}
             </span>
             <span className="text-[11px] text-slate-400 font-mono shrink-0">
               Demand − Supply

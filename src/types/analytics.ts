@@ -137,6 +137,7 @@ export interface TradeRecord {
   trainingCapacity: number;
   demandGrowth: number;
   supplyGrowth: number;
+  growthYoY?: number; // Optional alias for demandGrowth
   gap: number; // labourDemand - trainingCapacity
   forecast2027: number;
   status: GapStatus;
@@ -144,6 +145,8 @@ export interface TradeRecord {
   recommendedAction: string;
   // Provenance & Metadata fields for PS 26246
   provenance?: DataProvenance;
+  isVerifiedCensus?: boolean;
+  hasVerifiedZeroDemand?: boolean;
   reportingPeriod?: string;
   dataSource?: string;
   candidateSupply?: number;
@@ -282,6 +285,8 @@ export type DataProvenance =
   | 'PILOT_BENCHMARK'
   | 'SYNTHETIC_SAMPLE'
   | 'USER_UPLOADED'
+  | 'OFFICIAL_GOVERNMENT'
+  | 'DERIVED_ANALYTIC'
   | 'FORECAST_PROJECTION';
 
 export interface DatasetMetadata {
@@ -411,4 +416,137 @@ export interface EarlyWarningThresholdConfig {
   oversupplyPercent: number; // default: -5%
   minVolumeThreshold: number; // default: 2000 seats
 }
+
+// ============================================================================
+// EVIDENCE-BASED SKILL GAP INTELLIGENCE & INTERVENTION DOMAIN MODELS
+// ============================================================================
+
+export type PriorityClassification =
+  | 'Critical'
+  | 'High'
+  | 'Moderate'
+  | 'Low'
+  | 'Balanced'
+  | 'Insufficient Data';
+
+export type InterventionType =
+  | 'CAPACITY_EXPANSION'
+  | 'MODULAR_UPSKILLING'
+  | 'PLACEMENT_OPTIMIZATION'
+  | 'RESOURCE_REALLOCATION'
+  | 'OVERSUPPLY_MONITORING';
+
+export interface PrioritizationMetrics {
+  labourDemand: number;
+  trainingCapacity: number;
+  certifiedSupply: number;
+  netGap: number; // labourDemand - trainingCapacity
+  effectiveGap: number; // labourDemand - certifiedSupply
+  demandGrowth: number;
+  supplyGrowth: number;
+  growthDivergence: number; // demandGrowth - supplyGrowth
+  isGrowthTelemetryMissing?: boolean; // True if demand or supply growth was not provided
+  growthTelemetryStatus?: 'Measured' | 'Missing Demand Growth' | 'Missing Supply Growth' | 'Missing Both';
+  vacancyToSupplyRatio: number;
+  districtSeverityWeight: number; // relative concentration in district (0 - 1)
+  districtShortageShare?: number; // Share of district's total shortage (0 - 1)
+  dataCompletenessScore: number; // 0 - 100
+  econometricPriorityIndex: number; // 0 - 100 (EPI / SGPI score)
+  sgpiScore?: number; // Skill Gap Priority Index (0 - 100, user-facing alias)
+  componentScores?: {
+    relativeDeficit: number; // Raw component score (0 - 100 scale)
+    absoluteVolume: number; // Raw component score (0 - 100 scale)
+    growthDivergence: number; // Raw component score (0 - 100 scale)
+    supplyBottleneck: number; // Raw component score (0 - 100 scale)
+    districtShortageShare: number; // Raw component score (0 - 100 scale)
+  };
+  weightedContributions?: {
+    relativeDeficit: number; // Weighted contribution (0 - 35 points, 35% weight)
+    absoluteVolume: number; // Weighted contribution (0 - 25 points, 25% weight)
+    growthDivergence: number; // Weighted contribution (0 - 20 points, 20% weight)
+    supplyBottleneck: number; // Weighted contribution (0 - 10 points, 10% weight)
+    districtShortageShare: number; // Weighted contribution (0 - 10 points, 10% weight)
+  };
+  priorityClassification: PriorityClassification;
+  methodologySummary: string;
+}
+
+export interface DistrictIntervention {
+  id: string;
+  district: string;
+  state: GeographyState;
+  trade: TradeOccupation;
+  sector: IndustrySector;
+  ncoCode: string;
+  nsqfLevel: string;
+  priorityClassification: PriorityClassification;
+  interventionType: InterventionType;
+  interventionTitle: string;
+  identifiedProblem: string;
+  supportingData: {
+    labourDemand: number;
+    trainingCapacity: number;
+    certifiedSupply: number;
+    netGap: number;
+    effectiveGap: number;
+    demandGrowth: number;
+    supplyGrowth: number;
+    estimatedPlacementRate: number;
+    dataCompletenessScore: number;
+    provenance: string;
+    reportingPeriod: string;
+  };
+  relevanceRationale: string;
+  expectedDirectionOfImpact: string;
+  assumptionsAndLimitations: string[];
+  advisoryDisclosure: string;
+  explainability: {
+    triggerCondition: string;
+    calculationDetails: string;
+    missingFields: string[];
+    reliabilityAssessment: string;
+  };
+}
+
+export interface PolicySimulationComparison {
+  baseline: {
+    labourDemand: number;
+    trainingCapacity: number;
+    completionRate: number; // %
+    certifiedSupply: number;
+    placementRate: number; // %
+    potentialPlacements?: number; // Potential placed candidates before demand ceiling clamp
+    employedSupply: number;
+    unplacedGraduates: number; // Certified candidates not absorbed into jobs
+    potentialOversupply: number; // Certified placed candidates exceeding vacancies
+    rawGap: number; // demand - capacity
+    effectiveShortfall: number; // demand - employedSupply
+  };
+  simulated: {
+    capacityAddedViaSeats: number;
+    capacityAddedViaCentres: number;
+    capacityAddedViaReallocation: number;
+    totalSimulatedCapacity: number;
+    completionRate: number; // %
+    certifiedSupply: number;
+    placementRate: number; // %
+    potentialPlacements?: number; // Potential placed candidates before demand ceiling clamp
+    employedSupply: number;
+    unplacedGraduates: number; // Simulated certified candidates not absorbed into jobs
+    potentialOversupply: number; // Simulated candidate output exceeding demand ceiling
+    simulatedRawGap: number;
+    simulatedEffectiveShortfall: number;
+    remainingShortage: number;
+    netImprovementSeats: number;
+    gapReductionPercent: number;
+    additionalTrainingBudget?: number; // Incremental capital outlay (Illustrative planning assumption: ₹28,500/seat)
+  };
+  assumptions: string[];
+  frictionFactors?: {
+    curriculumMismatchRisk: string;
+    wageReservationFriction: string;
+    geographicMobilityFriction: string;
+  };
+}
+
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   MapPin,
   TrendingUp,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { Modal } from './Modal';
+import { rankDistrictsByGapSeverity } from '../services/analytics/demandSupplyEngine';
 
 export const DistrictComparisonModal: React.FC = () => {
   const {
@@ -27,18 +28,23 @@ export const DistrictComparisonModal: React.FC = () => {
   // List of all unique districts
   const allDistricts = Array.from(new Set(activeRecords.map(r => r.district))).sort();
 
-  const [district1, setDistrict1] = useState<string>(districtRanks[0]?.district || 'Pune');
-  const [district2, setDistrict2] = useState<string>(districtRanks[1]?.district || 'Bengaluru Urban');
-  const [district3, setDistrict3] = useState<string>(districtRanks[2]?.district || 'Chennai');
+  // Compute full benchmark ranks across all districts in the active dataset
+  const allDistrictRanks = useMemo(() => {
+    return rankDistrictsByGapSeverity(activeRecords);
+  }, [activeRecords]);
+
+  const [district1, setDistrict1] = useState<string>(allDistrictRanks[0]?.district || 'Pune');
+  const [district2, setDistrict2] = useState<string>(allDistrictRanks[1]?.district || 'Bengaluru Urban');
+  const [district3, setDistrict3] = useState<string>(allDistrictRanks[2]?.district || 'Chennai');
 
   const getDistrictStats = (districtName: string) => {
-    const rankEntry = districtRanks.find(d => d.district === districtName);
+    const rankEntry = allDistrictRanks.find(d => d.district === districtName);
     const records = activeRecords.filter(r => r.district === districtName);
-    const demand = records.reduce((sum, r) => sum + r.labourDemand, 0);
-    const supply = records.reduce((sum, r) => sum + r.trainingCapacity, 0);
+    const demand = rankEntry?.labourDemand ?? records.reduce((sum, r) => sum + r.labourDemand, 0);
+    const supply = rankEntry?.trainingCapacity ?? records.reduce((sum, r) => sum + r.trainingCapacity, 0);
     const gap = demand - supply;
     const gapPct = demand > 0 ? (gap / demand) * 100 : 0;
-    const state = records[0]?.state || 'Maharashtra';
+    const state = rankEntry?.state || records[0]?.state || 'Maharashtra';
 
     return {
       name: districtName,
@@ -191,16 +197,18 @@ export const DistrictComparisonModal: React.FC = () => {
                 <div className={`p-3 rounded-xl border flex items-center justify-between ${
                   d.gap > 0
                     ? 'bg-rose-50/80 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900 text-rose-800 dark:text-rose-200'
-                    : 'bg-purple-50/80 dark:bg-purple-950/40 border-purple-200 dark:border-purple-900 text-purple-800 dark:text-purple-200'
+                    : d.gap < 0
+                    ? 'bg-purple-50/80 dark:bg-purple-950/40 border-purple-200 dark:border-purple-900 text-purple-800 dark:text-purple-200'
+                    : 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900 text-emerald-800 dark:text-emerald-200'
                 }`}>
                   <div>
                     <span className="text-[10px] uppercase font-bold tracking-wider block">Net Skill Gap</span>
                     <span className="text-base font-mono font-bold">
-                      {d.gap > 0 ? `+${d.gap.toLocaleString()}` : d.gap.toLocaleString()}
+                      {d.gap > 0 ? `+${d.gap.toLocaleString()}` : d.gap < 0 ? `-${Math.abs(d.gap).toLocaleString()}` : '0'}
                     </span>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-1 rounded bg-white dark:bg-slate-900 shadow-xs">
-                    {d.gapPct.toFixed(1)}% Deficit
+                    {d.gap > 0 ? `+${d.gapPct.toFixed(1)}% Deficit` : d.gap < 0 ? `${Math.abs(d.gapPct).toFixed(1)}% Surplus` : 'Equilibrium'}
                   </span>
                 </div>
 

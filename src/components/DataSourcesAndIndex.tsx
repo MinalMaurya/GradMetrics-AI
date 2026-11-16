@@ -153,7 +153,7 @@ export const DataSourcesAndIndex: React.FC = () => {
           <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-200">
             <div className="font-bold text-[11px] uppercase tracking-wider mb-1">Mathematical Formula:</div>
             <div className="font-mono text-xs font-semibold bg-white/80 dark:bg-slate-950/80 p-2 rounded-lg border border-blue-200 dark:border-blue-900 break-words">
-              Demand Index = &Sigma; (Normalized Source Score &times; Empirical Weight)
+              Demand Index = &Sigma; (Normalized Source Score &times; Calibrated Component Weight)
             </div>
           </div>
 

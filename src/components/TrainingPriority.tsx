@@ -125,7 +125,7 @@ export const TrainingPriority: React.FC = () => {
         {/* Footer Action */}
         <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-1 text-[11px]">
           <span className="text-slate-500 dark:text-slate-400">
-            Formula: <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">(Demand/Supply)&times;25 + Growth&times;1.5 + Bonus</span>
+            Index: <span className="font-mono text-blue-600 dark:text-blue-400 font-semibold">SGPI / EPI (35% Deficit + 25% Vol + 20% Growth + 10% Ratio + 10% District Shortage Share)</span>
           </span>
           <button
             onClick={() => setIsFullMatrixOpen(true)}
@@ -145,7 +145,7 @@ export const TrainingPriority: React.FC = () => {
           onClose={() => setIsFullMatrixOpen(false)}
           maxWidth="max-w-4xl"
           title="Training Priority Index: Full Seat Allocation Matrix"
-          subtitle="Priority = Demand × Gap Severity × Growth Rate × Confidence (MSDE Allocation Engine)"
+          subtitle="Skill Gap Priority Index (SGPI, 0–100, multi-criteria composite rubric): Documented allocation framework for state & district planners"
           icon={
             <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
               <ListOrdered className="w-4 h-4" />
@@ -174,7 +174,43 @@ export const TrainingPriority: React.FC = () => {
             </div>
           }
         >
-          <div className="p-3 sm:p-6">
+          <div className="p-3 sm:p-6 space-y-4">
+            <div className="p-3 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-[11px] text-blue-900 dark:text-blue-200">
+              <div className="font-bold uppercase tracking-wider text-[10px] text-blue-700 dark:text-blue-300 mb-1">
+                SGPI Mathematical Formulation (Component Scores vs. Weighted Contributions):
+              </div>
+              <p className="leading-relaxed">
+                The Skill Gap Priority Index (SGPI, 0–100) combines 5 independent normalized component scores (each measured on a 0–100 scale) multiplied by their respective policy weights:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mt-2 pt-2 border-t border-blue-200/60 dark:border-blue-800/60 font-mono text-[10px]">
+                <div className="bg-white/70 dark:bg-slate-900/60 p-2 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="font-bold text-slate-700 dark:text-slate-300">1. Relative Deficit</div>
+                  <div className="text-blue-600 dark:text-blue-400 font-bold">Weight: 35%</div>
+                  <div className="text-slate-500">Max: 35 pts</div>
+                </div>
+                <div className="bg-white/70 dark:bg-slate-900/60 p-2 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="font-bold text-slate-700 dark:text-slate-300">2. Volume Shortage</div>
+                  <div className="text-blue-600 dark:text-blue-400 font-bold">Weight: 25%</div>
+                  <div className="text-slate-500">Max: 25 pts (25k bench)</div>
+                </div>
+                <div className="bg-white/70 dark:bg-slate-900/60 p-2 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="font-bold text-slate-700 dark:text-slate-300">3. Growth Divergence</div>
+                  <div className="text-blue-600 dark:text-blue-400 font-bold">Weight: 20%</div>
+                  <div className="text-slate-500">Max: 20 pts (Telemetry req.)</div>
+                </div>
+                <div className="bg-white/70 dark:bg-slate-900/60 p-2 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="font-bold text-slate-700 dark:text-slate-300">4. Supply Bottleneck</div>
+                  <div className="text-blue-600 dark:text-blue-400 font-bold">Weight: 10%</div>
+                  <div className="text-slate-500">Max: 10 pts</div>
+                </div>
+                <div className="bg-white/70 dark:bg-slate-900/60 p-2 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div className="font-bold text-slate-700 dark:text-slate-300">5. Shortage Share</div>
+                  <div className="text-blue-600 dark:text-blue-400 font-bold">Weight: 10%</div>
+                  <div className="text-slate-500">Max: 10 pts</div>
+                </div>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
               <table className="w-full min-w-[720px] text-left text-xs border-collapse whitespace-nowrap">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 uppercase text-[10px] tracking-wider">
@@ -243,6 +279,19 @@ export const TrainingPriority: React.FC = () => {
                           <span>{item.priorityScore}</span>
                           <span className="text-[10px] text-slate-400">/100</span>
                         </div>
+                        <div className="mt-1">
+                          <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                            item.badgeLevel === 'Critical'
+                              ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300'
+                              : item.badgeLevel === 'High'
+                              ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300'
+                              : item.badgeLevel === 'Medium'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/80 dark:text-blue-300'
+                              : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                          }`}>
+                            {item.badgeLevel}
+                          </span>
+                        </div>
                       </td>
 
                       <td className="py-3 px-3 text-slate-700 dark:text-slate-200 font-medium text-xs whitespace-normal max-w-xs">
@@ -252,6 +301,7 @@ export const TrainingPriority: React.FC = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
           </div>
         </Modal>
       )}

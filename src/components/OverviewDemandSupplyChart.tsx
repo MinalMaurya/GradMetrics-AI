@@ -95,8 +95,12 @@ export const OverviewDemandSupplyChart: React.FC = () => {
             </div>
             <div className="pt-1.5 mt-1 border-t border-slate-800 flex justify-between items-center font-bold">
               <span>Skill Gap:</span>
-              <span className={isShortage ? 'text-amber-400' : 'text-purple-400'}>
-                {isShortage ? `+${gap.toLocaleString('en-IN')} Shortage` : `-${Math.abs(gap).toLocaleString('en-IN')} Surplus`}
+              <span className={isShortage ? 'text-amber-400' : gap < 0 ? 'text-purple-400' : 'text-emerald-400'}>
+                {isShortage
+                  ? `+${gap.toLocaleString('en-IN')} Shortage`
+                  : gap < 0
+                  ? `${Math.abs(gap).toLocaleString('en-IN')} Surplus`
+                  : '0 (Balanced)'}
               </span>
             </div>
           </div>

@@ -51,6 +51,20 @@ export const RegionalOverview: React.FC = () => {
     return [...tradeRecords].sort((a, b) => b.gap - a.gap)[0];
   }, [tradeRecords]);
 
+  const formatGap = (gap: number) => {
+    const rounded = Math.round(gap / 1000);
+    if (rounded > 0) return `+${rounded}K`;
+    if (rounded < 0) return `${rounded}K`;
+    return '0K';
+  };
+
+  const formatForecast = (fc: number) => {
+    const rounded = Math.round(fc / 1000);
+    if (rounded > 0) return `+${rounded}K`;
+    if (rounded < 0) return `${rounded}K`;
+    return '0K';
+  };
+
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortAsc(!sortAsc);
@@ -258,7 +272,7 @@ export const RegionalOverview: React.FC = () => {
                         isShortage ? 'text-amber-600 dark:text-amber-400' : isOversupply ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600'
                       }`}
                     >
-                      {isShortage ? `+${(item.gap / 1000).toFixed(0)}K` : `${(item.gap / 1000).toFixed(0)}K`}
+                      {formatGap(item.gap)}
                     </td>
 
                     <td className="py-3 px-3 text-rose-600 dark:text-rose-400 font-medium">
@@ -359,11 +373,11 @@ export const RegionalOverview: React.FC = () => {
                         isShortage ? 'text-amber-600 dark:text-amber-400' : isOver ? 'text-purple-600 dark:text-purple-400' : 'text-emerald-600'
                       }`}
                     >
-                      {isShortage ? `+${(r.gap / 1000).toFixed(0)}K` : `${(r.gap / 1000).toFixed(0)}K`}
+                      {formatGap(r.gap)}
                     </td>
 
                     <td className="py-3 px-3.5 text-right font-mono font-semibold text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                      {r.forecast2027 > 0 ? `+${(r.forecast2027 / 1000).toFixed(0)}K` : `${(r.forecast2027 / 1000).toFixed(0)}K`}
+                      {formatForecast(r.forecast2027)}
                     </td>
 
                     <td className="py-3 px-3.5 text-center whitespace-nowrap">
@@ -404,7 +418,7 @@ export const RegionalOverview: React.FC = () => {
         <div className="flex items-center space-x-2">
           <span className="font-semibold text-slate-700 dark:text-slate-300">Lead Shortage Hotspot:</span>
           <span className="font-medium text-slate-800 dark:text-slate-200">
-            {leadShortage
+            {leadShortage && leadShortage.gap > 0
               ? `${leadShortage.district}, ${leadShortage.state} (${leadShortage.trade} +${Math.round(leadShortage.gap / 1000)}K)`
               : 'None'}
           </span>

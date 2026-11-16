@@ -47,8 +47,26 @@ export const PlacementAnalytics: React.FC = () => {
   const [isFullModalOpen, setIsFullModalOpen] = useState(false);
   const nationalBenchmark = 74;
 
-  // Compact version shows only top 5 trades
-  const compactTradeList = fullTradeAbsorptionList.slice(0, 5);
+  // Dynamic filtering based on active sector & trade filters
+  const sectorFilteredList = useMemo(() => {
+    if (filters.sector === 'All Sectors') return fullTradeAbsorptionList;
+    const matched = fullTradeAbsorptionList.filter(
+      (item) => item.leadSector.toLowerCase() === filters.sector.toLowerCase()
+    );
+    return matched.length > 0 ? matched : fullTradeAbsorptionList;
+  }, [filters.sector]);
+
+  // Compact version shows up to 5 trades, prioritizing active trade filter
+  const compactTradeList = useMemo(() => {
+    if (filters.trade !== 'All Trades') {
+      const selected = sectorFilteredList.find((item) => item.trade === filters.trade);
+      if (selected) {
+        const others = sectorFilteredList.filter((item) => item.trade !== filters.trade);
+        return [selected, ...others].slice(0, 5);
+      }
+    }
+    return sectorFilteredList.slice(0, 5);
+  }, [sectorFilteredList, filters.trade]);
 
   // Dynamic average uptake calculated directly from displayed series
   const displayedAvgUptake = useMemo(() => {
@@ -56,6 +74,17 @@ export const PlacementAnalytics: React.FC = () => {
     const sum = compactTradeList.reduce((acc, item) => acc + item.absorptionRate, 0);
     return Number((sum / compactTradeList.length).toFixed(1));
   }, [compactTradeList]);
+
+  // Derived high/low performers for modal summary
+  const topTrade = useMemo(() => {
+    if (sectorFilteredList.length === 0) return fullTradeAbsorptionList[0];
+    return [...sectorFilteredList].sort((a, b) => b.absorptionRate - a.absorptionRate)[0];
+  }, [sectorFilteredList]);
+
+  const underperformingTrade = useMemo(() => {
+    if (sectorFilteredList.length === 0) return fullTradeAbsorptionList[fullTradeAbsorptionList.length - 1];
+    return [...sectorFilteredList].sort((a, b) => a.absorptionRate - b.absorptionRate)[0];
+  }, [sectorFilteredList]);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -118,7 +147,7 @@ export const PlacementAnalytics: React.FC = () => {
               </span>
             </div>
             <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Employment conversion within 180 days &bull; Statutory Target: {nationalBenchmark}% (Scale: 0–100%)
+              Employment conversion within 180 days &bull; Planning Target: {nationalBenchmark}% (Scale: 0–100%)
             </p>
           </div>
 
@@ -137,7 +166,7 @@ export const PlacementAnalytics: React.FC = () => {
             <BarChart
               data={compactTradeList}
               layout="vertical"
-              margin={{ top: 12, right: 30, left: 15, bottom: 0 }}
+              margin={{ top: 12, right: 24, left: 5, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} horizontal={false} />
               <XAxis
@@ -155,7 +184,7 @@ export const PlacementAnalytics: React.FC = () => {
                 tickLine={false}
                 stroke={axisColor}
                 fontSize={11}
-                width={125}
+                width={115}
               />
               <Tooltip content={<CustomTooltip />} />
               
@@ -204,7 +233,11 @@ export const PlacementAnalytics: React.FC = () => {
 
         {/* Micro-footer note */}
         <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-          <span>Top {compactTradeList.length} verified technical trades shown</span>
+          <span>
+            {filters.sector !== 'All Sectors'
+              ? `${filters.sector} trades (${compactTradeList.length})`
+              : `Top ${compactTradeList.length} verified technical trades shown`}
+          </span>
           <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
             Avg: {displayedAvgUptake}% uptake
           </span>
@@ -252,27 +285,35 @@ export const PlacementAnalytics: React.FC = () => {
               {/* Benchmark Summary Bar */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                 <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-                  <div className="text-[10px] uppercase font-bold text-slate-400">National Benchmark</div>
+                  <div className="text-[10px] uppercase font-bold text-slate-400">National Planning Target</div>
                   <div className="text-xl sm:text-2xl font-black font-mono text-blue-600 dark:text-blue-400 mt-0.5">
                     {nationalBenchmark}%
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">Minimum statutory target</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">Illustrative planning target</div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60">
                   <div className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300">Top Performing Trade</div>
                   <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
-                    Data Engineering (91%)
+                    {topTrade ? `${topTrade.trade} (${topTrade.absorptionRate}%)` : 'Data Engineering (91%)'}
                   </div>
-                  <div className="text-[11px] text-emerald-600 font-mono mt-0.5">+17% above national benchmark</div>
+                  <div className="text-[11px] text-emerald-600 font-mono mt-0.5">
+                    {topTrade
+                      ? `${topTrade.absorptionRate >= nationalBenchmark ? '+' : ''}${topTrade.absorptionRate - nationalBenchmark}% vs national benchmark`
+                      : '+17% above national benchmark'}
+                  </div>
                 </div>
 
                 <div className="p-3 rounded-xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60">
                   <div className="text-[10px] uppercase font-bold text-purple-700 dark:text-purple-300">Underperforming Cohort</div>
                   <div className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
-                    Retail Sales (54%)
+                    {underperformingTrade ? `${underperformingTrade.trade} (${underperformingTrade.absorptionRate}%)` : 'Retail Sales (54%)'}
                   </div>
-                  <div className="text-[11px] text-purple-600 font-mono mt-0.5">-20% below national benchmark</div>
+                  <div className="text-[11px] text-purple-600 font-mono mt-0.5">
+                    {underperformingTrade
+                      ? `${underperformingTrade.absorptionRate - nationalBenchmark}% vs national benchmark`
+                      : '-20% below national benchmark'}
+                  </div>
                 </div>
               </div>
 

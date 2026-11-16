@@ -73,9 +73,20 @@ export const FilterBar: React.FC = () => {
     activeFilterCount,
     availableDistricts,
     availableTrades,
+    activeRecords
   } = useAnalytics();
 
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
+
+  const availableStates = React.useMemo(() => {
+    const recordStates = activeRecords.map((r) => r.state).filter(Boolean);
+    return Array.from(new Set(['All India', ...stateList, ...recordStates]));
+  }, [activeRecords]);
+
+  const availableSectors = React.useMemo(() => {
+    const recordSectors = activeRecords.map((r) => r.sector).filter(Boolean);
+    return Array.from(new Set(['All Sectors', ...sectorList, ...recordSectors]));
+  }, [activeRecords]);
 
   const hasAdvancedFilters =
     filters.trade !== 'All Trades' ||
@@ -102,7 +113,7 @@ export const FilterBar: React.FC = () => {
                 onChange={(e) => setGeography(e.target.value as GeographyState)}
                 className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
               >
-                {stateList.map((st) => (
+                {availableStates.map((st) => (
                   <option key={st} value={st}>
                     {st}
                   </option>
@@ -151,7 +162,7 @@ export const FilterBar: React.FC = () => {
                 onChange={(e) => setSector(e.target.value as IndustrySector)}
                 className="w-full appearance-none pl-3 pr-8 py-2.5 sm:py-2 min-h-[42px] sm:min-h-[38px] text-xs font-semibold bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition cursor-pointer"
               >
-                {sectorList.map((sec) => (
+                {availableSectors.map((sec) => (
                   <option key={sec} value={sec}>
                     {sec}
                   </option>

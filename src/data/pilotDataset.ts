@@ -15,15 +15,16 @@ export const PILOT_DATASET_METADATA: DatasetMetadata = {
   lastUpdated: '2026-10-04T15:30:00Z',
   recordCount: 24,
   dataSources: [
-    'National Career Service (NCS) Job Vacancy Sample (Sample Data)',
+    'National Career Service (NCS) Job Vacancy Sample (Synthetic Sample Data)',
     'DGT Annual ITI & CTS Intake Directory (Public Benchmarks)',
     'Sector Skill Councils: IT-ITeS, Skill Council for Green Jobs, ASDC, Healthcare SSC',
-    'MoSPI Periodic Labour Force Survey (PLFS 2022-2024 Indicators)',
+    'MoSPI Periodic Labour Force Survey (PLFS 2022-2024 Calibrated Indicators)',
     'e-Shram Worker Registration Skill Classification (Research Cohorts)'
   ],
   assumptions: [
+    '[Data Provenance Disclosure] All records in this pilot dataset are synthetic calibrated research benchmarks designed for testing analytical algorithms under SIH PS 26246, not official census statistics.',
     'Training capacity figures reflect approved institutional intake quotas across DGT ITIs, PMKVY centres, and polytechnics.',
-    'Trained-worker supply is adjusted for an empirical 14.5% national completion dropout rate.',
+    '[Illustrative Planning Assumption] Trained-worker supply is modeled using an illustrative 14.5% national completion dropout rate across institutional cohorts.',
     'Job openings represent formal and digitally registered employer requisitions across major employment portals and government exchanges.',
     'Inter-district migration of certified trainees is modeled with an average 25% mobility elasticity.'
   ],

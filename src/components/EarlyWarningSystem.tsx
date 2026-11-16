@@ -50,15 +50,13 @@ export const EarlyWarningSystem: React.FC = () => {
     return true;
   });
 
-  // Shortage Alert (Item 11) - Data Engineering in Pune
-  const shortageAlert = earlyWarnings.find(
-    w => w.trade === 'Data Engineering' && w.district === 'Pune'
-  ) || criticalShortages[0] || earlyWarnings[0];
+  // Shortage Alert: prioritizes critical shortage in active scope, falling back to emerging gap or first warning
+  const shortageAlert =
+    criticalShortages[0] || emergingGaps[0] || earlyWarnings.find(w => w.gap > 0) || earlyWarnings[0];
 
-  // Oversupply Alert (Item 12) - Retail Sales in Rajasthan
-  const oversupplyAlert = earlyWarnings.find(
-    w => w.trade === 'Retail Sales Associate' && w.state === 'Rajasthan'
-  ) || oversupplies[0] || earlyWarnings[earlyWarnings.length - 1];
+  // Oversupply Alert: prioritizes oversupply in active scope, falling back to negative gap
+  const oversupplyAlert =
+    oversupplies[0] || earlyWarnings.find(w => w.gap < 0) || (earlyWarnings.length > 0 ? earlyWarnings[earlyWarnings.length - 1] : undefined);
 
   return (
     <>
@@ -292,7 +290,7 @@ export const EarlyWarningSystem: React.FC = () => {
                   {oversupplyAlert.evidenceBasis === 'PREDICTED_HORIZON_RISK' ? 'Predicted Horizon Risk' : 'Observed Condition'}
                 </span>
                 <span className="font-mono font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/60 px-1.5 py-0.5 rounded text-[10px]">
-                  {Math.round(oversupplyAlert.gap / 1000)}K Surplus
+                  {Math.abs(Math.round(oversupplyAlert.gap / 1000))}K Surplus
                 </span>
               </div>
             </div>
@@ -474,7 +472,7 @@ export const EarlyWarningSystem: React.FC = () => {
                     </div>
 
                     <span className="font-mono font-bold text-xs">
-                      {w.gap > 0 ? `+${(w.gap / 1000).toFixed(0)}K (Shortage)` : `${(w.gap / 1000).toFixed(0)}K (Surplus)`}
+                      {w.gap > 0 ? `+${(w.gap / 1000).toFixed(0)}K (Shortage)` : w.gap < 0 ? `-${Math.abs(w.gap / 1000).toFixed(0)}K (Surplus)` : '0K (Balanced)'}
                     </span>
                   </div>
 

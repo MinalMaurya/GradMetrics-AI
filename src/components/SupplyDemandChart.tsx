@@ -75,7 +75,7 @@ export const SupplyDemandChart: React.FC = () => {
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
-                Labour Demand (Openings):
+                {isProjected ? 'Projected Labour Demand:' : 'Labour Demand (Openings):'}
               </span>
               <span className="font-mono font-bold text-white">
                 {data.labourDemand.toLocaleString()}
@@ -85,24 +85,12 @@ export const SupplyDemandChart: React.FC = () => {
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
-                Training Capacity (Seats):
+                {isProjected ? 'Projected Training Capacity:' : 'Training Capacity (Seats):'}
               </span>
               <span className="font-mono font-bold text-white">
                 {data.trainingCapacity.toLocaleString()}
               </span>
             </div>
-
-            {data.projectedDemand && (
-              <div className="flex items-center justify-between text-slate-400 text-[11px]">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-sky-400 inline-block" />
-                  Projected Demand (+15%):
-                </span>
-                <span className="font-mono font-semibold">
-                  {data.projectedDemand.toLocaleString()}
-                </span>
-              </div>
-            )}
 
             <div
               className={`pt-2 mt-1 border-t border-slate-800/80 flex items-center justify-between font-bold ${

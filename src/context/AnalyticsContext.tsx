@@ -22,7 +22,9 @@ import {
   EarlyWarningThresholdConfig,
   ForecastingMetrics,
   DistrictGapRank,
-  OccupationGapRank
+  OccupationGapRank,
+  DistrictIntervention,
+  PolicySimulationComparison
 } from '../types/analytics';
 import {
   pilotTradeRecords,
@@ -44,6 +46,11 @@ import {
   generateEarlyWarningSignals,
   DEFAULT_EARLY_WARNING_THRESHOLDS
 } from '../services/earlyWarning/earlyWarningEngine';
+import {
+  generateDistrictInterventions,
+  calculatePolicySimulationImpact,
+  evaluateSkillGapPrioritization
+} from '../services/intelligence/skillGapIntelligenceEngine';
 import {
   getTranslation,
   translations,
@@ -152,6 +159,14 @@ export interface AnalyticsContextType {
   setSimulatedCourseReallocation: (val: number) => void;
   simulatedDistrictTarget: string;
   setSimulatedDistrictTarget: (val: string) => void;
+  simulatedCompletionRate: number; // percentage (60% to 98%)
+  setSimulatedCompletionRate: (val: number) => void;
+  simulatedPlacementRate: number; // percentage (50% to 95%)
+  setSimulatedPlacementRate: (val: number) => void;
+  policySimulationComparison: PolicySimulationComparison;
+
+  // Evidence-Based Intelligence Interventions
+  districtInterventions: DistrictIntervention[];
 }
 
 const defaultFilters: FilterState = {
@@ -207,6 +222,8 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [simulatedNewCentres, setSimulatedNewCentres] = useState<number>(4);
   const [simulatedCourseReallocation, setSimulatedCourseReallocation] = useState<number>(15);
   const [simulatedDistrictTarget, setSimulatedDistrictTarget] = useState<string>('Pune');
+  const [simulatedCompletionRate, setSimulatedCompletionRate] = useState<number>(85.5);
+  const [simulatedPlacementRate, setSimulatedPlacementRate] = useState<number>(74.0);
 
   // Translation helper
   const t = (key: keyof TranslationDictionary): string => {
@@ -339,20 +356,25 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Compute available cascading lists
   const availableDistricts = useMemo(() => {
-    if (filters.geography !== 'All India' && stateDistrictsMap[filters.geography]) {
-      return stateDistrictsMap[filters.geography];
-    }
-    // Extract unique districts from active records
-    const uniqueDistricts = Array.from(new Set(activeRecords.map(r => r.district))).sort();
-    return ['All Districts', ...uniqueDistricts];
+    const list = (filters.geography !== 'All India' && stateDistrictsMap[filters.geography])
+      ? stateDistrictsMap[filters.geography]
+      : [];
+    const recordDistricts = (filters.geography !== 'All India')
+      ? activeRecords.filter(r => r.state === filters.geography).map(r => r.district)
+      : activeRecords.map(r => r.district);
+    const unique = Array.from(new Set([...list, ...recordDistricts])).filter(Boolean).filter(d => d !== 'All Districts').sort();
+    return ['All Districts', ...unique];
   }, [filters.geography, activeRecords]);
 
   const availableTrades = useMemo(() => {
-    if (filters.sector !== 'All Sectors' && sectorTradesMap[filters.sector]) {
-      return sectorTradesMap[filters.sector];
-    }
-    const uniqueTrades = Array.from(new Set(activeRecords.map(r => r.trade))).sort() as TradeOccupation[];
-    return ['All Trades' as TradeOccupation, ...uniqueTrades];
+    const list = (filters.sector !== 'All Sectors' && sectorTradesMap[filters.sector])
+      ? sectorTradesMap[filters.sector]
+      : [];
+    const recordTrades = (filters.sector !== 'All Sectors')
+      ? activeRecords.filter(r => r.sector === filters.sector).map(r => r.trade)
+      : activeRecords.map(r => r.trade);
+    const unique = Array.from(new Set([...list, ...recordTrades])).filter(Boolean).filter(t => t !== 'All Trades').sort() as TradeOccupation[];
+    return ['All Trades' as TradeOccupation, ...unique];
   }, [filters.sector, activeRecords]);
 
   const activeFilterCount = useMemo(() => {
@@ -426,25 +448,65 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     });
   }, [forecastData]);
 
-  // Dynamic training priorities based on occupation gap severity
+  // Dynamic training priorities based on occupation gap severity & Econometric Priority Index (EPI)
   const trainingPriorities: TrainingPriorityItem[] = useMemo(() => {
-    return occupationRanks.map((occ, idx) => ({
-      rank: idx + 1,
-      trade: occ.trade,
-      skill: occ.trade,
-      sector: occ.sector,
-      labourDemand: occ.labourDemand,
-      trainingCapacity: occ.trainingCapacity,
-      gap: occ.gap,
-      growth: occ.growthYoY,
-      priorityScore: occ.priorityScore,
-      recommendedAction: occ.recommendedAction,
-      badgeLevel: occ.status === 'CRITICAL SHORTAGE' ? 'Critical' : occ.status === 'EMERGING SHORTAGE' ? 'High' : occ.status === 'BALANCED' ? 'Stable' : 'Medium',
-      affectedCohort: Math.abs(occ.gap),
-      roiPotential: occ.gap > 0 ? '+32% High Placement Priority' : 'Intake Rationalization Recommended',
-      affectedGraduates: Math.abs(occ.gap)
-    }));
-  }, [occupationRanks]);
+    return occupationRanks.map((occ, idx) => {
+      const matchingRecord = filteredRecords.find(r => r.trade === occ.trade);
+      const metrics = matchingRecord
+        ? evaluateSkillGapPrioritization(matchingRecord, filteredRecords)
+        : null;
+
+      const priorityScore = metrics ? metrics.econometricPriorityIndex : occ.priorityScore;
+      const classification = metrics ? metrics.priorityClassification : (
+        occ.status === 'CRITICAL SHORTAGE' ? 'Critical' : occ.status === 'EMERGING SHORTAGE' ? 'High' : 'Balanced'
+      );
+
+      return {
+        rank: idx + 1,
+        trade: occ.trade,
+        skill: occ.trade,
+        sector: occ.sector,
+        labourDemand: occ.labourDemand,
+        trainingCapacity: occ.trainingCapacity,
+        gap: occ.gap,
+        growth: occ.growthYoY,
+        priorityScore,
+        recommendedAction: occ.recommendedAction,
+        badgeLevel: (classification === 'Critical' ? 'Critical' : classification === 'High' ? 'High' : classification === 'Moderate' ? 'Medium' : 'Stable') as any,
+        affectedCohort: Math.abs(occ.gap),
+        roiPotential: occ.gap > 0 ? '+32% High Placement Priority' : 'Intake Rationalization Recommended',
+        affectedGraduates: Math.abs(occ.gap)
+      };
+    });
+  }, [occupationRanks, filteredRecords]);
+
+  // Evidence-Based District-Level Interventions
+  const districtInterventions = useMemo(() => {
+    return generateDistrictInterventions(filteredRecords, datasetMetadata);
+  }, [filteredRecords, datasetMetadata]);
+
+  // Comprehensive Policy Simulation Comparison
+  const policySimulationComparison = useMemo(() => {
+    return calculatePolicySimulationImpact({
+      labourDemand: kpis.labourDemand,
+      trainingCapacity: kpis.trainingCapacity,
+      currentShortage: kpis.demandSupplyGap,
+      seatIncreasePercent: simulatedSeatIncrease,
+      newCentresCount: simulatedNewCentres,
+      courseReallocationPercent: simulatedCourseReallocation,
+      completionRatePercent: simulatedCompletionRate,
+      placementRatePercent: simulatedPlacementRate
+    });
+  }, [
+    kpis.labourDemand,
+    kpis.trainingCapacity,
+    kpis.demandSupplyGap,
+    simulatedSeatIncrease,
+    simulatedNewCentres,
+    simulatedCourseReallocation,
+    simulatedCompletionRate,
+    simulatedPlacementRate
+  ]);
 
   const unreadNotifsCount = useMemo(() => {
     return notifications.filter(n => !n.read).length;
@@ -591,6 +653,12 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         setSimulatedCourseReallocation,
         simulatedDistrictTarget,
         setSimulatedDistrictTarget,
+        simulatedCompletionRate,
+        setSimulatedCompletionRate,
+        simulatedPlacementRate,
+        setSimulatedPlacementRate,
+        policySimulationComparison,
+        districtInterventions,
       }}
     >
       {children}

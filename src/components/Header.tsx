@@ -344,7 +344,13 @@ export const Header: React.FC<HeaderProps> = ({
                     </button>
 
                     <div className="px-3.5 py-2 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
-                      <span>Source: {datasetMetadata.provenance}</span>
+                      <span>
+                        Source: {datasetMetadata.provenance === 'PILOT_BENCHMARK'
+                          ? 'Synthetic Pilot Benchmark'
+                          : datasetMetadata.provenance === 'USER_UPLOADED'
+                          ? 'User Uploaded'
+                          : datasetMetadata.provenance}
+                      </span>
                       <span className="font-mono text-emerald-600 dark:text-emerald-400">Active</span>
                     </div>
 

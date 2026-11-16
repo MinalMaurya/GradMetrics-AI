@@ -90,7 +90,7 @@ export const SkillGapMatrix: React.FC = () => {
     return (
       <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5" />
-        BALANCED (+{gap} pts)
+        BALANCED ({gap > 0 ? `+${gap}` : gap} pts)
       </span>
     );
   };

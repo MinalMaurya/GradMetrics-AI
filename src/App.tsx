@@ -1,22 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { AnalyticsProvider, useAnalytics } from './context/AnalyticsContext';
 import { Header } from './components/Header';
 import { FilterBar } from './components/FilterBar';
 import { DrillDownBreadcrumbs } from './components/DrillDownBreadcrumbs';
 import { KPICards } from './components/KPICards';
-import { OverviewDemandSupplyChart } from './components/OverviewDemandSupplyChart';
 import { OverviewAttentionTable } from './components/OverviewAttentionTable';
 import { OverviewPlannerRecommendation } from './components/OverviewPlannerRecommendation';
 import { HowItWorksBanner } from './components/HowItWorksBanner';
 import { EarlyWarningSystem } from './components/EarlyWarningSystem';
-import { SupplyDemandChart } from './components/SupplyDemandChart';
-import { SkillGapMatrix } from './components/SkillGapMatrix';
 import { AIInsights } from './components/AIInsights';
 import { RegionalOverview } from './components/RegionalOverview';
-import { PlacementAnalytics } from './components/PlacementAnalytics';
 import { EmergingSkills } from './components/EmergingSkills';
 import { TrainingPriority } from './components/TrainingPriority';
-import { ForecastChart } from './components/ForecastChart';
 import { DataSourcesAndIndex } from './components/DataSourcesAndIndex';
 import { NcoNsqfMapping } from './components/NcoNsqfMapping';
 import { ProblemStatementCard } from './components/ProblemStatementCard';
@@ -29,6 +24,33 @@ import { DataIngestionModal } from './components/DataIngestionModal';
 import { DistrictComparisonModal } from './components/DistrictComparisonModal';
 import { PublicHomepage } from './components/PublicHomepage';
 import { ScrollReveal } from './components/ScrollReveal';
+import { ChartErrorBoundary } from './components/ChartErrorBoundary';
+
+// Dynamic lazy imports for chart-heavy components ensuring Recharts is only loaded when necessary
+const OverviewDemandSupplyChart = lazy(() =>
+  import('./components/OverviewDemandSupplyChart').then(m => ({ default: m.OverviewDemandSupplyChart }))
+);
+const SupplyDemandChart = lazy(() =>
+  import('./components/SupplyDemandChart').then(m => ({ default: m.SupplyDemandChart }))
+);
+const SkillGapMatrix = lazy(() =>
+  import('./components/SkillGapMatrix').then(m => ({ default: m.SkillGapMatrix }))
+);
+const PlacementAnalytics = lazy(() =>
+  import('./components/PlacementAnalytics').then(m => ({ default: m.PlacementAnalytics }))
+);
+const ForecastChart = lazy(() =>
+  import('./components/ForecastChart').then(m => ({ default: m.ForecastChart }))
+);
+
+const ChartSkeleton: React.FC<{ height?: string }> = ({ height = 'h-[320px]' }) => (
+  <div className={`w-full ${height} rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-4 animate-pulse`}>
+    <div className="flex flex-col items-center gap-2 text-slate-400">
+      <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+      <span className="text-xs font-medium">Loading visualization...</span>
+    </div>
+  </div>
+);
 import {
   ShieldCheck,
   Building2,
@@ -269,7 +291,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
             {/* One Clear Chart: Job Demand vs Training Capacity */}
             <ScrollReveal delay={100} as="section" aria-label="Job Demand vs Training Capacity">
-              <OverviewDemandSupplyChart />
+              <ChartErrorBoundary chartName="Overview Demand-Capacity Chart" height="h-[360px]">
+                <Suspense fallback={<ChartSkeleton height="h-[360px]" />}>
+                  <OverviewDemandSupplyChart />
+                </Suspense>
+              </ChartErrorBoundary>
             </ScrollReveal>
 
             {/* Simple Skills Needing Attention Table */}
@@ -324,10 +350,18 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
               {/* Left Column (Balanced Desktop Width) */}
               <div className="flex flex-col gap-5 sm:gap-6 min-w-0">
                 <ScrollReveal delay={100}>
-                  <SkillGapMatrix />
+                  <ChartErrorBoundary chartName="Skill Gap Matrix" height="h-[340px]">
+                    <Suspense fallback={<ChartSkeleton height="h-[340px]" />}>
+                      <SkillGapMatrix />
+                    </Suspense>
+                  </ChartErrorBoundary>
                 </ScrollReveal>
                 <ScrollReveal delay={280}>
-                  <SupplyDemandChart />
+                  <ChartErrorBoundary chartName="Supply Demand Gap Chart" height="h-[340px]">
+                    <Suspense fallback={<ChartSkeleton height="h-[340px]" />}>
+                      <SupplyDemandChart />
+                    </Suspense>
+                  </ChartErrorBoundary>
                 </ScrollReveal>
               </div>
 
@@ -340,7 +374,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
                   <TrainingPriority />
                 </ScrollReveal>
                 <ScrollReveal delay={460}>
-                  <PlacementAnalytics />
+                  <ChartErrorBoundary chartName="Placement Analytics Chart" height="h-[340px]">
+                    <Suspense fallback={<ChartSkeleton height="h-[340px]" />}>
+                      <PlacementAnalytics />
+                    </Suspense>
+                  </ChartErrorBoundary>
                 </ScrollReveal>
               </div>
             </div>
@@ -362,7 +400,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
 
             {/* Forecasting Engine: Longitudinal Trajectories & Chronological Validation */}
             <ScrollReveal delay={100}>
-              <ForecastChart />
+              <ChartErrorBoundary chartName="Forecast Trajectory Chart" height="h-[380px]">
+                <Suspense fallback={<ChartSkeleton height="h-[380px]" />}>
+                  <ForecastChart />
+                </Suspense>
+              </ChartErrorBoundary>
             </ScrollReveal>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">

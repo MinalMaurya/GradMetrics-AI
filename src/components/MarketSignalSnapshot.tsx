@@ -55,15 +55,15 @@ export const MarketSignalSnapshot: React.FC = () => {
         label: 'Velocity',
       },
       highestGap: {
-        trade: topGap?.trade || 'Data Engineering',
-        state: topGap?.state || 'Maharashtra',
-        value: `+${Math.max(1, Math.round((topGap?.gap ?? 31000) / 1000))}K`,
+        trade: topGap?.trade || 'None',
+        state: topGap?.state || 'All Regions',
+        value: topGap && topGap.gap > 0 ? `+${Math.round(topGap.gap / 1000)}K` : '0K',
         label: 'Deficit',
       },
       oversupply: {
-        trade: topSurplus?.trade || 'Retail Sales Associate',
-        state: topSurplus?.state || 'Rajasthan',
-        value: topSurplus && topSurplus.gap < 0 ? `−${Math.abs(Math.round(topSurplus.gap / 1000))}K` : '−7K',
+        trade: topSurplus && topSurplus.gap < 0 ? topSurplus.trade : 'None',
+        state: topSurplus && topSurplus.gap < 0 ? topSurplus.state : 'All Regions',
+        value: topSurplus && topSurplus.gap < 0 ? `−${Math.abs(Math.round(topSurplus.gap / 1000))}K` : '0K',
         label: 'Surplus',
       },
     };

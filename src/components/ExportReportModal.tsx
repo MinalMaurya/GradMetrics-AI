@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '../context/AnalyticsContext';
 import { Modal } from './Modal';
+import { evaluateSkillGapPrioritization } from '../services/intelligence/skillGapIntelligenceEngine';
 
 export const ExportReportModal: React.FC = () => {
   const {
@@ -21,6 +22,7 @@ export const ExportReportModal: React.FC = () => {
     filters,
     kpis,
     tradeRecords,
+    districtInterventions,
     forecastData,
     skillDomains,
     datasetMetadata
@@ -42,31 +44,58 @@ export const ExportReportModal: React.FC = () => {
       generatedAt: new Date().toISOString(),
       scope: filters,
       kpis,
-      records: tradeRecords.map(r => ({
-        state: r.state,
-        district: r.district,
-        sector: r.sector,
-        trade: r.trade,
-        ncoCode: r.ncoCode,
-        nsqfLevel: r.nsqfLevel,
-        labourDemand: r.labourDemand,
-        trainingCapacity: r.trainingCapacity,
-        candidateSupply: r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
-        demandSupplyGap: r.gap,
-        forecast2027: r.forecast2027,
-        priorityScore: r.priorityScore,
-        status: r.status,
-        recommendedAction: r.recommendedAction,
-        provenance: r.provenance || datasetMetadata.provenance,
-        reportingPeriod: r.reportingPeriod || datasetMetadata.reportingPeriod
-      })),
+      records: tradeRecords.map(r => {
+        const metrics = evaluateSkillGapPrioritization(r, tradeRecords);
+        return {
+          state: r.state,
+          district: r.district,
+          sector: r.sector,
+          trade: r.trade,
+          ncoCode: r.ncoCode,
+          nsqfLevel: r.nsqfLevel,
+          labourDemand: r.labourDemand,
+          trainingCapacity: r.trainingCapacity,
+          candidateSupply: r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
+          demandSupplyGap: r.gap,
+          forecast2027: r.forecast2027,
+          priorityScore: metrics.econometricPriorityIndex,
+          sgpiScore: metrics.sgpiScore,
+          priorityClassification: metrics.priorityClassification,
+          growthTelemetryStatus: metrics.growthTelemetryStatus,
+          isGrowthTelemetryMissing: metrics.isGrowthTelemetryMissing,
+          componentScores: metrics.componentScores,
+          weightedContributions: metrics.weightedContributions,
+          status: r.status,
+          recommendedAction: r.recommendedAction,
+          provenance: r.provenance || datasetMetadata.provenance,
+          reportingPeriod: r.reportingPeriod || datasetMetadata.reportingPeriod
+        };
+      }),
       forecastTimeline: forecastData,
+      districtInterventions: districtInterventions.map(i => ({
+        id: i.id,
+        district: i.district,
+        state: i.state,
+        sector: i.sector,
+        trade: i.trade,
+        ncoCode: i.ncoCode,
+        nsqfLevel: i.nsqfLevel,
+        priorityClassification: i.priorityClassification,
+        interventionType: i.interventionType,
+        interventionTitle: i.interventionTitle,
+        identifiedProblem: i.identifiedProblem,
+        supportingData: i.supportingData,
+        relevanceRationale: i.relevanceRationale,
+        expectedDirectionOfImpact: i.expectedDirectionOfImpact,
+        assumptionsAndLimitations: i.assumptionsAndLimitations,
+        advisoryDisclosure: i.advisoryDisclosure
+      })),
       provenance: datasetMetadata.provenance,
       datasetName: datasetMetadata.datasetName,
       reportingPeriod: datasetMetadata.reportingPeriod,
       dataSources: datasetMetadata.dataSources,
       lastUpdated: datasetMetadata.lastUpdated,
-      methodology: 'Pure Econometric Demand-Supply Engine with Holt Linear Exponential Smoothing & Chronological Holdout Validation',
+      methodology: 'Skill Gap Priority Index (SGPI, multi-criteria composite rubric) & Pure Econometric Demand-Supply Engine with Holt Linear Exponential Smoothing & Chronological Holdout Validation',
       disclaimer: 'Planning advisory based on econometric demand-capacity signals. Capacity recommendations are for institutional intake adjustments and do not guarantee individual employment outcomes.'
     };
 
@@ -105,31 +134,44 @@ export const ExportReportModal: React.FC = () => {
       'Estimated Certified Supply',
       'Demand-Supply Gap',
       'Forecast 2027',
-      'Priority Score',
+      'Priority Score (SGPI Composite: 0-100)',
+      'Priority Classification',
+      'Growth Telemetry Status',
+      'Component Scores (0-100: RelDef, Vol, Growth, Bottleneck, DistShare)',
+      'Weighted Contributions (35/25/20/10/10)',
       'Status',
       'Recommended Action',
       'Provenance',
       'Reporting Period'
     ];
 
-    const rows = tradeRecords.map(r => [
-      `"${r.state}"`,
-      `"${r.district}"`,
-      `"${r.sector}"`,
-      `"${r.trade}"`,
-      `"${r.ncoCode}"`,
-      `"${r.nsqfLevel}"`,
-      r.labourDemand,
-      r.trainingCapacity,
-      r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
-      r.gap,
-      r.forecast2027,
-      r.priorityScore,
-      `"${r.status}"`,
-      `"${r.recommendedAction.replace(/"/g, '""')}"`,
-      `"${r.provenance || datasetMetadata.provenance}"`,
-      `"${r.reportingPeriod || datasetMetadata.reportingPeriod}"`
-    ]);
+    const rows = tradeRecords.map(r => {
+      const metrics = evaluateSkillGapPrioritization(r, tradeRecords);
+      const rawCompStr = `${metrics.componentScores?.relativeDeficit ?? 0}; ${metrics.componentScores?.absoluteVolume ?? 0}; ${metrics.componentScores?.growthDivergence ?? 0}; ${metrics.componentScores?.supplyBottleneck ?? 0}; ${metrics.componentScores?.districtShortageShare ?? 0}`;
+      const weightCompStr = `${metrics.weightedContributions?.relativeDeficit ?? 0}; ${metrics.weightedContributions?.absoluteVolume ?? 0}; ${metrics.weightedContributions?.growthDivergence ?? 0}; ${metrics.weightedContributions?.supplyBottleneck ?? 0}; ${metrics.weightedContributions?.districtShortageShare ?? 0}`;
+      return [
+        `"${r.state}"`,
+        `"${r.district}"`,
+        `"${r.sector}"`,
+        `"${r.trade}"`,
+        `"${r.ncoCode}"`,
+        `"${r.nsqfLevel}"`,
+        r.labourDemand,
+        r.trainingCapacity,
+        r.candidateSupply ?? Math.round(r.trainingCapacity * 0.855),
+        r.gap,
+        r.forecast2027,
+        metrics.econometricPriorityIndex,
+        `"${metrics.priorityClassification}"`,
+        `"${metrics.growthTelemetryStatus || 'Measured'}"`,
+        `"${rawCompStr}"`,
+        `"${weightCompStr}"`,
+        `"${r.status}"`,
+        `"${r.recommendedAction.replace(/"/g, '""')}"`,
+        `"${r.provenance || datasetMetadata.provenance}"`,
+        `"${r.reportingPeriod || datasetMetadata.reportingPeriod}"`
+      ];
+    });
 
     const csvContent = [...metadataLines, headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -171,7 +213,13 @@ export const ExportReportModal: React.FC = () => {
       onClose={() => setIsExportModalOpen(false)}
       maxWidth="max-w-2xl"
       title="Labour Market Intelligence Dossier & Data Export"
-      subtitle="Official MSDE • NCVET Skill Demand-Supply Planning Brief (PS 26246)"
+      subtitle={
+        datasetMetadata.provenance === 'OFFICIAL_GOVERNMENT'
+          ? 'Official MSDE • NCVET Skill Demand-Supply Planning Brief (PS 26246)'
+          : datasetMetadata.provenance === 'USER_UPLOADED'
+          ? 'User-Uploaded Labour Market Intelligence Brief (Client Ingested Telemetry)'
+          : 'Synthetic Demonstration Planning Brief (Calibrated Research Benchmark • PS 26246)'
+      }
       icon={
         <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
           <FileText className="w-5 h-5" />
@@ -202,7 +250,11 @@ export const ExportReportModal: React.FC = () => {
             <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                  Government Executive Briefing &bull; PS 26246
+                  {datasetMetadata.provenance === 'OFFICIAL_GOVERNMENT'
+                    ? 'Verified Government Telemetry • PS 26246'
+                    : datasetMetadata.provenance === 'USER_UPLOADED'
+                    ? 'User-Uploaded Client Dataset • PS 26246'
+                    : 'Synthetic Research Benchmark • PS 26246'}
                 </span>
                 <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
                   GradMetrics AI Labour Intelligence Dossier
@@ -213,7 +265,7 @@ export const ExportReportModal: React.FC = () => {
               </div>
               <div className="sm:text-right text-[11px] text-slate-400 font-mono">
                 <div>Audit Cycle: FY {filters.timePeriod}</div>
-                <div>Provenance: {datasetMetadata.provenance}</div>
+                <div>Provenance: {datasetMetadata.provenanceLabel || datasetMetadata.provenance}</div>
                 <div>Period: {datasetMetadata.reportingPeriod}</div>
               </div>
             </div>

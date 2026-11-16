@@ -86,7 +86,7 @@ export const DataIngestionModal: React.FC = () => {
       datasetId: `custom-batch-${Date.now()}`,
       datasetName: fileName || 'Custom User Uploaded Dataset',
       provenance: 'USER_UPLOADED',
-      provenanceLabel: 'Custom Ingested Data (Verified Micro-records)',
+      provenanceLabel: 'User-Uploaded Dataset (Client CSV Ingestion)',
       reportingPeriod: 'FY 2026-27 Ingested Batch',
       lastUpdated: new Date().toISOString(),
       recordCount: validationResult.validRows,

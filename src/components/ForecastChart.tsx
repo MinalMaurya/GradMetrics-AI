@@ -53,6 +53,12 @@ export const ForecastChart: React.FC = () => {
   const p2027 = forecastData[3] || { labourDemand: 0, trainingSupply: 0, projectedGap: 0 };
   const p2028 = forecastData[4] || { labourDemand: 0, trainingSupply: 0, projectedGap: 0 };
 
+  const formatMilestoneGap = (gap: number) => {
+    if (gap > 0) return `+${gap}K Shortage`;
+    if (gap < 0) return `${Math.abs(gap)}K Surplus`;
+    return '0K Balanced';
+  };
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const isProjected = label?.includes('Proj');
@@ -77,7 +83,7 @@ export const ForecastChart: React.FC = () => {
               <div className="flex items-center justify-between text-slate-300">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" />
-                  Projected Labour Demand:
+                  {isProjected ? 'Projected Labour Demand:' : 'Audited Labour Demand:'}
                 </span>
                 <span className="font-mono font-bold text-white">
                   {data.labourDemand}K seats
@@ -86,16 +92,16 @@ export const ForecastChart: React.FC = () => {
               <div className="flex items-center justify-between text-slate-300">
                 <span className="flex items-center gap-1.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-slate-400 inline-block" />
-                  Projected Training Supply:
+                  {isProjected ? 'Projected Training Supply:' : 'Audited Training Supply:'}
                 </span>
                 <span className="font-mono font-bold text-white">
                   {data.trainingSupply}K seats
                 </span>
               </div>
               <div className="pt-2 mt-1 border-t border-slate-800 flex items-center justify-between text-amber-400 font-bold">
-                <span>Projected Deficit Gap:</span>
+                <span>{isProjected ? 'Projected Deficit Gap:' : 'Audited Deficit Gap:'}</span>
                 <span className="font-mono">
-                  {data.projectedGap > 0 ? `+${data.projectedGap}K shortage` : `${data.projectedGap}K surplus`}
+                  {data.projectedGap > 0 ? `+${data.projectedGap}K shortage` : data.projectedGap < 0 ? `${data.projectedGap}K surplus` : '0K (Balanced)'}
                 </span>
               </div>
             </div>
@@ -194,7 +200,7 @@ export const ForecastChart: React.FC = () => {
             <span className="text-[9px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-700 font-normal">Observed</span>
           </div>
           <div className="text-sm sm:text-base font-extrabold font-mono text-slate-900 dark:text-white mt-0.5 truncate">
-            {p2026.projectedGap > 0 ? `+${p2026.projectedGap}K Shortage` : `${p2026.projectedGap}K Balanced`}
+            {formatMilestoneGap(p2026.projectedGap)}
           </div>
           <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
             Demand: {p2026.labourDemand}K &bull; Capacity: {p2026.trainingSupply}K
@@ -207,7 +213,7 @@ export const ForecastChart: React.FC = () => {
             <span className="text-[9px] px-1 py-0.2 rounded bg-amber-200/60 dark:bg-amber-900/60 font-mono">Estimate</span>
           </div>
           <div className="text-sm sm:text-base font-extrabold font-mono text-amber-700 dark:text-amber-300 mt-0.5 truncate">
-            {p2027.projectedGap > 0 ? `+${p2027.projectedGap}K Shortage` : `${p2027.projectedGap}K Surplus`}
+            {formatMilestoneGap(p2027.projectedGap)}
           </div>
           <div className="text-[10px] text-amber-600/80 dark:text-amber-400 truncate">
             Demand: {p2027.labourDemand}K &bull; Projected Supply: {p2027.trainingSupply}K
@@ -220,7 +226,7 @@ export const ForecastChart: React.FC = () => {
             <span className="text-[9px] px-1 py-0.2 rounded bg-rose-200/60 dark:bg-rose-900/60 font-mono">Estimate</span>
           </div>
           <div className="text-sm sm:text-base font-extrabold font-mono text-rose-700 dark:text-rose-300 mt-0.5 truncate">
-            {p2028.projectedGap > 0 ? `+${p2028.projectedGap}K Shortage` : `${p2028.projectedGap}K Balanced`}
+            {formatMilestoneGap(p2028.projectedGap)}
           </div>
           <div className="text-[10px] text-rose-600/80 dark:text-rose-400 truncate">
             Demand: {p2028.labourDemand}K &bull; Projected Supply: {p2028.trainingSupply}K
@@ -395,7 +401,7 @@ export const ForecastChart: React.FC = () => {
                 <Area
                   type="monotone"
                   dataKey="labourDemand"
-                  name="Projected Labour Demand"
+                  name="Labour Demand"
                   stroke="#2563eb"
                   strokeWidth={2.5}
                   fill="url(#forecastDemandArea)"
@@ -403,7 +409,7 @@ export const ForecastChart: React.FC = () => {
                 <Line
                   type="monotone"
                   dataKey="trainingSupply"
-                  name="Projected Training Supply"
+                  name="Training Supply"
                   stroke="#64748b"
                   strokeWidth={2.5}
                   strokeDasharray="4 4"
@@ -411,7 +417,7 @@ export const ForecastChart: React.FC = () => {
                 />
                 <Bar
                   dataKey="projectedGap"
-                  name="Projected Gap"
+                  name="Demand-Supply Gap"
                   fill="#f59e0b"
                   radius={[4, 4, 0, 0]}
                   barSize={16}
