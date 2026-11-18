@@ -10,6 +10,7 @@ import { HowItWorksBanner } from './components/HowItWorksBanner';
 import { EarlyWarningSystem } from './components/EarlyWarningSystem';
 import { AIInsights } from './components/AIInsights';
 import { RegionalOverview } from './components/RegionalOverview';
+import { ComparisonPanel } from './components/ComparisonPanel';
 import { EmergingSkills } from './components/EmergingSkills';
 import { TrainingPriority } from './components/TrainingPriority';
 import { DataSourcesAndIndex } from './components/DataSourcesAndIndex';
@@ -386,6 +387,11 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
             {/* District & State Demand-Supply Overview: Full-Width Panel below Chart Panels */}
             <ScrollReveal delay={540} as="section" aria-label="District & State Demand-Supply Overview">
               <RegionalOverview />
+            </ScrollReveal>
+
+            {/* Region & Skill Comparison Panel */}
+            <ScrollReveal delay={600} as="section" aria-label="Region and skill baseline comparison">
+              <ComparisonPanel />
             </ScrollReveal>
           </div>
         )}
